@@ -4,7 +4,6 @@ import DQ_TextBox from '../components/DQ_TextBox';
 import DQ_Paragraph from '../components/DQ_Paragraph';
 import JSON_FILE from '../contents/content.json';
 import DQ_Link from '../components/DQ_Link';
-import Icon from '@react-native-vector-icons/fontawesome6';
 import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
