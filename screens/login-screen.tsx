@@ -5,6 +5,8 @@ import DQ_TextBox from '../components/DQ_TextBox';
 import DQ_Paragraph from '../components/DQ_Paragraph';
 import JSON_FILE from '../contents/content.json';
 import DQ_Link from '../components/DQ_Link';
+import Icon from '@react-native-vector-icons/fontawesome6';
+import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox'
 
 export default function LoginScreen() {
   const logo = require('../assets/images/DQ_LOGO.png');
@@ -43,7 +45,7 @@ export default function LoginScreen() {
           </View>          
           <View style={styles.inlineSubContainerItems}>
             <DQ_TextBox placeholder={WebUserIDPlaceHolder} borderColor="grey"/>
-            <DQ_TextBox placeholder={PasswordPlaceHolder} borderColor="grey" IconClass/>                     
+            <DQ_EyeComponentTextBox />                              
             <DQ_Link textAlign='right' fontSize={12} content='Forgot Password?' textColor='#7aabd2' underline={true} goTo=''/>            
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
