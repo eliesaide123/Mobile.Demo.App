@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, StyleSheet, View } from 'react-native';
+import { TextInput, StyleSheet, View, Text } from 'react-native';
 
 export default function DQ_TextBox({ 
     placeholder = 'Enter text', 
@@ -9,31 +9,37 @@ export default function DQ_TextBox({
     secureTextEntry = false,
     backgroundColor = 'white',
     textColor = '#333',
-    borderColor = 'black'
+    borderColor = 'black',
+    hintText = undefined
 } : any) {
     return (
-        <View style={[styles.container, {backgroundColor, borderColor }]}>
-            <TextInput
-                style={[styles.input, { color: textColor }]}
-                placeholder={placeholder}
-                placeholderTextColor="#888"
-                value={value}
-                onChangeText={onChangeText}
-                keyboardType={keyboardType}
-                secureTextEntry={secureTextEntry}
-            />
+      <View style={styles.mainContainer}>
+        <View style={[styles.container, {backgroundColor, borderColor}]}>
+          <TextInput
+            style={[styles.input, {color: textColor}]}
+            placeholder={placeholder}
+            placeholderTextColor="#888"
+            value={value}
+            onChangeText={onChangeText}
+            keyboardType={keyboardType}
+            secureTextEntry={secureTextEntry}
+          />
         </View>
+        {hintText && <Text style={{color: borderColor, marginHorizontal:5}}>{hintText}</Text>}
+      </View>
     );
 }
 
 const styles = StyleSheet.create({
+    mainContainer:{
+        marginVertical:8,
+    },
     container: {
         width: '100%',
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 3,
         borderWidth: 1,
-        marginVertical: 8,
     },
     input: {
         fontSize: 16,

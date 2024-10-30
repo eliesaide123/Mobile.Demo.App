@@ -1,11 +1,11 @@
 import React from 'react';
-import {StyleSheet, View, ImageBackground, SafeAreaView} from 'react-native';
-import LoginScreen from './screens/login-screen';
+import {StyleSheet, SafeAreaView} from 'react-native';
+import RegistrationScreen from './screens/registration-screen';
 
 export default function App() {
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <LoginScreen />
+      <RegistrationScreen />
     </SafeAreaView>
   );
 }
