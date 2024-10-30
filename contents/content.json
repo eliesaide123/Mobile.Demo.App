@@ -1,0 +1,34 @@
+{
+  "Contents": {
+    "LoginScreen": {
+      "HeaderContainer": {
+        "en": "WELCOME BACK",
+        "ar": ""
+      },
+      "HeaderContainerSubText": {
+        "en": "Please login to your account",
+        "ar": ""
+      },
+      "DQ_TextBoxUserID": {
+        "en": "Web User ID",
+        "ar": ""
+      },
+      "DQ_TextBoxPassword": {
+        "en": "Password",
+        "ar": ""
+      },
+      "DQ_RegisterPhrase": [{
+         "en": "Don't Have an account?",
+         "ar": ""
+      },
+      {
+        "en": "Register Now",
+        "ar": ""
+      }],
+      "DQ_ProceedAsAGuest": {
+        "en": "Proceed As A Guest",
+        "ar": ""
+      }
+    }
+  }
+}

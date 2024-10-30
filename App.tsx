@@ -1,34 +1,17 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import Icon from '@react-native-vector-icons/fontawesome6';
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {StyleSheet, View, ImageBackground, SafeAreaView} from 'react-native';
+import LoginScreen from './screens/login-screen';
 
-function App(): React.JSX.Element {
-
-
+export default function App() {
   return (
-    <SafeAreaView style={[styles.rootScreen]}>
-      <View>
-        <Icon name='user' size={22} color="red"/>
-      </View>
+    <SafeAreaView style={styles.mainContainer}>
+      <LoginScreen />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  rootScreen:{
-    flex:1,
+  mainContainer: {
+    flex: 1,    
   },
 });
-
-export default App;
