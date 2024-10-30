@@ -41,7 +41,7 @@ export default function LoginScreen() {
             </View>          
             <View style={styles.inlineSubContainerItems}>
               <DQ_TextBox placeholder={WebUserIDPlaceHolder} borderColor="grey"/>
-              <DQ_EyeComponentTextBox />                              
+              <DQ_EyeComponentTextBox placeholder="Enter Password" borderColor="grey" />                              
               <DQ_Link textAlign='right' fontSize={12} content='Forgot Password?' textColor='#7aabd2' underline={true} goTo=''/>            
             </View>
             <View style={styles.inlineSubContainerItemsButton}>
