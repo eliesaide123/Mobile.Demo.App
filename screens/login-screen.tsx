@@ -6,6 +6,7 @@ import JSON_FILE from '../contents/content.json';
 import DQ_Link from '../components/DQ_Link';
 import Icon from '@react-native-vector-icons/fontawesome6';
 import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function LoginScreen() {
   const logo = require('../assets/images/DQ_LOGO.png');
@@ -17,12 +18,9 @@ export default function LoginScreen() {
   const DQ_ProceedAsAGuest = JSON_FILE.Contents.LoginScreen.DQ_ProceedAsAGuest['en'];
    
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAwareScrollView 
       style={styles.mainContainer} 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+    >      
         <View style={styles.headerText}>
           <Image source={logo} />
         </View>
@@ -58,36 +56,32 @@ export default function LoginScreen() {
         </View>
         <View style={styles.footer}>
           <DQ_Link textAlign="center" content={DQ_ProceedAsAGuest} textColor='white' underline={true} goTo='' fontSize={18} uppercased={true}/>
-        </View>    
-        </ScrollView>  
-    </KeyboardAvoidingView>
+        </View>            
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,    
-    backgroundColor: '#005faf',
-  },
-  scrollContainer: {
-    flexGrow: 1,    
+    backgroundColor: '#005faf',    
   },
   headerText: {
     flex: 0.2,    
-    margin: 5,
+    margin: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
   container: {
     flex: 0.6,
-    margin: 5,    
+    margin: 5,        
   },
   
   subContainer: {
     flex: 1,
     margin: 20,
     backgroundColor: 'white',
-    borderRadius: 8,    
+    borderRadius: 8,        
   },
   inlineSubContainer: {
     alignItems: 'center',
@@ -96,18 +90,21 @@ const styles = StyleSheet.create({
   },
   inlineSubContainerItems: {    
     margin: 10,    
+    marginBottom: 70
   },
   inlineSubContainerItemsButton: {
     flex: 0.8,
     padding: 10,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    marginBottom: 5
   },
   inlineSubContainerFooter:{
     flex: 0.3, 
     flexDirection:'row',
     alignItems: 'center',
     justifyContent:'center',    
-    gap: 3
+    gap: 3,
+    marginBottom: 10
   },
   footer: {
     flex: 0.2, // Adjust based on your preferred space allocation
@@ -115,6 +112,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     backgroundColor: '#005faf',
-    width: '100%',
+    marginTop: 30
   },  
 });
