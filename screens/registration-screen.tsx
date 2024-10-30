@@ -146,6 +146,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 3,
-    marginVertical:5
+    marginBottom:15
   },
 });
