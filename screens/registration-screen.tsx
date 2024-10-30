@@ -5,6 +5,7 @@ import DQ_TextBox from '../components/DQ_TextBox';
 import DQ_Paragraph from '../components/DQ_Paragraph';
 import JSON_FILE from '../contents/content.json';
 import DQ_Link from '../components/DQ_Link';
+import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
 
 export default function RegistrationScreen() {
   const logo = require('../assets/images/DQ_LOGO.png');
@@ -71,15 +72,13 @@ export default function RegistrationScreen() {
             <DQ_TextBox placeholder={EmailPlaceHolder} borderColor="grey" />
             <DQ_TextBox placeholder={MobileNumberPlaceHolder} hintText={MobileNumberHintText} borderColor="grey" />
             <DQ_TextBox placeholder={WebUserIDPlaceHolder} hintText={WebUserIDHintText} borderColor="grey" />
-            <DQ_TextBox
+            <DQ_EyeComponentTextBox
               placeholder={PasswordPlaceHolder}
               borderColor="grey"
-              IconClass
             />
-            <DQ_TextBox
+            <DQ_EyeComponentTextBox
               placeholder={ConfirmPasswordPlaceHolder}
               borderColor="grey"
-              IconClass
             />
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
