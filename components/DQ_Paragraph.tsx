@@ -6,10 +6,11 @@ export default function DQ_Paragraph({
     fontSize = 16, 
     textColor = '#333',     
     textAlign = 'left',
-    uppercased
+    uppercased= false,
+    capitalized = false,
 } : any) {
     return (
-        <Text style={{ fontSize, color: textColor, textAlign, textTransform: uppercased ? "uppercase": 'capitalize' }}>
+        <Text style={{ fontSize, color: textColor, textAlign, textTransform: uppercased ? "uppercase": capitalized? 'capitalize' : 'none' }}>
             {content}
         </Text>
     );

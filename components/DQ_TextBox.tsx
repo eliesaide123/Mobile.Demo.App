@@ -10,8 +10,12 @@ export default function DQ_TextBox({
     backgroundColor = 'white',
     textColor = '#333',
     borderColor = 'black',
-    hintText = undefined
+    hintText = undefined,
 } : any) {
+
+  function handleChangeText(e: string) {
+    onChangeText(e);
+  }
     return (
       <View style={styles.mainContainer}>
         <View style={[styles.container, {backgroundColor, borderColor}]}>
@@ -20,7 +24,7 @@ export default function DQ_TextBox({
             placeholder={placeholder}
             placeholderTextColor="#888"
             value={value}
-            onChangeText={onChangeText}
+            onChangeText={handleChangeText}
             keyboardType={keyboardType}
             secureTextEntry={secureTextEntry}
           />

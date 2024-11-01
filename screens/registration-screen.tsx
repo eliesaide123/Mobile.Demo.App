@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {View, StyleSheet, Image, ScrollView} from 'react-native';
 
 import DQ_Button from '../components/DQ_Button';
@@ -6,6 +7,8 @@ import DQ_Paragraph from '../components/DQ_Paragraph';
 import JSON_FILE from '../contents/content.json';
 import DQ_Link from '../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
+import {useState} from 'react';
+import DQ_CheckBox from '../components/DQ_CheckBox';
 
 export default function RegistrationScreen() {
   const logo = require('../assets/images/DQ_LOGO.png');
@@ -27,22 +30,54 @@ export default function RegistrationScreen() {
     JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxEmail['en'];
   const MobileNumberPlaceHolder =
     JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxMobileNumber['en'];
-    const MobileNumberHintText =
+  const MobileNumberHintText =
     JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxMobileNumberHintText['en'];
   const WebUserIDPlaceHolder =
     JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxUserID['en'];
-    const WebUserIDHintText =
+  const WebUserIDHintText =
     JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxUserIDHintText['en'];
   const PasswordPlaceHolder =
     JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxPassword['en'];
   const ConfirmPasswordPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxConfirmPassword['en'];
-    const LoginPhrase =
+    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxConfirmPassword['en'];    
+  const LoginPhrase =
     JSON_FILE.Contents.RegistrationScreen.DQ_LoginPhrase[0]['en'];
-  const LoginHerePhrase =
+    const LoginHerePhrase =
     JSON_FILE.Contents.RegistrationScreen.DQ_LoginPhrase[1]['en'];
+  const IAgreePhrase =
+    JSON_FILE.Contents.RegistrationScreen.DQ_IAgreePhrase[0]['en'];
+  const TermsAndConditionsPhrase =
+    JSON_FILE.Contents.RegistrationScreen.DQ_IAgreePhrase[1]['en'];
   const RegisterText =
     JSON_FILE.Contents.RegistrationScreen.DQ_ButtonRegister['en'];
+
+  const [policyNumber, setPolicyNumber] = useState('');
+  const [policyExpiry, setPolicyExpiry] = useState('');
+  const [pin, setPin] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [webUserID, setWebUserID] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+
+  const checkBoxLabel = ()=> (
+    <View style={styles.checkBoxLabel}>
+            <DQ_Paragraph content={IAgreePhrase}
+              fontSize={12}
+              textColor="black"
+              textAlign="center"
+            />
+            <DQ_Link
+          textAlign="center"
+          fontSize={12}
+          content={TermsAndConditionsPhrase}
+          textColor="#68a2cf"
+          underline={true}
+          goTo=""
+        />
+          </View>
+  )
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.headerText}>
@@ -56,7 +91,7 @@ export default function RegistrationScreen() {
               fontSize={18}
               textColor="#555"
               textAlign="center"
-              uppercased ={true}
+              uppercased={true}
             />
             <DQ_Paragraph
               content={HeaderSubContainerText}
@@ -66,37 +101,82 @@ export default function RegistrationScreen() {
             />
           </View>
           <View style={styles.inlineSubContainerItems}>
-            <DQ_TextBox placeholder={PolicyNumberPlaceHolder} hintText={PolicyNumberHintText} borderColor="grey" />
-            <DQ_TextBox placeholder={PolicyExpiryPlaceHolder} borderColor="grey" />
-            <DQ_TextBox placeholder={YourPINPlaceHolder} hintText={YourPINHintText} borderColor="grey" />
-            <DQ_TextBox placeholder={EmailPlaceHolder} borderColor="grey" />
-            <DQ_TextBox placeholder={MobileNumberPlaceHolder} hintText={MobileNumberHintText} borderColor="grey" />
-            <DQ_TextBox placeholder={WebUserIDPlaceHolder} hintText={WebUserIDHintText} borderColor="grey" />
+            <DQ_TextBox
+              placeholder={PolicyNumberPlaceHolder}
+              hintText={PolicyNumberHintText}
+              borderColor="grey"
+              value={policyNumber}
+              onChangeText={setPolicyNumber}
+            />
+            <DQ_TextBox
+              placeholder={PolicyExpiryPlaceHolder}
+              borderColor="grey"
+              value={policyExpiry}
+              onChangeText={setPolicyExpiry}
+            />
+            <DQ_TextBox
+              placeholder={YourPINPlaceHolder}
+              hintText={YourPINHintText}
+              borderColor="grey"
+              value={pin}
+              onChangeText={setPin}
+            />
+            <DQ_TextBox
+              placeholder={EmailPlaceHolder}
+              borderColor="grey"
+              value={email}
+              setEmail={setEmail}
+            />
+            <DQ_TextBox
+              placeholder={MobileNumberPlaceHolder}
+              hintText={MobileNumberHintText}
+              borderColor="grey"
+              value={mobileNumber}
+              keyboardType='phone-pad'
+              onChangeText={setMobileNumber}
+            />
+            <DQ_TextBox
+              placeholder={WebUserIDPlaceHolder}
+              hintText={WebUserIDHintText}
+              borderColor="grey"
+              value={webUserID}
+              onChangeText={setWebUserID}
+            />
             <DQ_EyeComponentTextBox
               placeholder={PasswordPlaceHolder}
               borderColor="grey"
+              value={password}
+              onChangeText={setPassword}
             />
             <DQ_EyeComponentTextBox
               placeholder={ConfirmPasswordPlaceHolder}
               borderColor="grey"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
             />
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
             {/*TODO: create checkbox component*/}
+            <DQ_CheckBox
+        Component={checkBoxLabel}
+        checked={isChecked}
+        onChange={setIsChecked}
+      />
             <DQ_Button title={RegisterText} />
           </View>
         </View>
       </View>
       <View style={styles.footer}>
-      <DQ_Paragraph fontSize={12} content={LoginPhrase} textColor='white' />
-            <DQ_Link
-              textAlign="center"
-              fontSize={12}
-              content={LoginHerePhrase}
-              textColor="white"
-              underline={true}
-              goTo=""
-            />
+        <DQ_Paragraph fontSize={12} content={LoginPhrase} textColor="white" />
+        <DQ_Link
+          textAlign="center"
+          fontSize={12}
+          content={LoginHerePhrase}
+          textColor="white"
+          underline={true}
+          goTo=""
+        />
+        <DQ_Paragraph fontSize={12} content={policyNumber} textColor="white"/>
       </View>
     </ScrollView>
   );
@@ -145,6 +225,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 3,
-    marginBottom:15
+    marginBottom: 15,
+  },
+  checkBoxLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 3,
   },
 });
