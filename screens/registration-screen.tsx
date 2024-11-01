@@ -60,6 +60,9 @@ export default function RegistrationScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
+  const regularFont = 'Nexa Regular';
+  const lightFont = 'Nexa Regular';
+  const boldFont = 'Nexa Bold';
 
   const checkBoxLabel = ()=> (
     <View style={styles.checkBoxLabel}>
@@ -89,6 +92,7 @@ export default function RegistrationScreen() {
             <DQ_Paragraph
               content={HeaderContainerText}
               fontSize={18}
+              fontFamily={regularFont}
               textColor="#555"
               textAlign="center"
               uppercased={true}
@@ -96,6 +100,7 @@ export default function RegistrationScreen() {
             <DQ_Paragraph
               content={HeaderSubContainerText}
               fontSize={18}
+              fontFamily={lightFont}
               textColor="#ced1d4"
               textAlign="center"
             />
@@ -107,12 +112,14 @@ export default function RegistrationScreen() {
               borderColor="grey"
               value={policyNumber}
               onChangeText={setPolicyNumber}
+              fontFamily={lightFont}
             />
             <DQ_TextBox
               placeholder={PolicyExpiryPlaceHolder}
               borderColor="grey"
               value={policyExpiry}
               onChangeText={setPolicyExpiry}
+              fontFamily={lightFont}
             />
             <DQ_TextBox
               placeholder={YourPINPlaceHolder}
@@ -120,12 +127,14 @@ export default function RegistrationScreen() {
               borderColor="grey"
               value={pin}
               onChangeText={setPin}
+              fontFamily={lightFont}
             />
             <DQ_TextBox
               placeholder={EmailPlaceHolder}
               borderColor="grey"
               value={email}
               setEmail={setEmail}
+              fontFamily={lightFont}
             />
             <DQ_TextBox
               placeholder={MobileNumberPlaceHolder}
@@ -134,6 +143,7 @@ export default function RegistrationScreen() {
               value={mobileNumber}
               keyboardType='phone-pad'
               onChangeText={setMobileNumber}
+              fontFamily={lightFont}
             />
             <DQ_TextBox
               placeholder={WebUserIDPlaceHolder}
@@ -141,42 +151,47 @@ export default function RegistrationScreen() {
               borderColor="grey"
               value={webUserID}
               onChangeText={setWebUserID}
+              fontFamily={lightFont}
             />
             <DQ_EyeComponentTextBox
               placeholder={PasswordPlaceHolder}
               borderColor="grey"
               value={password}
               onChangeText={setPassword}
+              fontFamily={lightFont}
             />
             <DQ_EyeComponentTextBox
               placeholder={ConfirmPasswordPlaceHolder}
               borderColor="grey"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
+              fontFamily={lightFont}
             />
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
-            {/*TODO: create checkbox component*/}
             <DQ_CheckBox
         Component={checkBoxLabel}
         checked={isChecked}
         onChange={setIsChecked}
       />
-            <DQ_Button title={RegisterText} />
+            <DQ_Button title={RegisterText} 
+              fontFamily={boldFont} />
           </View>
         </View>
       </View>
       <View style={styles.footer}>
-        <DQ_Paragraph fontSize={12} content={LoginPhrase} textColor="white" />
+              
+              <DQ_Paragraph fontSize={12} content={LoginPhrase} textColor="white" fontFamily={lightFont} />
         <DQ_Link
           textAlign="center"
           fontSize={12}
           content={LoginHerePhrase}
           textColor="white"
           underline={true}
+          fontFamily={lightFont}
           goTo=""
         />
-        <DQ_Paragraph fontSize={12} content={policyNumber} textColor="white"/>
+        <DQ_Paragraph fontSize={12} content={policyNumber} textColor="white" fontFamily={lightFont}/>
       </View>
     </ScrollView>
   );

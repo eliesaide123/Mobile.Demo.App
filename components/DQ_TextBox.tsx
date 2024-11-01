@@ -11,7 +11,10 @@ export default function DQ_TextBox({
     textColor = '#333',
     borderColor = 'black',
     hintText = undefined,
+    fontFamily = 'Nexa Regular',
 } : any) {
+
+  const fF = fontFamily.toString();
 
   function handleChangeText(e: string) {
     onChangeText(e);
@@ -20,7 +23,7 @@ export default function DQ_TextBox({
       <View style={styles.mainContainer}>
         <View style={[styles.container, {backgroundColor, borderColor}]}>
           <TextInput
-            style={[styles.input, {color: textColor}]}
+            style={[styles.input, {color: textColor, fontFamily: fF}]}
             placeholder={placeholder}
             placeholderTextColor="#888"
             value={value}
@@ -29,7 +32,7 @@ export default function DQ_TextBox({
             secureTextEntry={secureTextEntry}
           />
         </View>
-        {hintText && <Text style={{color: borderColor, marginHorizontal:5}}>{hintText}</Text>}
+        {hintText && <Text style={{color: borderColor, marginHorizontal:5, fontFamily}}>{hintText}</Text>}
       </View>
     );
 }

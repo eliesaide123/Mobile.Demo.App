@@ -14,6 +14,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-GuessNumber-GuessNumberTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-GuessNumber-GuessNumberTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		D9A6B42D50B0434296E8A1FE /* Nexa Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 61849EB365FC44F2B285F5B1 /* Nexa Bold.otf */; };
+		7327D06C97E7472B9BF00380 /* Nexa Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3D562CEDBB7B43DF93F8D949 /* Nexa Light.otf */; };
+		66A3C6A9DABB4178BD38B0B8 /* Nexa Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DB3AD4B2E08B4AF398B63762 /* Nexa Regular.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,9 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GuessNumber/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-GuessNumber-GuessNumberTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GuessNumber-GuessNumberTests.release.xcconfig"; path = "Target Support Files/Pods-GuessNumber-GuessNumberTests/Pods-GuessNumber-GuessNumberTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		61849EB365FC44F2B285F5B1 /* Nexa Bold.otf */ = {isa = PBXFileReference; name = "Nexa Bold.otf"; path = "../assets/fonts/Nexa Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3D562CEDBB7B43DF93F8D949 /* Nexa Light.otf */ = {isa = PBXFileReference; name = "Nexa Light.otf"; path = "../assets/fonts/Nexa Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DB3AD4B2E08B4AF398B63762 /* Nexa Regular.otf */ = {isa = PBXFileReference; name = "Nexa Regular.otf"; path = "../assets/fonts/Nexa Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +130,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				96AA359A01ED4D178115F771 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -149,6 +156,17 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		96AA359A01ED4D178115F771 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				61849EB365FC44F2B285F5B1 /* Nexa Bold.otf */,
+				3D562CEDBB7B43DF93F8D949 /* Nexa Light.otf */,
+				DB3AD4B2E08B4AF398B63762 /* Nexa Regular.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -245,6 +263,9 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				D9A6B42D50B0434296E8A1FE /* Nexa Bold.otf in Resources */,
+				7327D06C97E7472B9BF00380 /* Nexa Light.otf in Resources */,
+				66A3C6A9DABB4178BD38B0B8 /* Nexa Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
