@@ -9,6 +9,8 @@ import DQ_Link from '../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
 import {useState} from 'react';
 import DQ_CheckBox from '../components/DQ_CheckBox';
+import AppService from '../service/AppService';
+
 
 export default function RegistrationScreen() {
   const logo = require('../assets/images/DQ_LOGO.png');
@@ -64,6 +66,7 @@ export default function RegistrationScreen() {
   const lightFont = 'Nexa Regular';
   const boldFont = 'Nexa Bold';
 
+
   const checkBoxLabel = ()=> (
     <View style={styles.checkBoxLabel}>
             <DQ_Paragraph content={IAgreePhrase}
@@ -80,7 +83,20 @@ export default function RegistrationScreen() {
           goTo=""
         />
           </View>
-  )
+  );
+
+  async function sendRequest(){
+    await AppService.postRequest('/account/register', {"request":{"request": {
+        "MA_UserID": webUserID,
+        "Email": email,
+        "MobileNo": mobileNumber,
+        "CS_UserID": webUserID,
+        "CS_Password":  password,
+        "Policy_No": policyNumber,
+        "Expiry_Date": policyExpiry,
+        "PIN": parseInt(pin)
+    }}})
+  }
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.headerText}>
@@ -109,7 +125,7 @@ export default function RegistrationScreen() {
             <DQ_TextBox
               placeholder={PolicyNumberPlaceHolder}
               hintText={PolicyNumberHintText}
-              borderColor="grey"
+              borderColor= "grey"
               value={policyNumber}
               onChangeText={setPolicyNumber}
               fontFamily={lightFont}
@@ -124,7 +140,7 @@ export default function RegistrationScreen() {
             <DQ_TextBox
               placeholder={YourPINPlaceHolder}
               hintText={YourPINHintText}
-              borderColor="grey"
+              borderColor= "grey"
               value={pin}
               onChangeText={setPin}
               fontFamily={lightFont}
@@ -173,9 +189,11 @@ export default function RegistrationScreen() {
         Component={checkBoxLabel}
         checked={isChecked}
         onChange={setIsChecked}
+        checkBoxColor = '#0062af'
       />
             <DQ_Button title={RegisterText} 
-              fontFamily={boldFont} />
+              fontFamily={boldFont}
+              onPress={sendRequest} />
           </View>
         </View>
       </View>

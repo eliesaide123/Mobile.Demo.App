@@ -2,7 +2,7 @@ import Icon from '@react-native-vector-icons/fontawesome6';
 import React, { useEffect, useRef } from 'react';
 import { TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
-const DQ_CheckBox = ({ Component, checked, onChange }: any) => {
+const DQ_CheckBox = ({ checkBoxColor, Component, checked, onChange }: any) => {
   const scaleValue = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -20,9 +20,9 @@ const DQ_CheckBox = ({ Component, checked, onChange }: any) => {
     <TouchableOpacity style={styles.container} onPress={handleCheckboxChange}>
       <Animated.View style={[styles.checkbox, { transform: [{ scale: scaleValue }] }]}>
         {checked ? (
-          <Icon name="square-check" size={20} color="#0062af" iconStyle='solid'/>
+          <Icon name="square-check" size={20} color={checkBoxColor} iconStyle='solid'/>
         ) : (
-          <Icon name="square" size={24} color="#0062af" />
+          <Icon name="square" size={24} color={checkBoxColor} />
         )}
       </Animated.View>
       {Component && <Component />}
