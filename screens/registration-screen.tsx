@@ -9,7 +9,7 @@ import DQ_Link from '../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
 import {useState} from 'react';
 import DQ_CheckBox from '../components/DQ_CheckBox';
-import AppService from '../service/AppService';
+
 
 
 export default function RegistrationScreen() {
@@ -86,16 +86,7 @@ export default function RegistrationScreen() {
   );
 
   async function sendRequest(){
-    await AppService.postRequest('/account/register', {"request":{"request": {
-        "MA_UserID": webUserID,
-        "Email": email,
-        "MobileNo": mobileNumber,
-        "CS_UserID": webUserID,
-        "CS_Password":  password,
-        "Policy_No": policyNumber,
-        "Expiry_Date": policyExpiry,
-        "PIN": parseInt(pin)
-    }}})
+    
   }
   return (
     <ScrollView style={styles.mainContainer}>
