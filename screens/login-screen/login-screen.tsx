@@ -1,5 +1,6 @@
+// LoginScreen.tsx
 import React, { useState } from 'react';
-import { View, Image, StyleSheet, Alert } from 'react-native';
+import { View, Image, StyleSheet, Alert, Pressable } from 'react-native';
 import DQ_Button from '../../components/DQ_Button';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
@@ -7,11 +8,9 @@ import JSON_FILE from '../../contents/content.json';
 import DQ_Link from '../../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { login } from './Service/authService'
-import { useNavigation } from '@react-navigation/native';
+import { login } from './Service/authService';
 
-export default function LoginScreen() {
-  const navigation = useNavigation();
+export default function LoginScreen({ navigation } : any) {  // Receive navigation here
   const logo = require('../../assets/images/DQ_LOGO.png');
   const HeaderContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainer['en'];
   const HeaderSubContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainerSubText['en'];
@@ -23,17 +22,17 @@ export default function LoginScreen() {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleLogin = async () => {
-    console.log("Hello")
+  const handleLogin = async () => {  // No parameters here
+    console.log("Hello");
     const result = await login("r-medical", "11111111");
 
-    if (result.success) {
+    if (result.success) {      
       if (result.data?.Error_Code === 90020) {
-        Alert.alert('OTP Required', result.data.Error_Description || 'Please complete OTP authentication.');
-        // Navigate to OTP screen or handle OTP process
+        Alert.alert('OTP Required', result.data.Error_Description || 'Please complete OTP authentication.');        
       } else if (result.data?.Status) {
         console.log('Login successful:', result.data);
-        navigation.navigate('Home')
+        // Navigate to Register screen
+        navigation.navigate('Register');
       }
     } else {
       Alert.alert('Login Failed', result.error?.Error_Description || 'An error occurred during login.');
@@ -80,13 +79,14 @@ export default function LoginScreen() {
               content='Forgot Password?'
               textColor='#7aabd2'
               underline={true}
-              goTo=''
+              goTo='ForgotPassword'
+              onPress={() => navigation.navigate('ForgotPassword')}
             />
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
             <DQ_Button title="Login" onPress={handleLogin} />
           </View>
-          <View style={styles.inlineSubContainerFooter}>
+          <Pressable style={styles.inlineSubContainerFooter} onPress={() => navigation.navigate('Register')}>
             <DQ_Paragraph fontSize={12} content={RegisterPhrase} />
             <DQ_Link
               textAlign="center"
@@ -94,9 +94,10 @@ export default function LoginScreen() {
               content={RegisterNowPhrase}
               textColor='#7aabd2'
               underline={true}
-              goTo=''
+              goTo='Register'
+              
             />
-          </View>
+          </Pressable>
         </View>
       </View>
       <View style={styles.footer}>
@@ -105,9 +106,10 @@ export default function LoginScreen() {
           content={DQ_ProceedAsAGuest}
           textColor='white'
           underline={true}
-          goTo=''
+          goTo='Guest'
           fontSize={18}
           uppercased={true}
+          onPress={() => navigation.navigate('Guest')}
         />
       </View>
     </KeyboardAwareScrollView>
@@ -156,7 +158,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent:'center',
     gap: 3,
-    marginBottom: 10
+    marginBottom: 10,
+    padding: 5,
   },
   footer: {
     flex: 0.2,
@@ -166,4 +169,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#005faf',
     marginTop: 30
   },
-});
+})
+// Styles remain unchanged

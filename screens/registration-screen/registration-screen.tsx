@@ -1,19 +1,25 @@
 /* eslint-disable react/react-in-jsx-scope */
-import {View, StyleSheet, Image, ScrollView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 
-import DQ_Button from '../components/DQ_Button';
-import DQ_TextBox from '../components/DQ_TextBox';
-import DQ_Paragraph from '../components/DQ_Paragraph';
-import JSON_FILE from '../contents/content.json';
-import DQ_Link from '../components/DQ_Link';
-import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
+import DQ_Button from '../../components/DQ_Button';
+import DQ_TextBox from '../../components/DQ_TextBox';
+import DQ_Paragraph from '../../components/DQ_Paragraph';
+import JSON_FILE from '../../contents/content.json';
+import DQ_Link from '../../components/DQ_Link';
+import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
 import {useState} from 'react';
-import DQ_CheckBox from '../components/DQ_CheckBox';
+import DQ_CheckBox from '../../components/DQ_CheckBox';
+import Icon from '@react-native-vector-icons/fontawesome6';
 
-
-
-export default function RegistrationScreen() {
-  const logo = require('../assets/images/DQ_LOGO.png');
+export default function RegistrationScreen({navigation, route}: any) {
+  const logo = require('../../assets/images/DQ_LOGO.png');
   const HeaderContainerText =
     JSON_FILE.Contents.RegistrationScreen.HeaderContainer['en'];
   const HeaderSubContainerText =
@@ -41,10 +47,10 @@ export default function RegistrationScreen() {
   const PasswordPlaceHolder =
     JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxPassword['en'];
   const ConfirmPasswordPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxConfirmPassword['en'];    
+    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxConfirmPassword['en'];
   const LoginPhrase =
     JSON_FILE.Contents.RegistrationScreen.DQ_LoginPhrase[0]['en'];
-    const LoginHerePhrase =
+  const LoginHerePhrase =
     JSON_FILE.Contents.RegistrationScreen.DQ_LoginPhrase[1]['en'];
   const IAgreePhrase =
     JSON_FILE.Contents.RegistrationScreen.DQ_IAgreePhrase[0]['en'];
@@ -66,30 +72,37 @@ export default function RegistrationScreen() {
   const lightFont = 'Nexa Regular';
   const boldFont = 'Nexa Bold';
 
-
-  const checkBoxLabel = ()=> (
+  const checkBoxLabel = () => (
     <View style={styles.checkBoxLabel}>
-            <DQ_Paragraph content={IAgreePhrase}
-              fontSize={12}
-              textColor="black"
-              textAlign="center"
-            />
-            <DQ_Link
-          textAlign="center"
-          fontSize={12}
-          content={TermsAndConditionsPhrase}
-          textColor="#68a2cf"
-          underline={true}
-          goTo=""
-        />
-          </View>
+      <DQ_Paragraph
+        content={IAgreePhrase}
+        fontSize={12}
+        textColor="black"
+        textAlign="center"
+      />
+      <DQ_Link
+        textAlign="center"
+        fontSize={12}
+        content={TermsAndConditionsPhrase}
+        textColor="#68a2cf"
+        underline={true}
+        goTo=""
+      />
+    </View>
   );
 
-  async function sendRequest(){
-    
-  }
+  async function sendRequest() {}
   return (
     <ScrollView style={styles.mainContainer}>
+      <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+        <Icon
+          name="chevron-left"
+          size={18}
+          color="white"
+          style={styles.icon}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
       <View style={styles.headerText}>
         <Image source={logo}></Image>
       </View>
@@ -116,7 +129,7 @@ export default function RegistrationScreen() {
             <DQ_TextBox
               placeholder={PolicyNumberPlaceHolder}
               hintText={PolicyNumberHintText}
-              borderColor= "grey"
+              borderColor="grey"
               value={policyNumber}
               onChangeText={setPolicyNumber}
               fontFamily={lightFont}
@@ -131,7 +144,7 @@ export default function RegistrationScreen() {
             <DQ_TextBox
               placeholder={YourPINPlaceHolder}
               hintText={YourPINHintText}
-              borderColor= "grey"
+              borderColor="grey"
               value={pin}
               onChangeText={setPin}
               fontFamily={lightFont}
@@ -148,7 +161,7 @@ export default function RegistrationScreen() {
               hintText={MobileNumberHintText}
               borderColor="grey"
               value={mobileNumber}
-              keyboardType='phone-pad'
+              keyboardType="phone-pad"
               onChangeText={setMobileNumber}
               fontFamily={lightFont}
             />
@@ -177,20 +190,26 @@ export default function RegistrationScreen() {
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
             <DQ_CheckBox
-        Component={checkBoxLabel}
-        checked={isChecked}
-        onChange={setIsChecked}
-        checkBoxColor = '#0062af'
-      />
-            <DQ_Button title={RegisterText} 
+              Component={checkBoxLabel}
+              checked={isChecked}
+              onChange={setIsChecked}
+              checkBoxColor="#0062af"
+            />
+            <DQ_Button
+              title={RegisterText}
               fontFamily={boldFont}
-              onPress={sendRequest} />
+              onPress={sendRequest}
+            />
           </View>
         </View>
       </View>
       <View style={styles.footer}>
-              
-              <DQ_Paragraph fontSize={12} content={LoginPhrase} textColor="white" fontFamily={lightFont} />
+        <DQ_Paragraph
+          fontSize={12}
+          content={LoginPhrase}
+          textColor="white"
+          fontFamily={lightFont}
+        />
         <DQ_Link
           textAlign="center"
           fontSize={12}
@@ -200,13 +219,27 @@ export default function RegistrationScreen() {
           fontFamily={lightFont}
           goTo=""
         />
-        <DQ_Paragraph fontSize={12} content={policyNumber} textColor="white" fontFamily={lightFont}/>
+        <DQ_Paragraph
+          fontSize={12}
+          content={policyNumber}
+          textColor="white"
+          fontFamily={lightFont}
+        />
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  backBtn: {
+    flex: 1,
+    marginTop: 30,
+    padding: 10,
+    height: 50,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',        
+  },
+  backTxt: {},
   headerText: {
     flex: 0.2,
     margin: 5,
@@ -256,5 +289,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 3,
+  },
+  icon: {
+    padding: 5,
   },
 });

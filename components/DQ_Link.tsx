@@ -1,9 +1,9 @@
 import { Pressable, Text } from 'react-native'
 import React from 'react'
 
-function DQ_Link({textAlign, content, textColor, underline, goTo, fontSize, uppercased, fontFamily = 'Nexa Regular',}: any) {
+function DQ_Link({textAlign, content, textColor, underline, goTo, fontSize, uppercased, fontFamily = 'Nexa Regular', onPress}: any) {
   return (
-    <Pressable>
+    <Pressable onPress={onPress}>
       <Text
         style={{
           color: textColor,

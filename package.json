@@ -12,11 +12,8 @@
   "dependencies": {
     "@react-native-vector-icons/common": "^11.0.0-alpha.4",
     "@react-native-vector-icons/fontawesome6": "^6.6.0-alpha.37",
-<<<<<<< HEAD
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
-=======
->>>>>>> origin/registrationScreen
     "axios": "^1.7.7",
     "react": "18.3.1",
     "react-native": "0.75.4",
