@@ -8,8 +8,10 @@ import DQ_Link from '../../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { login } from './Service/authService'
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
+  const navigation = useNavigation();
   const logo = require('../../assets/images/DQ_LOGO.png');
   const HeaderContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainer['en'];
   const HeaderSubContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainerSubText['en'];
@@ -31,7 +33,7 @@ export default function LoginScreen() {
         // Navigate to OTP screen or handle OTP process
       } else if (result.data?.Status) {
         console.log('Login successful:', result.data);
-        // Handle success (e.g., navigate to another screen)
+        navigation.navigate('Home')
       }
     } else {
       Alert.alert('Login Failed', result.error?.Error_Description || 'An error occurred during login.');
