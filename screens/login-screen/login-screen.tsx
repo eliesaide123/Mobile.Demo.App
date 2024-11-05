@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { View, Image, StyleSheet, Alert } from 'react-native';
-import DQ_Button from '../components/DQ_Button';
-import DQ_TextBox from '../components/DQ_TextBox';
-import DQ_Paragraph from '../components/DQ_Paragraph';
-import JSON_FILE from '../contents/content.json';
-import DQ_Link from '../components/DQ_Link';
-import DQ_EyeComponentTextBox from '../components/DQ_EyeComponentTextBox';
+import DQ_Button from '../../components/DQ_Button';
+import DQ_TextBox from '../../components/DQ_TextBox';
+import DQ_Paragraph from '../../components/DQ_Paragraph';
+import JSON_FILE from '../../contents/content.json';
+import DQ_Link from '../../components/DQ_Link';
+import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { login } from '../Service/authService'
+import { login } from './Service/authService'
 
 export default function LoginScreen() {
-  const logo = require('../assets/images/DQ_LOGO.png');
+  const logo = require('../../assets/images/DQ_LOGO.png');
   const HeaderContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainer['en'];
   const HeaderSubContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainerSubText['en'];
   const WebUserIDPlaceHolder = JSON_FILE.Contents.LoginScreen.DQ_TextBoxUserID['en'];  
@@ -23,7 +23,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     console.log("Hello")
-    const result = await login(userId, password);
+    const result = await login("r-medical", "11111111");
 
     if (result.success) {
       if (result.data?.Error_Code === 90020) {
