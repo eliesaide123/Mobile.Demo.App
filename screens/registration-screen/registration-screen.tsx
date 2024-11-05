@@ -231,8 +231,7 @@ export default function RegistrationScreen({navigation, route}: any) {
 }
 
 const styles = StyleSheet.create({
-  backBtn: {
-    flex: 1,
+  backBtn: {    
     marginTop: 30,
     padding: 10,
     height: 50,

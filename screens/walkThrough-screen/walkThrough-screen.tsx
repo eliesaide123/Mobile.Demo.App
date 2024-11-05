@@ -12,7 +12,7 @@ export default function WalkThroughScreen({navigation} : any) {
             image: (
               <View style={styles.imageContainer}>
                 <Image
-                  source={require('../assets/images/firstscreen.jpg')}
+                  source={require('../../assets/images/firstscreen.jpg')}
                   style={styles.inlineImageContainer}
                 />
               </View>
@@ -30,7 +30,7 @@ export default function WalkThroughScreen({navigation} : any) {
             image: (
               <View style={styles.imageContainer}>
                 <Image
-                  source={require('../assets/images/secondscreen.jpg')}
+                  source={require('../../assets/images/secondscreen.jpg')}
                   style={styles.inlineImageContainer}
                 />
               </View>
@@ -48,7 +48,7 @@ export default function WalkThroughScreen({navigation} : any) {
             image: (
               <View style={styles.imageContainer}>
                 <Image
-                  source={require('../assets/images/thirdscreen.jpg')}
+                  source={require('../../assets/images/thirdscreen.jpg')}
                   style={styles.inlineImageContainer}
                 />
               </View>
@@ -65,7 +65,7 @@ export default function WalkThroughScreen({navigation} : any) {
             image: (
               <View style={styles.imageContainer}>
                 <Image
-                  source={require('../assets/images/fourthscreen.jpg')}
+                  source={require('../../assets/images/fourthscreen.jpg')}
                   style={styles.inlineImageContainer}
                 />
               </View>
@@ -83,7 +83,7 @@ export default function WalkThroughScreen({navigation} : any) {
             image: (
               <View style={styles.imageContainer}>
                 <Image
-                  source={require('../assets/images/fifthscreen.jpg')}
+                  source={require('../../assets/images/fifthscreen.jpg')}
                   style={styles.inlineImageContainer}
                 />
               </View>

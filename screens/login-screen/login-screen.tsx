@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     gap: 3,
     marginBottom: 10,
-    padding: 5,
+    padding: 10,
   },
   footer: {
     flex: 0.2,
