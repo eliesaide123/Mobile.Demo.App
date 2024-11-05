@@ -2,13 +2,13 @@ import React from 'react';
 import { Image, View, Text, StyleSheet } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 
-
-export default function WalkThroughScreen() {
-  return (
-    <View style={styles.mainContainer}>
+export default function WalkThroughScreen({navigation} : any) {
+  return (    
+    <View style={styles.mainContainer}>      
       <Onboarding
         pages={[
           {
+            backgroundColor: '#005CBF',
             image: (
               <View style={styles.imageContainer}>
                 <Image
@@ -26,6 +26,7 @@ export default function WalkThroughScreen() {
             subtitle: '',
           },
           {
+            backgroundColor: '#005CBF',
             image: (
               <View style={styles.imageContainer}>
                 <Image
@@ -43,6 +44,7 @@ export default function WalkThroughScreen() {
             subtitle: '',
           },
           {
+            backgroundColor: '#005CBF',
             image: (
               <View style={styles.imageContainer}>
                 <Image
@@ -59,6 +61,7 @@ export default function WalkThroughScreen() {
             ),
             subtitle: '',
           }, {
+            backgroundColor: '#005CBF',
             image: (
               <View style={styles.imageContainer}>
                 <Image
@@ -76,6 +79,7 @@ export default function WalkThroughScreen() {
             ),
             subtitle: '',
           }, {
+            backgroundColor: '#005CBF',
             image: (
               <View style={styles.imageContainer}>
                 <Image
@@ -101,8 +105,10 @@ export default function WalkThroughScreen() {
         skipLabel="Skip"
         dotStyle={styles.dotStyle}
         inactiveDotStyle={styles.inactiveDotStyle}
-        onSkip={() => console.log("Skipped")}
-        onNext={() => console.log("Next pressed")}
+        onSkip={() => navigation.navigate("Login")}
+        onNext={() => console.log("TEST")}
+        onDone={()=>{navigation.navigate("Login")}}
+        
       />
     </View>
   );
