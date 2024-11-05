@@ -1,15 +1,16 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text } from 'react-native'
 import React from 'react'
 
-function DQ_Link({textAlign, content, textColor, underline, goTo, fontSize, uppercased}: any) {
+function DQ_Link({textAlign, content, textColor, underline, goTo, fontSize, uppercased, fontFamily = 'Nexa Regular', onPress}: any) {
   return (
-    <Pressable>
+    <Pressable onPress={onPress}>
       <Text
         style={{
           color: textColor,
           textDecorationLine: underline ? 'underline' : 'none',
           textAlign: textAlign,
           fontSize:fontSize,
+          fontFamily,
           textTransform: uppercased ? 'uppercase' : 'capitalize'
         }}>
         {content}
@@ -18,6 +19,5 @@ function DQ_Link({textAlign, content, textColor, underline, goTo, fontSize, uppe
   );
 }
 
-const styles = StyleSheet.create({})
 
 export default DQ_Link;

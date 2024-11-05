@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import DQ_TextBox from "./DQ_TextBox";
 import { useState } from "react";
 
-export default function DQ_EyeComponentTextBox({placeholder, borderColor} : any) {
+export default function DQ_EyeComponentTextBox({placeholder, value, onChangeText, borderColor, fontFamily='Nexa Regular'}:any) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -13,10 +13,13 @@ export default function DQ_EyeComponentTextBox({placeholder, borderColor} : any)
   return (
     <View style={styles.container}>
       <DQ_TextBox 
-        placeholder={placeholder}
+        placeholder={placeholder} 
         borderColor={borderColor} 
         secureTextEntry={!isPasswordVisible} // Toggle password visibility
         style={styles.textBox}
+        value={value}
+        onChangeText = {onChangeText}
+        fontFamily={fontFamily}
       />
       <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
         <Icon 

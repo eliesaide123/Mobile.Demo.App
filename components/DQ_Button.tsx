@@ -1,10 +1,21 @@
 import React from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
 
-export default function DQ_Button({ title, onPress, backgroundColor = '#ffbe23', textColor = '#FFFFFF', }: any) {
+export default function DQ_Button({
+  title,
+  onPress,
+  backgroundColor = '#ffbe23',
+  textColor = '#FFFFFF',
+  fontFamily = 'Nexa Regular',
+}: any) {
   return (
-    <Pressable style={({pressed}) => [styles.button, {backgroundColor: pressed ? '#ffcc22' : backgroundColor}, ]} onPress={onPress}>
-      <Text style={[styles.buttonText, {color: textColor}]}>{title}</Text>
+    <Pressable
+      style={({pressed}) => [
+        styles.button,
+        {backgroundColor: pressed ? '#ffcc22' : backgroundColor},
+      ]}
+      onPress={onPress}>
+      <Text style={[styles.buttonText, {color: textColor, fontFamily}]}>{title}</Text>
     </Pressable>
   );
 }
@@ -18,7 +29,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16
   },
 });
