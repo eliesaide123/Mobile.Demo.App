@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { FlatList, Image, StyleSheet, View, SafeAreaView, Text } from 'react-native';
 import {ProductPolicyService} from './service/product-policy.service';
+import DQ_BaseHeader from '../../components/DQ_BaseHeader'
 
 const imageMapping: {[key: string]: any} = {
   'health.png': require('../../assets/images/health.png'),
@@ -37,7 +38,7 @@ const Item = ({name, groupCode}: {name: string; groupCode: string}) => {
   );
 };
 
-export default function ProductPolicy() {
+export default function ProductPolicy({navigation} : any) {
   const [prodGroups, setProdGroups] = useState<any[]>([]);
 
   useEffect(() => {
@@ -52,8 +53,9 @@ export default function ProductPolicy() {
   };
 
   return (
-    <SafeAreaView>
-      <View style={styles.Products_Container}>
+    <SafeAreaView>      
+      <DQ_BaseHeader style={styles.mainHeader} press={() => navigation.goBack()} />
+      <View style={styles.Products_Container}>        
         <FlatList
           horizontal
           data={prodGroups}
@@ -101,4 +103,8 @@ const styles = StyleSheet.create({
   InlineText: {
     flex: 0.5,
   },
+  mainHeader: {
+    flex: 1,    
+    borderColor: "red"
+  }
 });

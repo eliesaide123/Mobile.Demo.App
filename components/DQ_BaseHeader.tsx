@@ -4,10 +4,10 @@ import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 const logo = require('../assets/images/DQ_LOGO.png'); //
 
-export default function DQBaseHeader({navigation} : any) {
+export default function DQ_BaseHeader({navigation, press} : any) {
     return (
         <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <TouchableOpacity style={styles.backButton} onPress={press}>
                 <Icon name="chevron-left" size={18} color="#FFFFFF" iconStyle='solid' />
             </TouchableOpacity>
             <Image source={logo} style={styles.logo} resizeMode="contain" />
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#005faf',
-        paddingVertical: 15,
+        paddingVertical: 50,
         paddingHorizontal: 15,
         borderStartEndRadius: 20,
         borderEndEndRadius: 20,
