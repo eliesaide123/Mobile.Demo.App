@@ -71,7 +71,7 @@ export default function ProductPolicy({navigation} : any) {
 
 const styles = StyleSheet.create({
   Products_Container: {
-    paddingTop: 35,
+    paddingTop: 15,
   },
   Image_Container: {
     padding: 1,
