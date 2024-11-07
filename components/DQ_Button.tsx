@@ -7,6 +7,7 @@ export default function DQ_Button({
   backgroundColor = '#ffbe23',
   textColor = '#FFFFFF',
   fontFamily = 'Nexa Regular',
+  fontSize
 }: any) {
   return (
     <Pressable
@@ -15,7 +16,7 @@ export default function DQ_Button({
         {backgroundColor: pressed ? '#ffcc22' : backgroundColor},
       ]}
       onPress={onPress}>
-      <Text style={[styles.buttonText, {color: textColor, fontFamily}]}>{title}</Text>
+      <Text style={[styles.buttonText, {color: textColor, fontFamily, fontSize}]}>{title}</Text>
     </Pressable>
   );
 }

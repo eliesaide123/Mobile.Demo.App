@@ -6,7 +6,7 @@ export async function ProductPolicyService() {
         const response = await axios.get("http://dqapi-sna.dq.com.lb:88/api/csconnect", {
             headers: {
                 'accept': 'application/json',
-                'x-auth-ims-userid': "r-medical",
+                'x-auth-ims-userid': "r-travel",
                 'x-auth-ims-uitoken': _shared.ui_token,
                 'x-user-ims-lang': '0',
                 'X-Requested-With': 'XMLHttpRequest'
