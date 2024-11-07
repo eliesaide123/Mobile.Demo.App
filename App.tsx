@@ -1,6 +1,5 @@
-// App.tsx
+
 import React from 'react';
-//import LoginScreen from './screens/login-screen';
 import WalkThroughScreen from './screens/walkThrough-screen/walkThrough-screen';
 import {StyleSheet, SafeAreaView, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -12,7 +11,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.mainContainer}>            
+    <SafeAreaView style={styles.mainContainer}>
       <StatusBar translucent backgroundColor="rgb(0, 95, 175)" />
       <NavigationContainer>
         <Stack.Navigator>
