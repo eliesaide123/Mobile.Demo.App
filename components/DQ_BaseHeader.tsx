@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'green',
+        backgroundColor: '#005faf',
         paddingVertical: 15,
         paddingHorizontal: 15,
         borderStartEndRadius: 20,
@@ -41,6 +41,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop:20,
         alignContent: 'center',
-        
     },
 });

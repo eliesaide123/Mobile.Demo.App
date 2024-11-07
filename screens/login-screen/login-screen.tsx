@@ -8,7 +8,6 @@ import DQ_Link from '../../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { login } from './Service/authService';
-import DQBaseHeader from '../../components/DQ_BaseHeader';
 
 export default function LoginScreen({ navigation } : any) {  // Receive navigation here
   const logo = require('../../assets/images/DQ_LOGO.png');
@@ -41,7 +40,6 @@ export default function LoginScreen({ navigation } : any) {  // Receive navigati
 
   return (
     <KeyboardAwareScrollView style={styles.mainContainer}>
-      <DQBaseHeader/>
       <View style={styles.headerText}>
         <Image source={logo} />
       </View>
