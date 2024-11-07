@@ -1,30 +1,33 @@
 import axios from 'axios';
-import SharedService from '../../../Shared/SharedService';
 
-export interface LoginResponse {
-    success: boolean;
-    data?: any;
-    error?: any;
-}
+export async function login(userId: string, password: string) {
+  try {
+    const _data = {
+      request: {
+        mA_UserID: userId,
+        cS_UserID: userId,
+        cS_Password: password,
+      },
+    };
 
-export async function login(userId: string, password: string): Promise<LoginResponse> {
-    try {
-        console.log("Initiating login request...");
+    const headers = {
+      accept: 'application/json',
+      'x-user-ims-lang': '0',
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+    };
 
-        const _data = {
-          request: {
-            mA_UserID: userId,
-            cS_UserID: userId,
-            cS_Password: password
-          }
-        }
-        
-        const response = await SharedService.post("/account/login", _data)
-
-        console.log("Login successful:", response.data);
-        return { success: true, data: response.data };
-    } catch (error : any) {
-        console.error("An error occurred during login:", error);
-        return { success: false, error: error.response ? error.response.data : error.message };
-    }
+    const response = await axios.post(
+      'http://dqapi-sna.dq.com.lb:88/api/account/login',
+      _data,
+      {headers},
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error('An error occurred during login:', error);
+    return {
+      success: false,
+      error: error.response ? error.response.data : error.message,
+    };
+  }
 }

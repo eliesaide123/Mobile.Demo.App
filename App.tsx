@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './screens/login-screen/login-screen';
 import RegistrationScreen from './screens/registration-screen/registration-screen';
+import ProductPolicy from './screens/product-policy/product-policy';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,16 @@ export default function App() {
             component={RegistrationScreen}
             options={{              
               headerShown: false,              
+            }}
+          />
+          <Stack.Screen
+            name="ProductPolicy"
+            component={ProductPolicy}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
             }}
           />
         </Stack.Navigator>

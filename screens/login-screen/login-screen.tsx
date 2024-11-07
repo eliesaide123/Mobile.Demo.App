@@ -1,43 +1,46 @@
-import React, { useState } from 'react';
-import { View, Image, StyleSheet, Alert, Pressable } from 'react-native';
+// LoginScreen.tsx
+import React, {useState} from 'react';
+import {View, Image, StyleSheet, Alert, Pressable} from 'react-native';
 import DQ_Button from '../../components/DQ_Button';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import JSON_FILE from '../../contents/content.json';
 import DQ_Link from '../../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { login } from './Service/authService';
-
-export default function LoginScreen({ navigation } : any) {  // Receive navigation here
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {login} from './Service/authService';
+import _shared from '../common';
+ 
+export default function LoginScreen({navigation}: any) {
+  // Receive navigation here
   const logo = require('../../assets/images/DQ_LOGO.png');
-  const HeaderContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainer['en'];
-  const HeaderSubContainerText = JSON_FILE.Contents.LoginScreen.HeaderContainerSubText['en'];
-  const WebUserIDPlaceHolder = JSON_FILE.Contents.LoginScreen.DQ_TextBoxUserID['en'];  
-  const RegisterPhrase = JSON_FILE.Contents.LoginScreen.DQ_RegisterPhrase[0]['en'];
-  const RegisterNowPhrase = JSON_FILE.Contents.LoginScreen.DQ_RegisterPhrase[1]['en'];
-  const DQ_ProceedAsAGuest = JSON_FILE.Contents.LoginScreen.DQ_ProceedAsAGuest['en'];
-
+  const HeaderContainerText =
+    JSON_FILE.Contents.LoginScreen.HeaderContainer['en'];
+  const HeaderSubContainerText =
+    JSON_FILE.Contents.LoginScreen.HeaderContainerSubText['en'];
+  const WebUserIDPlaceHolder =
+    JSON_FILE.Contents.LoginScreen.DQ_TextBoxUserID['en'];
+  const RegisterPhrase =
+    JSON_FILE.Contents.LoginScreen.DQ_RegisterPhrase[0]['en'];
+  const RegisterNowPhrase =
+    JSON_FILE.Contents.LoginScreen.DQ_RegisterPhrase[1]['en'];
+  const DQ_ProceedAsAGuest =
+    JSON_FILE.Contents.LoginScreen.DQ_ProceedAsAGuest['en'];
+ 
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
-  const handleLogin = async () => {  // No parameters here
-    console.log("Hello");
-    const result = await login("r-medical", "11111111");
-
-    if (result.success) {      
-      if (result.data?.Error_Code === 90020) {
-        Alert.alert('OTP Required', result.data.Error_Description || 'Please complete OTP authentication.');        
-      } else if (result.data?.Status) {
-        console.log('Login successful:', result.data);
-        // Navigate to Register screen
-        navigation.navigate('Register');
-      }
+ 
+  const handleLogin = async () => {
+    const result = await login('r-medical', '11111111');
+ 
+    _shared.ui_token = result.response.imS_UIToken;    
+    if (result) {      
+      navigation.navigate('ProductPolicy');
     } else {
-      Alert.alert('Login Failed', result.error?.Error_Description || 'An error occurred during login.');
+      Alert.alert('Login Failed');
     }
   };
-
+ 
   return (
     <KeyboardAwareScrollView style={styles.mainContainer}>
       <View style={styles.headerText}>
@@ -73,28 +76,29 @@ export default function LoginScreen({ navigation } : any) {  // Receive navigati
               onChangeText={setPassword}
             />
             <DQ_Link
-              textAlign='right'
+              textAlign="right"
               fontSize={12}
-              content='Forgot Password?'
-              textColor='#7aabd2'
+              content="Forgot Password?"
+              textColor="#7aabd2"
               underline={true}
-              goTo='ForgotPassword'
+              goTo="ForgotPassword"
               onPress={() => navigation.navigate('ForgotPassword')}
             />
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
             <DQ_Button title="Login" onPress={handleLogin} />
           </View>
-          <Pressable style={styles.inlineSubContainerFooter} onPress={() => navigation.navigate('Register')}>
+          <Pressable
+            style={styles.inlineSubContainerFooter}
+            onPress={() => navigation.navigate('Register')}>
             <DQ_Paragraph fontSize={12} content={RegisterPhrase} />
             <DQ_Link
               textAlign="center"
               fontSize={12}
               content={RegisterNowPhrase}
-              textColor='#7aabd2'
+              textColor="#7aabd2"
               underline={true}
-              goTo='Register'
-              
+              goTo="Register"
             />
           </Pressable>
         </View>
@@ -103,9 +107,9 @@ export default function LoginScreen({ navigation } : any) {  // Receive navigati
         <DQ_Link
           textAlign="center"
           content={DQ_ProceedAsAGuest}
-          textColor='white'
+          textColor="white"
           underline={true}
-          goTo='Guest'
+          goTo="Guest"
           fontSize={18}
           uppercased={true}
           onPress={() => navigation.navigate('Guest')}
@@ -114,7 +118,7 @@ export default function LoginScreen({ navigation } : any) {  // Receive navigati
     </KeyboardAwareScrollView>
   );
 }
-
+ 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -139,23 +143,23 @@ const styles = StyleSheet.create({
   inlineSubContainer: {
     alignItems: 'center',
     padding: 10,
-    gap: 3
+    gap: 3,
   },
   inlineSubContainerItems: {
     margin: 10,
-    marginBottom: 70
+    marginBottom: 70,
   },
   inlineSubContainerItemsButton: {
     flex: 0.8,
     padding: 10,
     justifyContent: 'flex-end',
-    marginBottom: 5
+    marginBottom: 5,
   },
-  inlineSubContainerFooter:{
+  inlineSubContainerFooter: {
     flex: 0.3,
-    flexDirection:'row',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     gap: 3,
     marginBottom: 10,
     padding: 10,
@@ -166,7 +170,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     backgroundColor: '#005faf',
-    marginTop: 30
+    marginTop: 30,
   },
-})
-// Styles remain unchanged
+});
