@@ -14,6 +14,7 @@ import DQ_Card from '../../components/DQ_Card';
 import DQ_InnerCard_Grid from '../../components/DQ_InnerCard_Grid';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_GoButton from '../../components/DQ_GoButton';
+import DQ_Badge from '../../components/DQ_Badge';
 
 const imageMapping: {[key: string]: any} = {
   'health.png': require('../../assets/images/health.png'),
@@ -31,7 +32,7 @@ const imageMapping: {[key: string]: any} = {
   'protection.png': require('../../assets/images/protection.png'),
 };
 
-const Item = ({name, groupCode}: {name: string; groupCode: string}) => {
+const Item = ({name, groupCode, nbrPolicies}: {name: string; groupCode: string, nbrPolicies:number}) => {
   const imageName = `${groupCode.toLowerCase()}.png`;
 
   return (
@@ -43,6 +44,7 @@ const Item = ({name, groupCode}: {name: string; groupCode: string}) => {
           resizeMode="contain"
         />
       </View>
+      {nbrPolicies > 0 && <DQ_Badge text={nbrPolicies}/>}
       <View style={styles.InlineText}>
         <Text style={styles.Product_Name}>{name}</Text>
       </View>
@@ -89,7 +91,7 @@ export default function ProductPolicy({navigation}: any) {
             horizontal
             data={prodGroups}
             renderItem={({item}) => (
-              <Item name={item.groupName} groupCode={item.groupCode} />
+              <Item name={item.groupName} groupCode={item.groupCode} nbrPolicies={item.nbrPolicies} />
             )}
             keyExtractor={item => item.groupSeq.toString()}
           />
@@ -180,6 +182,7 @@ const styles = StyleSheet.create({
   },
   Image_Container: {
     padding: 1,
+    marginTop:5,
     alignItems: 'center',
     justifyContent: 'center',
     height: 110,
