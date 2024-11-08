@@ -113,6 +113,32 @@
         "en":"Please choose the role you wish to access",
         "ar":""
       }
+    },
+    "AgentSearchScreen":{
+      "FirstName":{
+        "en":"First Name",
+        "ar":""
+      },
+      "FathesName":{
+        "en":"Father's Name",
+        "ar":""
+      },
+      "LastName":{
+        "en":"Last Name",
+        "ar":""
+      },
+      "PolicyNumber":{
+        "en":"Policy Number",
+        "ar":""
+      },
+      "HintTextPolicyNumber":{
+        "en":"Example: MAR/126478754",
+        "ar":""
+      },
+      "Pin":{
+        "en":"Your Pin",
+        "ar":""
+      }
     }
   }
 }
