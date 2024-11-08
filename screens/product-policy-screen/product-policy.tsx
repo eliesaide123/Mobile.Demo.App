@@ -17,6 +17,7 @@ import DQ_InnerCard_Grid from '../../components/DQ_InnerCard_Grid';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_GoButton from '../../components/DQ_GoButton';
 import DQ_Badge from '../../components/DQ_Badge';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 const imageMapping: {[key: string]: any} = {
   'health.png': require('../../assets/images/health.png'),
@@ -34,10 +35,24 @@ const imageMapping: {[key: string]: any} = {
   'protection.png': require('../../assets/images/protection.png'),
 };
 
-const Item = ({name, groupCode, nbrPolicies, }: {name: string; groupCode: string; nbrPolicies: number}) => {
+const Item = ({
+  name,
+  groupCode,
+  nbrPolicies,
+  pin,
+  role,
+  navigation,
+}: {
+  name: string;
+  groupCode: string;
+  nbrPolicies: number;
+  pin: string;
+  role: string;
+  navigation: NativeStackScreenProps<any>['navigation'];
+}) => {
   const imageName = `${groupCode.toLowerCase()}.png`;
-  const [isLongPressed, setIsLongPress] = useState(false)
-  const scaleAnim = new Animated.Value(1); 
+  const [isLongPressed, setIsLongPress] = useState(false);
+  const scaleAnim = new Animated.Value(1);
 
   const handlePressIn = () => {
     setIsLongPress(true);
@@ -55,14 +70,30 @@ const Item = ({name, groupCode, nbrPolicies, }: {name: string; groupCode: string
       duration: 200,
       useNativeDriver: true,
     }).start();
-  }
+  };
+
+  const handlePress = () => {
+    if (nbrPolicies > 0)
+      navigation.navigate('PolicyList', {
+        pin,
+        role,
+        groupCode,
+      });
+  };
   return (
-    <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
+    <Pressable
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onPress={handlePress}>
       <View style={styles.Image_Container}>
-        <View style={[styles.Inline_Image, isLongPressed && styles.longPressStyle]}>
+        <View
+          style={[styles.Inline_Image, isLongPressed && styles.longPressStyle]}>
           <Image
             source={imageMapping[imageName]}
-            style={[styles.Rounded_Image, isLongPressed && styles.longPressImage]}
+            style={[
+              styles.Rounded_Image,
+              isLongPressed && styles.longPressImage,
+            ]}
             resizeMode="contain"
           />
         </View>
@@ -75,13 +106,15 @@ const Item = ({name, groupCode, nbrPolicies, }: {name: string; groupCode: string
   );
 };
 
-export default function ProductPolicy({navigation}: any) {
+export default function ProductPolicy({navigation, route}: any) {
   const [prodGroups, setProdGroups] = useState<any[]>([]);
   const [osPremiums, setOsPremiums] = useState<any[]>([]);
   const [osClaims, setOsClaims] = useState<any[]>([]);
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [pendingRenewals, setPendingRenewals] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
+  const [pin, setPin] = useState<string>('');
+  const [role, setRole] = useState<string>('');
 
   useEffect(() => {
     Get_CS_Connect();
@@ -89,20 +122,28 @@ export default function ProductPolicy({navigation}: any) {
 
   const Get_CS_Connect = async () => {
     const result = await ProductPolicyService();
-    const roles = result.userData[0].roles;
+    const roles = result.responseData.userData[0].roles;
+    const _pin = result.user_Pin;
+    setPin(_pin);
+    const role = result.user_Role;
+    setRole(role);
     setRoles(roles);
 
     if (result) {
-      if (result.prodGroups) {
-        const sortedProdGroups = result.prodGroups.sort(
+      if (result.responseData.prodGroups) {
+        const sortedProdGroups = result.responseData.prodGroups.sort(
           (a: any, b: any) => a.groupSeq - b.groupSeq,
         );
         setProdGroups(sortedProdGroups);
       }
-      if (result.osPremiums) setOsPremiums(result.osPremiums);
-      if (result.osClaims) setOsClaims(result.osClaims);
-      if (result.pendingRequests) setPendingRequests(result.pendingRequests);
-      if (result.pendingRenewals) setPendingRenewals(result.pendingRenewals);
+      if (result.responseData.osPremiums)
+        setOsPremiums(result.responseData.osPremiums);
+      if (result.responseData.osClaims)
+        setOsClaims(result.responseData.osClaims);
+      if (result.responseData.pendingRequests)
+        setPendingRequests(result.responseData.pendingRequests);
+      if (result.responseData.pendingRenewals)
+        setPendingRenewals(result.responseData.pendingRenewals);
     }
   };
 
@@ -124,6 +165,9 @@ export default function ProductPolicy({navigation}: any) {
                 name={item.groupName}
                 groupCode={item.groupCode}
                 nbrPolicies={item.nbrPolicies}
+                navigation={navigation}
+                pin={pin}
+                role={role}
               />
             )}
             keyExtractor={item => item.groupSeq.toString()}
@@ -213,11 +257,11 @@ const styles = StyleSheet.create({
   Products_Container: {
     paddingTop: 15,
   },
-  longPressStyle:{
-    backgroundColor:'#0160ae'
+  longPressStyle: {
+    backgroundColor: '#0160ae',
   },
-  longPressImage:{
-    tintColor:'white'
+  longPressImage: {
+    tintColor: 'white',
   },
   Image_Container: {
     padding: 1,
