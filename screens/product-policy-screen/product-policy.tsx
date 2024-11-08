@@ -149,7 +149,9 @@ export default function ProductPolicy({navigation, route}: any) {
 
   return (
     <SafeAreaView>
-      <DQ_BaseHeader
+      {pin && (
+        <View>
+          <DQ_BaseHeader
         style={styles.mainHeader}
         press={() => navigation.goBack()}
         navigation={navigation}
@@ -182,11 +184,17 @@ export default function ProductPolicy({navigation, route}: any) {
                 <View style={styles.InlineElements}>
                   <DQ_Paragraph
                     content={osPremiums[0]?.nbrPremiums}
+                    textColor="black"
                     fontSize={14}
                   />
-                  <DQ_Paragraph content={'Premiums'} fontSize={14} />
+                  <DQ_Paragraph
+                    content={'Premiums'}
+                    fontSize={14}
+                    textColor="black"
+                  />
                   <DQ_Paragraph
                     content={osPremiums[0]?.fresh ? 'Fresh' : ''}
+                    textColor="black"
                     fontSize={14}
                   />
                   <DQ_Paragraph
@@ -206,11 +214,16 @@ export default function ProductPolicy({navigation, route}: any) {
                 <View style={styles.TwoInlineElements}>
                   <DQ_Paragraph
                     content={osClaims[0]?.nbrOSClaims}
+                    textColor="black"
                     fontSize={14}
                   />
-                  <DQ_Paragraph content={'Outstanding Claims'} fontSize={14} />
-                  <DQ_Paragraph content={''} fontSize={14} />
-                  <DQ_Paragraph content={''} fontSize={14} />
+                  <DQ_Paragraph
+                    content={'Outstanding Claims'}
+                    fontSize={14}
+                    textColor="black"
+                  />
+                  <DQ_Paragraph content={''} fontSize={14} textColor="black" />
+                  <DQ_Paragraph content={''} fontSize={14} textColor="black" />
                 </View>
                 <View style={styles.InlineElements}>
                   <DQ_Paragraph
@@ -218,10 +231,15 @@ export default function ProductPolicy({navigation, route}: any) {
                     fontSize={14}
                   />
                   <View style={{width: 70}}>
-                    <DQ_Paragraph content={'Ready to Settle'} fontSize={14} />
+                    <DQ_Paragraph
+                      content={'Ready to Settle'}
+                      fontSize={14}
+                      textColor="black"
+                    />
                   </View>
                   <DQ_Paragraph
                     content={osClaims[0]?.fresh ? 'Fresh' : ''}
+                    textColor="black"
                     fontSize={14}
                   />
                   <DQ_Paragraph
@@ -249,6 +267,8 @@ export default function ProductPolicy({navigation, route}: any) {
           )}
         </View>
       </ScrollView>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

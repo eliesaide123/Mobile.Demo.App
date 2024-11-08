@@ -3,38 +3,56 @@ import React from 'react';
 import {
   View,
   Image,
+  Text,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import DQ_Button from './DQ_Button';
+import DQ_Paragraph from './DQ_Paragraph';
 
 const logo = require('../assets/images/DQ_LOGO.png');
+const miniLogo = require('../assets/images/DQ_LOGO_MINI.png');  // Assume you have a mini version of the logo here
 const changeRoleLogo = require('../assets/images/mutlirole.png');
 
-export default function DQ_BaseHeader({navigation, press, roleNumber = 1}: any) {
+export default function DQ_BaseHeader({
+  navigation,
+  press,
+  roleNumber = 1,
+  variant = 'logoCenter',  // 'logoCenter' for structure 1, 'textCenterMiniLogoRight' for structure 2
+  textCenter
+}: any) {
   return (
     <View style={styles.header}>
       <View style={styles.commands}>
-        <View>
-          <TouchableOpacity style={styles.backButton} onPress={press}>
-            <Icon
-              name="chevron-left"
-              size={18}
-              color="#FFFFFF"
-              iconStyle="solid"
-            />
-          </TouchableOpacity>
-        </View>
-        {roleNumber > 1 && <View>
+        {/* Back Button */}
+        <TouchableOpacity style={styles.backButton} onPress={press}>
+          <Icon name="chevron-left" size={18} color="#FFFFFF" iconStyle="solid" />
+        </TouchableOpacity>
+        
+        {/* Role Change Icon if roleNumber > 1 */}
+        {roleNumber > 1 && (
           <TouchableOpacity onPress={() => navigation.navigate('Roles')}>
-            <Image source={changeRoleLogo} style={styles.changeRoleIcon} />
+            <Image source={changeRoleLogo} style={styles.changeRoleIcon} resizeMode="contain" />
           </TouchableOpacity>
-        </View>}
+        )}
       </View>
 
-      <View style={styles.logoContainer}>
-        <Image source={logo} style={styles.logo} resizeMode="contain" />
-      </View>
+      {/* Conditional rendering based on the `variant` prop */}
+      {variant === 'logoCenter' ? (
+        // Structure 1: Logo in the center
+        <View style={styles.centerContent}>
+          <Image source={logo} style={styles.logo} resizeMode="contain" />
+        </View>
+      ) : (
+        // Structure 2: Text in the center, mini logo on the right
+        <>
+          <View style={styles.textcenterContent}>
+            <DQ_Paragraph content={textCenter} textAlign="center" textColor="white" fontSize={18} fontFamily='Nexa Bold' capitalized/>
+          </View>
+          <View style={styles.rightIcon}>
+            <Image source={miniLogo} style={styles.miniLogo} resizeMode="contain" />
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -43,38 +61,62 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent:'center',
     backgroundColor: '#005faf',
-    paddingVertical: 25,
-    paddingHorizontal: 15,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
     borderStartEndRadius: 20,
     borderEndEndRadius: 20,
-    gap:10,
   },
-  commands:{
+  commands: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'flex-start',
-    gap:5
+    justifyContent: 'flex-start',
+    marginRight: 10,
   },
   backButton: {
-    marginTop: 30,
     padding: 15,
     height: 50,
     alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-  },
-  logoContainer:{
-    alignSelf: 'center',
-    alignContent:'center',
     justifyContent: 'center',
   },
-  logo: {
-    height: 50,    
-    marginTop: 20,    
+  changeRoleIcon: {
+    width: 30,
+    height: 25,
   },
-  changeRoleIcon:{
-    width:35,
-    height:35,
-    marginTop:25
-  }
+  centerContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf:'center',
+    marginRight:50,
+    top:-3
+  },
+  textcenterContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf:'center',
+    textAlign:'center',
+    marginRight:30,
+    marginTop:5,
+    top:-3
+  },
+  logo: {
+    height: 50,
+  },
+  centerText: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+  rightIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  miniLogo: {
+    width: 30,
+    height: 30,
+  },
 });
+

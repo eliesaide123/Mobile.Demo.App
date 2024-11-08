@@ -10,6 +10,8 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {login} from './Service/authService';
 import _shared from '../common';
 import { getLocalizedEntry } from '../../Shared/SharedFunctions';
+import DQ_Alert from '../../components/DQ_Alert';
+import { useAlert } from '../../hooks/useAlert';
  
 export default function LoginScreen({navigation}: any) {
   // Receive navigation here
@@ -20,6 +22,8 @@ export default function LoginScreen({navigation}: any) {
   const RegisterPhrase = getLocalizedEntry('LoginScreen', 'DQ_RegisterPhrase') as string[] | null;
   const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : ""; // Access the second element if it exists
   const DQ_ProceedAsAGuest = getLocalizedEntry('LoginScreen', 'DQ_ProceedAsAGuest');
+
+  const { isVisible, showAlert, hideAlert } = useAlert();
  
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -28,15 +32,30 @@ export default function LoginScreen({navigation}: any) {
     const result = await login('r-travel', '11111111');
  console.log(result)
     _shared.ui_token = result.response.imS_UIToken;    
-    if (result) {      
+    if (result.response.status) {      
       navigation.navigate('ProductPolicy');
     } else {
-      Alert.alert('Login Failed');
+      showAlert();
     }
   };
  
   return (
     <KeyboardAwareScrollView style={styles.mainContainer}>
+      <DQ_Alert 
+  isVisible={isVisible} 
+  hideAlert={hideAlert} 
+  btnList={[
+    { title: 'Ok', press: () => { hideAlert(); } },
+  ]}
+>
+  <DQ_Paragraph 
+    content="Something went wrong! Try again" 
+    textColor="black" 
+    textAlign="center" 
+    fontSize={14} 
+  />
+</DQ_Alert>
+
       <View style={styles.headerText}>
         <Image source={logo} />
       </View>
