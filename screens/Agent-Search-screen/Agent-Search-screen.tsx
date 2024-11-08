@@ -1,62 +1,78 @@
+/* eslint-disable no-trailing-spaces */
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_TabView from '../../components/DQ_TabView';
+import DQ_TextBox from '../../components/DQ_TextBox';
+import DQ_Button from '../../components/DQ_Button';
+ import { getLocalizedEntry } from '../../Shared/SharedFunctions'; 
 
 const AgentSearchScreen = () => {
+
+    const FirstNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FirstName');
+    const FatherNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FathesName');
+    const LastNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'LastName');
+    const PolicyNumberPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'PolicyNumber');
+    const HintTextPolicyNumberPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'HintTextPolicyNumber');
+    const PinPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'Pin');
 
     const tabs = [
         {
           key: 'first',
           title: 'Name',
           content: 
-          <View style={styles.formContainer}>
-          <TextInput style={styles.input} placeholder="First name" />
-          <TextInput style={styles.input} placeholder="Father's name" />
-          <TextInput style={styles.input} placeholder="Last name" />
+          <View style={styles.TextBox}>
+          <DQ_TextBox placeholder={FirstNamePlaceHolder} />
+          <DQ_TextBox placeholder={FatherNamePlaceHolder} />
+          <DQ_TextBox placeholder={LastNamePlaceHolder} />
         </View>,
         },
         {
           key: 'second',
           title: 'Policy Number',
-          content: <Text>This is the content of Tab 2</Text>,
+          content: 
+          <View style={styles.TextBox}>
+            <DQ_TextBox 
+            placeholder={PolicyNumberPlaceHolder} 
+            hintText = {HintTextPolicyNumberPlaceHolder}
+            />
+          </View>,
         },
         {
           key: 'third',
           title: 'PIN',
-          content: <Text>This is the content of Tab 3</Text>,
+          content: 
+          <View style={styles.TextBox}>
+            <DQ_TextBox placeholder={PinPlaceHolder} />
+          </View>,
         },
       ];
   return (
-    <View style={styles.container}>
-      {/* Header */}
+    <SafeAreaView style={styles.container}>      
       <DQ_BaseHeader />
 
-      {/* Main Title */}
       <Text style={styles.mainTitle}>p297</Text>
+     
+       <View style={styles.ButtonView}>
+         <DQ_Button title='Renewal Portal System'></DQ_Button>
+      </View>
 
-      {/* Renewal Portal System Button */}
-      <TouchableOpacity style={styles.portalButton}>
-        <Text style={styles.portalButtonText}>Renewal Portal System</Text>
-      </TouchableOpacity>
+      <View style={styles.SearchText}>
+        <Text>Search by</Text>
+      </View>
 
-      {/* Tab View */}
       <DQ_TabView tabs={tabs} />
       
-
-      {/* Search Button */}
-      <TouchableOpacity style={styles.searchButton}>
+      {/* <TouchableOpacity style={styles.searchButton}>
         <Text style={styles.searchButtonText}>Search</Text>
-      </TouchableOpacity>
-    </View>
+      </TouchableOpacity> */}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
   },
   mainTitle: {
     fontSize: 18,
@@ -96,6 +112,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  ButtonView : {
+    paddingLeft : 50,
+    paddingRight: 50,
+    paddingBottom : 20,
+  },
+  SearchText: {
+    fontSize: 50,
+    paddingLeft: 15,
+    paddingBottom: 20,
+  },
+  TextBox : {
+    paddingTop : 20,
+    flex:1,
+    width:'100%',
+  }
 });
 
 export default AgentSearchScreen;

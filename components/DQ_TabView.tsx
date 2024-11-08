@@ -16,7 +16,6 @@ export function CustomTabView({ tabs }: CustomTabViewProps) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
-  // Define routes and scenes
   const routes = tabs.map(tab => ({ key: tab.key, title: tab.title }));
   const scenes = tabs.reduce((acc, tab) => {
     acc[tab.key] = () => (
@@ -27,7 +26,6 @@ export function CustomTabView({ tabs }: CustomTabViewProps) {
     return acc;
   }, {} as { [key: string]: React.ComponentType<any> });
 
-  // Customize TabBar
   const renderTabBar = (props: any) => (
     <TabBar
       {...props}
@@ -55,7 +53,7 @@ export function CustomTabView({ tabs }: CustomTabViewProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white', // Background color of the container
+    backgroundColor: 'white',
   },
   tabContent: {
     flex: 1,
@@ -71,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   tabLabel: {
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
   },
 });
 
