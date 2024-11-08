@@ -9,6 +9,7 @@ import RegistrationScreen from './screens/registration-screen/registration-scree
 import ProductPolicy from './screens/product-policy-screen/product-policy';
 import ChangeRole from './screens/change-role-screen/ChangeRole';
 import PolicyList from './screens/Policy-List-screen/policy-list-screen';
+import AgentSearch from './screens/Agent-Search-screen/Agent-Search-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,8 +42,8 @@ export default function App() {
           <Stack.Screen
             name="Register"
             component={RegistrationScreen}
-            options={{              
-              headerShown: false,              
+            options={{
+              headerShown: false,
             }}
           />
           <Stack.Screen
@@ -68,6 +69,16 @@ export default function App() {
           <Stack.Screen
             name="PolicyList"
             component={PolicyList}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+            }}
+          />
+          <Stack.Screen
+            name="AgentSearch"
+            component={AgentSearch}
             options={{
               headerShown: false,
               headerStyle: {

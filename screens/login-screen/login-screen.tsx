@@ -1,3 +1,4 @@
+/* eslint-disable no-trailing-spaces */
 // LoginScreen.tsx
 import React, {useState} from 'react';
 import {View, Image, StyleSheet, Alert, Pressable} from 'react-native';
@@ -10,6 +11,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {login} from './Service/authService';
 import _shared from '../common';
 import { getLocalizedEntry } from '../../Shared/SharedFunctions';
+import { ProductPolicyService } from '../product-policy-screen/service/product-policy.service';
  
 export default function LoginScreen({navigation}: any) {
   // Receive navigation here
@@ -25,13 +27,22 @@ export default function LoginScreen({navigation}: any) {
   const [password, setPassword] = useState<string>('');
  
   const handleLogin = async () => {
-    const result = await login('r-travel', '11111111');
- console.log(result)
-    _shared.ui_token = result.response.imS_UIToken;    
-    if (result) {      
-      navigation.navigate('ProductPolicy');
-    } else {
-      Alert.alert('Login Failed');
+    const result = await login(userId, password);    
+
+    _shared.ui_token = result.response.imS_UIToken;
+   
+    const checkRoleResult = await ProductPolicyService(userId)
+
+    if(checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == "A"){
+      navigation.navigate('AgentSearch')      
+    }else{
+      if (result) {      
+        navigation.navigate('ProductPolicy', {
+          userId: userId
+        });
+      } else {
+        Alert.alert('Login Failed');
+      }
     }
   };
  

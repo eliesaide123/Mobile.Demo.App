@@ -1,12 +1,15 @@
 import axios from 'axios';
 import _shared from '../../common';
 
-export async function ProductPolicyService() {
+export async function ProductPolicyService(userId: string) {
     try {        
+        console.log("AAAA")
+        console.log(userId)
+        console.log("AAAA")
         const response = await axios.get("http://dqapi-sna.dq.com.lb:88/api/csconnect", {
             headers: {
                 'accept': 'application/json',
-                'x-auth-ims-userid': "r-travel",
+                'x-auth-ims-userid': userId,
                 'x-auth-ims-uitoken': _shared.ui_token,
                 'x-user-ims-lang': '0',
                 'X-Requested-With': 'XMLHttpRequest'
