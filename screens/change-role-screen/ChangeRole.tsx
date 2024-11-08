@@ -26,7 +26,8 @@ export default function ChangeRole({navigation}:any) {
   const Get_CS_Connect = async () => {
     const result = await ProductPolicyService()
     
-    var roles = result.resposneData.userData[0].roles
+    var roles = result.responseData.userData[0].roles
+    
     setRoles(roles);
   }
 
