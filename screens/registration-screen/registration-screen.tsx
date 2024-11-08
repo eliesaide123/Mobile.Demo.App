@@ -11,71 +11,80 @@ import {
 import DQ_Button from '../../components/DQ_Button';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
-import JSON_FILE from '../../contents/content.json';
 import DQ_Link from '../../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
-import {useState} from 'react';
 import DQ_CheckBox from '../../components/DQ_CheckBox';
 import Icon from '@react-native-vector-icons/fontawesome6';
+import { getLocalizedEntry } from '../../Shared/SharedFunctions'; 
 
-export default function RegistrationScreen({navigation, route}: any) {
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+export default function RegistrationScreen({ navigation }: any) {
   const logo = require('../../assets/images/DQ_LOGO.png');
-  const HeaderContainerText =
-    JSON_FILE.Contents.RegistrationScreen.HeaderContainer['en'];
-  const HeaderSubContainerText =
-    JSON_FILE.Contents.RegistrationScreen.HeaderContainerSubText['en'];
-  const PolicyNumberPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxPolicyNumber['en'];
-  const PolicyNumberHintText =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxPolicyNumberHintText['en'];
-  const PolicyExpiryPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxPolicyExpiry['en'];
-  const YourPINPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxYourPin['en'];
-  const YourPINHintText =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxYourPinHintText['en'];
-  const EmailPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxEmail['en'];
-  const MobileNumberPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxMobileNumber['en'];
-  const MobileNumberHintText =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxMobileNumberHintText['en'];
-  const WebUserIDPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxUserID['en'];
-  const WebUserIDHintText =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxUserIDHintText['en'];
-  const PasswordPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxPassword['en'];
-  const ConfirmPasswordPlaceHolder =
-    JSON_FILE.Contents.RegistrationScreen.DQ_TextBoxConfirmPassword['en'];
-  const LoginPhrase =
-    JSON_FILE.Contents.RegistrationScreen.DQ_LoginPhrase[0]['en'];
-  const LoginHerePhrase =
-    JSON_FILE.Contents.RegistrationScreen.DQ_LoginPhrase[1]['en'];
-  const IAgreePhrase =
-    JSON_FILE.Contents.RegistrationScreen.DQ_IAgreePhrase[0]['en'];
-  const TermsAndConditionsPhrase =
-    JSON_FILE.Contents.RegistrationScreen.DQ_IAgreePhrase[1]['en'];
-  const RegisterText =
-    JSON_FILE.Contents.RegistrationScreen.DQ_ButtonRegister['en'];
 
-  const [policyNumber, setPolicyNumber] = useState('');
-  const [policyExpiry, setPolicyExpiry] = useState('');
-  const [pin, setPin] = useState('');
-  const [email, setEmail] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [webUserID, setWebUserID] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isChecked, setIsChecked] = useState(false);
+  // Using getLocalizedEntry for all localized text
+  const HeaderContainerText = getLocalizedEntry('RegistrationScreen', 'HeaderContainer');
+  const HeaderSubContainerText = getLocalizedEntry('RegistrationScreen', 'HeaderContainerSubText');
+  const PolicyNumberPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxPolicyNumber');
+  const PolicyNumberHintText = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxPolicyNumberHintText');
+  const PolicyExpiryPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxPolicyExpiry');
+  const YourPINPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxYourPin');
+  const YourPINHintText = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxYourPinHintText');
+  const EmailPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxEmail');
+  const MobileNumberPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxMobileNumber');
+  const MobileNumberHintText = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxMobileNumberHintText');
+  const WebUserIDPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxUserID');
+  const WebUserIDHintText = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxUserIDHintText');
+  const PasswordPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxPassword');
+  const ConfirmPasswordPlaceHolder = getLocalizedEntry('RegistrationScreen', 'DQ_TextBoxConfirmPassword');
+  const LoginPhrase = getLocalizedEntry('RegistrationScreen', 'DQ_LoginPhrase') as string[] | null;
+  const LoginHerePhrase = LoginPhrase ? LoginPhrase[1] : ''; // Access the second element if it exists
+  const IAgreePhrase = getLocalizedEntry('RegistrationScreen', 'DQ_IAgreePhrase') as string[] | null;
+  const IAgreeText = IAgreePhrase ? IAgreePhrase[0] : ''; // Access the first element if it exists
+  const TermsAndConditionsPhrase = IAgreePhrase ? IAgreePhrase[1] : ''; // Access the second element if it exists
+
+  const RegisterText = getLocalizedEntry('RegistrationScreen', 'DQ_ButtonRegister');
+
   const regularFont = 'Nexa Regular';
   const lightFont = 'Nexa Regular';
   const boldFont = 'Nexa Bold';
 
+  const validationSchema = yup.object().shape({
+    policyNumber: yup.string().required('Policy number is required'),
+    policyExpiry: yup.string().required('Expiry date is required'),
+    pin: yup.string().min(4, 'PIN must be at least 4 characters').required('PIN is required'),
+    email: yup.string().email('Enter a valid email').required('Email is required'),
+    mobileNumber: yup.string().min(10, 'Enter a valid mobile number').required('Mobile number is required'),
+    webUserID: yup.string().required('User ID is required'),
+    password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password')], 'Passwords must match')
+      .required('Confirm your password'),
+    isChecked: yup.boolean().oneOf([true], 'You must accept the terms and conditions'),
+  });
+
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      policyNumber: '',
+      policyExpiry: '',
+      pin: '',
+      email: '',
+      mobileNumber: '',
+      webUserID: '',
+      password: '',
+      confirmPassword: '',
+      isChecked: false,
+    },
+  });
+
   const checkBoxLabel = () => (
     <View style={styles.checkBoxLabel}>
       <DQ_Paragraph
-        content={IAgreePhrase}
+        content={IAgreeText}
         fontSize={12}
         textColor="black"
         textAlign="center"
@@ -91,7 +100,11 @@ export default function RegistrationScreen({navigation, route}: any) {
     </View>
   );
 
-  async function sendRequest() {}
+  const onSubmit = (data: any) => {
+    console.log(data);
+    // Perform registration logic here
+  };
+
   return (
     <ScrollView style={styles.mainContainer}>
       <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
@@ -104,7 +117,7 @@ export default function RegistrationScreen({navigation, route}: any) {
         />
       </TouchableOpacity>
       <View style={styles.headerText}>
-        <Image source={logo}></Image>
+        <Image source={logo} />
       </View>
       <View style={styles.container}>
         <View style={styles.subContainer}>
@@ -126,79 +139,141 @@ export default function RegistrationScreen({navigation, route}: any) {
             />
           </View>
           <View style={styles.inlineSubContainerItems}>
-            <DQ_TextBox
-              placeholder={PolicyNumberPlaceHolder}
-              hintText={PolicyNumberHintText}
-              borderColor="grey"
-              value={policyNumber}
-              onChangeText={setPolicyNumber}
-              fontFamily={lightFont}
+            <Controller
+              control={control}
+              name="policyNumber"
+              render={({ field: { onChange, value } }) => (
+                <DQ_TextBox
+                  placeholder={PolicyNumberPlaceHolder}
+                  hintText={PolicyNumberHintText}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
-            <DQ_TextBox
-              placeholder={PolicyExpiryPlaceHolder}
-              borderColor="grey"
-              value={policyExpiry}
-              onChangeText={setPolicyExpiry}
-              fontFamily={lightFont}
+            {errors.policyNumber && <Text style={{ color: 'red' }}>{errors.policyNumber.message}</Text>}
+            <Controller
+              control={control}
+              name="policyExpiry"
+              render={({ field: { onChange, value } }) => (
+                <DQ_TextBox
+                  placeholder={PolicyExpiryPlaceHolder}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
-            <DQ_TextBox
-              placeholder={YourPINPlaceHolder}
-              hintText={YourPINHintText}
-              borderColor="grey"
-              value={pin}
-              onChangeText={setPin}
-              fontFamily={lightFont}
+            {errors.policyExpiry && <Text style={{ color: 'red' }}>{errors.policyExpiry.message}</Text>}
+            <Controller
+              control={control}
+              name="pin"
+              render={({ field: { onChange, value } }) => (
+                <DQ_TextBox
+                  placeholder={YourPINPlaceHolder}
+                  hintText={YourPINHintText}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
-            <DQ_TextBox
-              placeholder={EmailPlaceHolder}
-              borderColor="grey"
-              value={email}
-              setEmail={setEmail}
-              fontFamily={lightFont}
+            {errors.pin && <Text style={{ color: 'red' }}>{errors.pin.message}</Text>}
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, value } }) => (
+                <DQ_TextBox
+                  placeholder={EmailPlaceHolder}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
-            <DQ_TextBox
-              placeholder={MobileNumberPlaceHolder}
-              hintText={MobileNumberHintText}
-              borderColor="grey"
-              value={mobileNumber}
-              keyboardType="phone-pad"
-              onChangeText={setMobileNumber}
-              fontFamily={lightFont}
+            {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
+            <Controller
+              control={control}
+              name="mobileNumber"
+              render={({ field: { onChange, value } }) => (
+                <DQ_TextBox
+                  placeholder={MobileNumberPlaceHolder}
+                  hintText={MobileNumberHintText}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
-            <DQ_TextBox
-              placeholder={WebUserIDPlaceHolder}
-              hintText={WebUserIDHintText}
-              borderColor="grey"
-              value={webUserID}
-              onChangeText={setWebUserID}
-              fontFamily={lightFont}
+            {errors.mobileNumber && <Text style={{ color: 'red' }}>{errors.mobileNumber.message}</Text>}
+            <Controller
+              control={control}
+              name="webUserID"
+              render={({ field: { onChange, value } }) => (
+                <DQ_TextBox
+                  placeholder={WebUserIDPlaceHolder}
+                  hintText={WebUserIDHintText}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
-            <DQ_EyeComponentTextBox
-              placeholder={PasswordPlaceHolder}
-              borderColor="grey"
-              value={password}
-              onChangeText={setPassword}
-              fontFamily={lightFont}
+            {errors.webUserID && <Text style={{ color: 'red' }}>{errors.webUserID.message}</Text>}
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, value } }) => (
+                <DQ_EyeComponentTextBox
+                  placeholder={PasswordPlaceHolder}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
-            <DQ_EyeComponentTextBox
-              placeholder={ConfirmPasswordPlaceHolder}
-              borderColor="grey"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              fontFamily={lightFont}
+            {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field: { onChange, value } }) => (
+                <DQ_EyeComponentTextBox
+                  placeholder={ConfirmPasswordPlaceHolder}
+                  borderColor="grey"
+                  value={value}
+                  onChangeText={onChange}
+                  fontFamily={lightFont}
+                />
+              )}
             />
+            {errors.confirmPassword && <Text style={{ color: 'red' }}>{errors.confirmPassword.message}</Text>}
           </View>
           <View style={styles.inlineSubContainerItemsButton}>
-            <DQ_CheckBox
-              Component={checkBoxLabel}
-              checked={isChecked}
-              onChange={setIsChecked}
-              checkBoxColor="#0062af"
+            <Controller
+              control={control}
+              name="isChecked"
+              render={({ field: { onChange, value } }) => (
+                <DQ_CheckBox
+                  Component={checkBoxLabel}
+                  checked={value}
+                  onChange={onChange}
+                  checkBoxColor="#0062af"
+                />
+              )}
             />
+            {errors.isChecked && <Text style={{ color: 'red' }}>{errors.isChecked.message}</Text>}
             <DQ_Button
               title={RegisterText}
               fontFamily={boldFont}
-              onPress={sendRequest}
+              onPress={handleSubmit(onSubmit)}
             />
           </View>
         </View>
@@ -206,24 +281,18 @@ export default function RegistrationScreen({navigation, route}: any) {
       <View style={styles.footer}>
         <DQ_Paragraph
           fontSize={12}
-          content={LoginPhrase}
+          content={LoginPhrase ? LoginPhrase[0] : ''} // First part of LoginPhrase
           textColor="white"
           fontFamily={lightFont}
         />
         <DQ_Link
           textAlign="center"
           fontSize={12}
-          content={LoginHerePhrase}
+          content={LoginHerePhrase} // Second part of LoginPhrase
           textColor="white"
           underline={true}
           fontFamily={lightFont}
           goTo=""
-        />
-        <DQ_Paragraph
-          fontSize={12}
-          content={policyNumber}
-          textColor="white"
-          fontFamily={lightFont}
         />
       </View>
     </ScrollView>
@@ -231,14 +300,13 @@ export default function RegistrationScreen({navigation, route}: any) {
 }
 
 const styles = StyleSheet.create({
-  backBtn: {    
+  backBtn: {
     marginTop: 30,
     padding: 10,
     height: 50,
     alignItems: 'flex-start',
-    justifyContent: 'flex-start',        
+    justifyContent: 'flex-start',
   },
-  backTxt: {},
   headerText: {
     flex: 0.2,
     margin: 5,
@@ -271,9 +339,6 @@ const styles = StyleSheet.create({
     flex: 0.8,
     padding: 10,
     justifyContent: 'flex-end',
-  },
-  inlineSubContainerFooter: {
-    flex: 0.3,
   },
   footer: {
     flex: 0.2,

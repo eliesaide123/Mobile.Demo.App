@@ -4,28 +4,22 @@ import {View, Image, StyleSheet, Alert, Pressable} from 'react-native';
 import DQ_Button from '../../components/DQ_Button';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
-import JSON_FILE from '../../contents/content.json';
 import DQ_Link from '../../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {login} from './Service/authService';
 import _shared from '../common';
+import { getLocalizedEntry } from '../../Shared/SharedFunctions';
  
 export default function LoginScreen({navigation}: any) {
   // Receive navigation here
   const logo = require('../../assets/images/DQ_LOGO.png');
-  const HeaderContainerText =
-    JSON_FILE.Contents.LoginScreen.HeaderContainer['en'];
-  const HeaderSubContainerText =
-    JSON_FILE.Contents.LoginScreen.HeaderContainerSubText['en'];
-  const WebUserIDPlaceHolder =
-    JSON_FILE.Contents.LoginScreen.DQ_TextBoxUserID['en'];
-  const RegisterPhrase =
-    JSON_FILE.Contents.LoginScreen.DQ_RegisterPhrase[0]['en'];
-  const RegisterNowPhrase =
-    JSON_FILE.Contents.LoginScreen.DQ_RegisterPhrase[1]['en'];
-  const DQ_ProceedAsAGuest =
-    JSON_FILE.Contents.LoginScreen.DQ_ProceedAsAGuest['en'];
+  const HeaderContainerText = getLocalizedEntry('LoginScreen','HeaderContainer');
+  const HeaderSubContainerText = getLocalizedEntry('LoginScreen','HeaderContainerSubText');
+  const WebUserIDPlaceHolder = getLocalizedEntry('LoginScreen','DQ_TextBoxUserID');
+  const RegisterPhrase = getLocalizedEntry('LoginScreen', 'DQ_RegisterPhrase') as string[] | null;
+  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : ""; // Access the second element if it exists
+  const DQ_ProceedAsAGuest = getLocalizedEntry('LoginScreen', 'DQ_ProceedAsAGuest');
  
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -91,7 +85,7 @@ export default function LoginScreen({navigation}: any) {
           <Pressable
             style={styles.inlineSubContainerFooter}
             onPress={() => navigation.navigate('Register')}>
-            <DQ_Paragraph fontSize={12} content={RegisterPhrase} />
+            <DQ_Paragraph fontSize={12} content={RegisterPhrase ? RegisterPhrase[0] : ""} />
             <DQ_Link
               textAlign="center"
               fontSize={12}
