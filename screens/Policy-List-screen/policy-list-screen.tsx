@@ -37,7 +37,7 @@ export default function PolicyList({navigation, route}: any) {
   }, []);
   return (
     <View style={styles.rootElement}>
-      <DQ_BaseHeader press={()=> navigation.goBack()} variant="textCenterMiniLogoRight" textCenter={groupCode}/>
+      <DQ_BaseHeader press={()=> navigation.goBack()} variant="textCenterS" textCenter={groupCode}/>
       <View style={styles.topView}>
         <View style={styles.iconView}>
           {groupCode && <DQ_PolicyIcon src={imageMapping[groupCode]} />}

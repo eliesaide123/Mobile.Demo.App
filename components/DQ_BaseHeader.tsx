@@ -17,7 +17,7 @@ export default function DQ_BaseHeader({
   navigation,
   press,
   roleNumber = 1,
-  variant = 'logoCenter',  // 'logoCenter' for structure 1, 'textCenterMiniLogoRight' for structure 2
+  variant = 'logoCenter',  // 'logoCenter' for structure 1, 'textCenter' for structure 2
   textCenter
 }: any) {
   return (
