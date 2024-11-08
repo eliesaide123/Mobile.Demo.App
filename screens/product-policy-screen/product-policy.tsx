@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {useEffect, useState} from 'react';
 import {
   FlatList,
@@ -18,7 +19,6 @@ import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_GoButton from '../../components/DQ_GoButton';
 import DQ_Badge from '../../components/DQ_Badge';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-
 const imageMapping: {[key: string]: any} = {
   'health.png': require('../../assets/images/health.png'),
   'life.png': require('../../assets/images/life.png'),
@@ -116,12 +116,14 @@ export default function ProductPolicy({navigation, route}: any) {
   const [pin, setPin] = useState<string>('');
   const [role, setRole] = useState<string>('');
 
+  
   useEffect(() => {
-    Get_CS_Connect();
-  }, []);
-
-  const Get_CS_Connect = async () => {
-    const result = await ProductPolicyService();
+    const {userId} = route.params;
+    Get_CS_Connect(userId);
+  }, [route.params]);
+  
+  const Get_CS_Connect = async (userId:string) => {
+    const result = await ProductPolicyService(userId);
     const roles = result.responseData.userData[0].roles;
     const _pin = result.user_Pin;
     setPin(_pin);
@@ -148,6 +150,7 @@ export default function ProductPolicy({navigation, route}: any) {
   };
 
   return (
+
     <SafeAreaView>
       {pin && (
         <View>

@@ -1,3 +1,4 @@
+/* eslint-disable no-trailing-spaces */
 // LoginScreen.tsx
 import React, {useState} from 'react';
 import {View, Image, StyleSheet, Alert, Pressable} from 'react-native';
@@ -11,10 +12,10 @@ import {login} from './Service/authService';
 import _shared from '../common';
 import { getLocalizedEntry } from '../../Shared/SharedFunctions';
 import DQ_Alert from '../../components/DQ_Alert';
+import { ProductPolicyService } from '../product-policy-screen/service/product-policy.service';
 import { useAlert } from '../../hooks/useAlert';
  
-export default function LoginScreen({navigation}: any) {
-  // Receive navigation here
+export default function LoginScreen({navigation}: any) {  
   const logo = require('../../assets/images/DQ_LOGO.png');
   const HeaderContainerText = getLocalizedEntry('LoginScreen','HeaderContainer');
   const HeaderSubContainerText = getLocalizedEntry('LoginScreen','HeaderContainerSubText');
@@ -29,13 +30,22 @@ export default function LoginScreen({navigation}: any) {
   const [password, setPassword] = useState<string>('');
  
   const handleLogin = async () => {
-    const result = await login('r-travel', '11111111');
- console.log(result)
-    _shared.ui_token = result.response.imS_UIToken;    
-    if (result.response.status) {      
-      navigation.navigate('ProductPolicy');
-    } else {
-      showAlert();
+    const result = await login(userId, password);    
+
+    _shared.ui_token = result.response.imS_UIToken;
+   
+    const checkRoleResult = await ProductPolicyService(userId)
+
+    if(checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == "A"){
+      navigation.navigate('AgentSearch')      
+    }else{
+      if (result) {      
+        navigation.navigate('ProductPolicy', {
+          userId: userId
+        });
+      } else {
+        showAlert();
+      }
     }
   };
  
