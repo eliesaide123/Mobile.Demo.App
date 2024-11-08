@@ -7,6 +7,8 @@ import {
   SafeAreaView,
   Text,
   ScrollView,
+  Pressable,
+  Animated,
 } from 'react-native';
 import {ProductPolicyService} from './service/product-policy.service';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
@@ -32,23 +34,44 @@ const imageMapping: {[key: string]: any} = {
   'protection.png': require('../../assets/images/protection.png'),
 };
 
-const Item = ({name, groupCode, nbrPolicies}: {name: string; groupCode: string, nbrPolicies:number}) => {
+const Item = ({name, groupCode, nbrPolicies, }: {name: string; groupCode: string; nbrPolicies: number}) => {
   const imageName = `${groupCode.toLowerCase()}.png`;
+  const [isLongPressed, setIsLongPress] = useState(false)
+  const scaleAnim = new Animated.Value(1); 
 
+  const handlePressIn = () => {
+    setIsLongPress(true);
+    Animated.timing(scaleAnim, {
+      toValue: 1.1, // Scale up slightly
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    setIsLongPress(false);
+    Animated.timing(scaleAnim, {
+      toValue: 1, // Scale back to normal
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }
   return (
-    <View style={styles.Image_Container}>
-      <View style={styles.Inline_Image}>
-        <Image
-          source={imageMapping[imageName]}
-          style={styles.Rounded_Image}
-          resizeMode="contain"
-        />
+    <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
+      <View style={styles.Image_Container}>
+        <View style={[styles.Inline_Image, isLongPressed && styles.longPressStyle]}>
+          <Image
+            source={imageMapping[imageName]}
+            style={[styles.Rounded_Image, isLongPressed && styles.longPressImage]}
+            resizeMode="contain"
+          />
+        </View>
+        {nbrPolicies > 0 && <DQ_Badge text={nbrPolicies} />}
+        <View style={styles.InlineText}>
+          <Text style={styles.Product_Name}>{name}</Text>
+        </View>
       </View>
-      {nbrPolicies > 0 && <DQ_Badge text={nbrPolicies}/>}
-      <View style={styles.InlineText}>
-        <Text style={styles.Product_Name}>{name}</Text>
-      </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -58,23 +81,28 @@ export default function ProductPolicy({navigation}: any) {
   const [osClaims, setOsClaims] = useState<any[]>([]);
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [pendingRenewals, setPendingRenewals] = useState<any[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
 
   useEffect(() => {
     Get_CS_Connect();
   }, []);
 
   const Get_CS_Connect = async () => {
-    const result = await ProductPolicyService()
-    
-    if (result ) {
+    const result = await ProductPolicyService();
+    const roles = result.userData[0].roles;
+    setRoles(roles);
+
+    if (result) {
       if (result.prodGroups) {
-        const sortedProdGroups = result.prodGroups.sort((a : any, b : any) => a.groupSeq - b.groupSeq);
+        const sortedProdGroups = result.prodGroups.sort(
+          (a: any, b: any) => a.groupSeq - b.groupSeq,
+        );
         setProdGroups(sortedProdGroups);
       }
-      if(result.osPremiums) setOsPremiums(result.osPremiums);
-      if(result.osClaims) setOsClaims(result.osClaims);
-      if(result.pendingRequests) setPendingRequests(result.pendingRequests);
-      if(result.pendingRenewals) setPendingRenewals(result.pendingRenewals);
+      if (result.osPremiums) setOsPremiums(result.osPremiums);
+      if (result.osClaims) setOsClaims(result.osClaims);
+      if (result.pendingRequests) setPendingRequests(result.pendingRequests);
+      if (result.pendingRenewals) setPendingRenewals(result.pendingRenewals);
     }
   };
 
@@ -84,6 +112,7 @@ export default function ProductPolicy({navigation}: any) {
         style={styles.mainHeader}
         press={() => navigation.goBack()}
         navigation={navigation}
+        roleNumber={roles.length}
       />
       <ScrollView>
         <View style={styles.Products_Container}>
@@ -91,7 +120,11 @@ export default function ProductPolicy({navigation}: any) {
             horizontal
             data={prodGroups}
             renderItem={({item}) => (
-              <Item name={item.groupName} groupCode={item.groupCode} nbrPolicies={item.nbrPolicies} />
+              <Item
+                name={item.groupName}
+                groupCode={item.groupCode}
+                nbrPolicies={item.nbrPolicies}
+              />
             )}
             keyExtractor={item => item.groupSeq.toString()}
           />
@@ -180,9 +213,15 @@ const styles = StyleSheet.create({
   Products_Container: {
     paddingTop: 15,
   },
+  longPressStyle:{
+    backgroundColor:'#0160ae'
+  },
+  longPressImage:{
+    tintColor:'white'
+  },
   Image_Container: {
     padding: 1,
-    marginTop:5,
+    marginTop: 5,
     alignItems: 'center',
     justifyContent: 'center',
     height: 110,
@@ -215,19 +254,19 @@ const styles = StyleSheet.create({
     flex: 1,
     borderColor: 'red',
   },
-  cardsContainer:{
-    marginTop:30,
+  cardsContainer: {
+    marginTop: 30,
   },
-  InlineElements:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center',
-    padding:5,
+  InlineElements: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 5,
   },
-  TwoInlineElements:{
-    flexDirection:'row',
-    gap:30,
-    alignItems:'center',
-    padding:5,
-  }
+  TwoInlineElements: {
+    flexDirection: 'row',
+    gap: 30,
+    alignItems: 'center',
+    padding: 5,
+  },
 });

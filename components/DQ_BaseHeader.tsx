@@ -11,7 +11,7 @@ import DQ_Button from './DQ_Button';
 const logo = require('../assets/images/DQ_LOGO.png');
 const changeRoleLogo = require('../assets/images/mutlirole.png');
 
-export default function DQ_BaseHeader({navigation, press}: any) {
+export default function DQ_BaseHeader({navigation, press, roleNumber = 1}: any) {
   return (
     <View style={styles.header}>
       <View style={styles.commands}>
@@ -25,11 +25,11 @@ export default function DQ_BaseHeader({navigation, press}: any) {
             />
           </TouchableOpacity>
         </View>
-        <View>
+        {roleNumber > 1 && <View>
           <TouchableOpacity onPress={() => navigation.navigate('Roles')}>
             <Image source={changeRoleLogo} style={styles.changeRoleIcon} />
           </TouchableOpacity>
-        </View>
+        </View>}
       </View>
 
       <View style={styles.logoContainer}>
@@ -48,8 +48,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderStartEndRadius: 20,
     borderEndEndRadius: 20,
-    borderWidth:2,
-    gap:5,
+    gap:10,
   },
   commands:{
     flexDirection: 'row',
@@ -70,9 +69,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    height: 50,
-
-    marginTop: 20,
+    height: 50,    
+    marginTop: 20,    
   },
   changeRoleIcon:{
     width:35,

@@ -32,7 +32,7 @@ export default function LoginScreen({navigation}: any) {
  
   const handleLogin = async () => {
     const result = await login('r-travel', '11111111');
- 
+ console.log(result)
     _shared.ui_token = result.response.imS_UIToken;    
     if (result) {      
       navigation.navigate('ProductPolicy');
