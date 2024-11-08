@@ -6,7 +6,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './screens/login-screen/login-screen';
 import RegistrationScreen from './screens/registration-screen/registration-screen';
-import ProductPolicy from './screens/product-policy/product-policy';
+import ProductPolicy from './screens/product-policy-screen/product-policy';
+import ChangeRole from './screens/change-role-screen/ChangeRole';
+import PolicyList from './screens/Policy-List-screen/policy-list-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +48,26 @@ export default function App() {
           <Stack.Screen
             name="ProductPolicy"
             component={ProductPolicy}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+            }}
+          />
+          <Stack.Screen
+            name="Roles"
+            component={ChangeRole}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+            }}
+          />
+          <Stack.Screen
+            name="PolicyList"
+            component={PolicyList}
             options={{
               headerShown: false,
               headerStyle: {

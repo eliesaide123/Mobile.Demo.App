@@ -25,8 +25,8 @@ export default function LoginScreen({navigation}: any) {
   const [password, setPassword] = useState<string>('');
  
   const handleLogin = async () => {
-    const result = await login('r-medical', '11111111');
- 
+    const result = await login('r-travel', '11111111');
+ console.log(result)
     _shared.ui_token = result.response.imS_UIToken;    
     if (result) {      
       navigation.navigate('ProductPolicy');

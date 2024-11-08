@@ -5,7 +5,7 @@ export default function DQ_Paragraph({
     content, 
     fontSize = 16, 
     fontFamily='Nexa Regular',
-    textColor = '#333',     
+    textColor = '#015faf',     
     textAlign = 'left',
     uppercased= false,
     capitalized = false,

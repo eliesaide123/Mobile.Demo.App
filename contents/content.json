@@ -107,6 +107,12 @@
         "en": "Login here",
         "ar": ""
       }]
+    },
+    "ChangeRole":{
+      "RoleTxt":{
+        "en":"Please choose the role you wish to access",
+        "ar":""
+      }
     }
   }
 }

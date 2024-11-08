@@ -1,45 +1,80 @@
 import Icon from '@react-native-vector-icons/fontawesome6';
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import DQ_Button from './DQ_Button';
 
-const logo = require('../assets/images/DQ_LOGO.png'); //
+const logo = require('../assets/images/DQ_LOGO.png');
+const changeRoleLogo = require('../assets/images/mutlirole.png');
 
-export default function DQ_BaseHeader({navigation, press} : any) {
-    return (
-        <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} onPress={press}>
-                <Icon name="chevron-left" size={18} color="#FFFFFF" iconStyle='solid' />
-            </TouchableOpacity>
-            <Image source={logo} style={styles.logo} resizeMode="contain" />
+export default function DQ_BaseHeader({navigation, press, roleNumber = 1}: any) {
+  return (
+    <View style={styles.header}>
+      <View style={styles.commands}>
+        <View>
+          <TouchableOpacity style={styles.backButton} onPress={press}>
+            <Icon
+              name="chevron-left"
+              size={18}
+              color="#FFFFFF"
+              iconStyle="solid"
+            />
+          </TouchableOpacity>
         </View>
-    )
+        {roleNumber > 1 && <View>
+          <TouchableOpacity onPress={() => navigation.navigate('Roles')}>
+            <Image source={changeRoleLogo} style={styles.changeRoleIcon} />
+          </TouchableOpacity>
+        </View>}
+      </View>
+
+      <View style={styles.logoContainer}>
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    header: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#005faf',
-        paddingVertical: 50,
-        paddingHorizontal: 15,
-        borderStartEndRadius: 20,
-        borderEndEndRadius: 20,
-    },
-    backButton: {
-        marginTop: 30,
-        padding: 15,
-        height: 50,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-    },
-    logo: {
-        flex: 1,
-        height: 60,
-        alignSelf: 'center',
-        justifyContent: 'center',
-        marginTop:20,
-        alignContent: 'center',
-    },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#005faf',
+    paddingVertical: 25,
+    paddingHorizontal: 15,
+    borderStartEndRadius: 20,
+    borderEndEndRadius: 20,
+    gap:10,
+  },
+  commands:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'flex-start',
+    gap:5
+  },
+  backButton: {
+    marginTop: 30,
+    padding: 15,
+    height: 50,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  logoContainer:{
+    alignSelf: 'center',
+    alignContent:'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    height: 50,    
+    marginTop: 20,    
+  },
+  changeRoleIcon:{
+    width:35,
+    height:35,
+    marginTop:25
+  }
 });
