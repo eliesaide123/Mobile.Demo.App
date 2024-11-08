@@ -10,61 +10,80 @@ import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {login} from './Service/authService';
 import _shared from '../common';
-import { getLocalizedEntry } from '../../Shared/SharedFunctions';
+import {getLocalizedEntry} from '../../Shared/SharedFunctions';
 import DQ_Alert from '../../components/DQ_Alert';
-import { ProductPolicyService } from '../product-policy-screen/service/product-policy.service';
-import { useAlert } from '../../hooks/useAlert';
- 
-export default function LoginScreen({navigation}: any) {  
-  const logo = require('../../assets/images/DQ_LOGO.png');
-  const HeaderContainerText = getLocalizedEntry('LoginScreen','HeaderContainer');
-  const HeaderSubContainerText = getLocalizedEntry('LoginScreen','HeaderContainerSubText');
-  const WebUserIDPlaceHolder = getLocalizedEntry('LoginScreen','DQ_TextBoxUserID');
-  const RegisterPhrase = getLocalizedEntry('LoginScreen', 'DQ_RegisterPhrase') as string[] | null;
-  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : ""; // Access the second element if it exists
-  const DQ_ProceedAsAGuest = getLocalizedEntry('LoginScreen', 'DQ_ProceedAsAGuest');
+import {ProductPolicyService} from '../product-policy-screen/service/product-policy.service';
+import {useAlert} from '../../hooks/useAlert';
 
-  const { isVisible, showAlert, hideAlert } = useAlert();
- 
+export default function LoginScreen({navigation}: any) {
+  const logo = require('../../assets/images/DQ_LOGO.png');
+  const HeaderContainerText = getLocalizedEntry(
+    'LoginScreen',
+    'HeaderContainer',
+  );
+  const HeaderSubContainerText = getLocalizedEntry(
+    'LoginScreen',
+    'HeaderContainerSubText',
+  );
+  const WebUserIDPlaceHolder = getLocalizedEntry(
+    'LoginScreen',
+    'DQ_TextBoxUserID',
+  );
+  const RegisterPhrase = getLocalizedEntry(
+    'LoginScreen',
+    'DQ_RegisterPhrase',
+  ) as string[] | null;
+  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : ''; // Access the second element if it exists
+  const DQ_ProceedAsAGuest = getLocalizedEntry(
+    'LoginScreen',
+    'DQ_ProceedAsAGuest',
+  );
+
+  const {isVisible, showAlert, hideAlert} = useAlert();
+
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
- 
+
   const handleLogin = async () => {
-    const result = await login(userId, password);    
-
-    _shared.ui_token = result.response.imS_UIToken;
-   
-    const checkRoleResult = await ProductPolicyService(userId)
-
-    if(checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == "A"){
-      navigation.navigate('AgentSearch')      
-    }else{
-      if (result) {      
-        navigation.navigate('ProductPolicy', {
-          userId: userId
-        });
+    const result = await login(userId, password);  
+      console.log(result)
+    if (result.response.status) {
+      _shared.ui_token = result.response.imS_UIToken;
+      const checkRoleResult = await ProductPolicyService(userId);
+      if (checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == 'A') {
+        navigation.navigate('AgentSearch');
       } else {
-        showAlert();
+        if (result.response.status) {
+          navigation.navigate('ProductPolicy', {userId: userId});
+        } else {
+          showAlert();
+        }
       }
+    } else {
+      showAlert();
     }
   };
- 
+
   return (
     <KeyboardAwareScrollView style={styles.mainContainer}>
-      <DQ_Alert 
-  isVisible={isVisible} 
-  hideAlert={hideAlert} 
-  btnList={[
-    { title: 'Ok', press: () => { hideAlert(); } },
-  ]}
->
-  <DQ_Paragraph 
-    content="Something went wrong! Try again" 
-    textColor="black" 
-    textAlign="center" 
-    fontSize={14} 
-  />
-</DQ_Alert>
+      <DQ_Alert
+        isVisible={isVisible}
+        hideAlert={hideAlert}
+        btnList={[
+          {
+            title: 'Ok',
+            press: () => {
+              hideAlert();
+            },
+          },
+        ]}>
+        <DQ_Paragraph
+          content="Something went wrong! Try again"
+          textColor="black"
+          textAlign="center"
+          fontSize={14}
+        />
+      </DQ_Alert>
 
       <View style={styles.headerText}>
         <Image source={logo} />
@@ -114,7 +133,10 @@ export default function LoginScreen({navigation}: any) {
           <Pressable
             style={styles.inlineSubContainerFooter}
             onPress={() => navigation.navigate('Register')}>
-            <DQ_Paragraph fontSize={12} content={RegisterPhrase ? RegisterPhrase[0] : ""} />
+            <DQ_Paragraph
+              fontSize={12}
+              content={RegisterPhrase ? RegisterPhrase[0] : ''}
+            />
             <DQ_Link
               textAlign="center"
               fontSize={12}
@@ -141,7 +163,7 @@ export default function LoginScreen({navigation}: any) {
     </KeyboardAwareScrollView>
   );
 }
- 
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,

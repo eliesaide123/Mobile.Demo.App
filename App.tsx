@@ -10,6 +10,7 @@ import ProductPolicy from './screens/product-policy-screen/product-policy';
 import ChangeRole from './screens/change-role-screen/ChangeRole';
 import PolicyList from './screens/Policy-List-screen/policy-list-screen';
 import AgentSearch from './screens/Agent-Search-screen/Agent-Search-screen';
+import PolicyDetails from './screens/policy-details-screen/policy-details-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -84,8 +85,18 @@ export default function App() {
               headerStyle: {
                 backgroundColor: '#f4511e',
               },
-            }}
+            }}            
           />
+          <Stack.Screen
+            name="PolicyDetails"
+            component={PolicyDetails}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+            }}            
+          />          
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

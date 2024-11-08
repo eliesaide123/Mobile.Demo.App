@@ -12,7 +12,7 @@ interface CustomTabViewProps {
   tabs: TabConfig[];
 }
 
-export function CustomTabView({ tabs }: CustomTabViewProps) {
+export function DQ_TabView({ tabs }: CustomTabViewProps) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
@@ -75,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomTabView;
+export default DQ_TabView;

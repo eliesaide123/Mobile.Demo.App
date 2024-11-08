@@ -18,7 +18,8 @@ export default function DQ_BaseHeader({
   press,
   roleNumber = 1,
   variant = 'logoCenter',  // 'logoCenter' for structure 1, 'textCenter' for structure 2
-  textCenter
+  textCenter,
+  userId
 }: any) {
   return (
     <View style={styles.header}>
@@ -30,7 +31,7 @@ export default function DQ_BaseHeader({
         
         {/* Role Change Icon if roleNumber > 1 */}
         {roleNumber > 1 && (
-          <TouchableOpacity onPress={() => navigation.navigate('Roles')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Roles', {userId})}>
             <Image source={changeRoleLogo} style={styles.changeRoleIcon} resizeMode="contain" />
           </TouchableOpacity>
         )}

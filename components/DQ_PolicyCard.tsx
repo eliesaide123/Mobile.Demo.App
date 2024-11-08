@@ -1,69 +1,80 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import DQ_Paragraph from './DQ_Paragraph';
 import Icon from '@react-native-vector-icons/fontawesome6';
 
-export default function DQ_PolicyCard({src, item}: any) {
+export default function DQ_PolicyCard({src, item, press}: any) {
   return (
-    <View style={styles.cardContainer}>
-      <View style={[styles.InlineElements, styles.spaceBetween]}>
-        <View style={[styles.InlineElements, styles.gap20]}>
-          <Image source={src} style={[styles.imageTint, styles.cardImage]} resizeMode='contain' />
-          <DQ_Paragraph
-            content={item.policyNo}
-            textColor="white"
-            fontSize={14}
-            fontFamily="Nexa Bold"
-          />
+    <TouchableOpacity onPress={press}>
+      <View style={styles.cardContainer}>
+        <View style={[styles.InlineElements, styles.spaceBetween]}>
+          <View style={[styles.InlineElements, styles.gap20]}>
+            <Image
+              source={src}
+              style={[styles.imageTint, styles.cardImage]}
+              resizeMode="contain"
+            />
+            <DQ_Paragraph
+              content={item.policyNo}
+              textColor="white"
+              fontSize={14}
+              fontFamily="Nexa Bold"
+            />
+          </View>
+          <View>
+            <Icon
+              name="arrow-right"
+              size={14}
+              color="#ffbe23"
+              iconStyle="solid"
+              style={{marginHorizontal: 2}}
+            />
+          </View>
         </View>
-        <View>
-          <Icon
-            name="arrow-right"
-            size={14}
-            color="#ffbe23"
-            iconStyle="solid"
-            style={{marginHorizontal: 2}}
-          />
-        </View>
-      </View>
-      <View style={[styles.InlineElements, styles.gap5, styles.marginTop15]}>
-        <Image source={src} style={[styles.imageTint, styles.pinPoint]} resizeMode='contain' />
-        <DQ_Paragraph
-          content={item.productTag}
-          textColor="white"
-          fontSize={10}
-        />
-      </View>
-      <View
-        style={[
-          styles.InlineElements,
-          styles.gap5,
-          styles.marginLeft20,
-          styles.marginTop10,
-        ]}>
-        <DQ_Paragraph
-          content={item.policyTag}
-          textColor="white"
-          fontSize={10}
-        />
-      </View>
-      {item.expiryTag && (
-        <View style={[styles.InlineElements, styles.gap6, styles.marginTop15]}>
-          <Icon
-            name="calendar-days"
-            size={12}
-            color="white"
-            iconStyle="solid"
-            style={{marginHorizontal: 2}}
+        <View style={[styles.InlineElements, styles.gap5, styles.marginTop15]}>
+          <Image
+            source={src}
+            style={[styles.imageTint, styles.pinPoint]}
+            resizeMode="contain"
           />
           <DQ_Paragraph
-            content={item.expiryTag}
+            content={item.productTag}
             textColor="white"
             fontSize={10}
           />
         </View>
-      )}
-    </View>
+        <View
+          style={[
+            styles.InlineElements,
+            styles.gap5,
+            styles.marginLeft20,
+            styles.marginTop10,
+          ]}>
+          <DQ_Paragraph
+            content={item.policyTag}
+            textColor="white"
+            fontSize={10}
+          />
+        </View>
+        {item.expiryTag && (
+          <View
+            style={[styles.InlineElements, styles.gap6, styles.marginTop15]}>
+            <Icon
+              name="calendar-days"
+              size={12}
+              color="white"
+              iconStyle="solid"
+              style={{marginHorizontal: 2}}
+            />
+            <DQ_Paragraph
+              content={item.expiryTag}
+              textColor="white"
+              fontSize={10}
+            />
+          </View>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 }
 

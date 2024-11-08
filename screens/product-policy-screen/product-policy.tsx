@@ -115,11 +115,13 @@ export default function ProductPolicy({navigation, route}: any) {
   const [roles, setRoles] = useState<any[]>([]);
   const [pin, setPin] = useState<string>('');
   const [role, setRole] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
 
   
   useEffect(() => {
-    const {userId} = route.params;
-    Get_CS_Connect(userId);
+    const {userId: id} = route.params;
+    setUserId(id);
+    Get_CS_Connect(id);
   }, [route.params]);
   
   const Get_CS_Connect = async (userId:string) => {
@@ -159,6 +161,7 @@ export default function ProductPolicy({navigation, route}: any) {
         press={() => navigation.goBack()}
         navigation={navigation}
         roleNumber={roles.length}
+        userId={userId}
       />
       <ScrollView>
         <View style={styles.Products_Container}>

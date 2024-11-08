@@ -6,13 +6,15 @@ import DQ_Paragraph from '../../components/DQ_Paragraph';
 import JSON_FILE from '../../contents/content.json';
 import Icon from '@react-native-vector-icons/fontawesome6';
 
-export default function ChangeRole({navigation}:any) {
+export default function ChangeRole({navigation, route}:any) {
 
     const [roles, setRoles] = useState([])
 
   useEffect(() => {
-    Get_CS_Connect()
-  }, []);
+    
+    const {userId} = route.params
+    Get_CS_Connect(userId)
+  }, [route.params]);
 
   const RoleTxt =
     JSON_FILE.Contents.ChangeRole.RoleTxt['en'];
@@ -23,8 +25,8 @@ export default function ChangeRole({navigation}:any) {
     'agent.png': require('../../assets/images/agent.png')    
   };
 
-  const Get_CS_Connect = async () => {
-    const result = await ProductPolicyService()
+  const Get_CS_Connect = async (userId: string) => {
+    const result = await ProductPolicyService(userId)
     
     var roles = result.responseData.userData[0].roles
     

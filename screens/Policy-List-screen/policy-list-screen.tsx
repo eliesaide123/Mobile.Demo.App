@@ -37,7 +37,7 @@ export default function PolicyList({navigation, route}: any) {
   }, []);
   return (
     <View style={styles.rootElement}>
-      <DQ_BaseHeader press={()=> navigation.goBack()} variant="textCenterS" textCenter={groupCode}/>
+      <DQ_BaseHeader press={()=> navigation.goBack()} variant="textCenter" textCenter={groupCode}/>
       <View style={styles.topView}>
         <View style={styles.iconView}>
           {groupCode && <DQ_PolicyIcon src={imageMapping[groupCode]} />}
@@ -50,6 +50,7 @@ export default function PolicyList({navigation, route}: any) {
                 <DQ_PolicyCard
                   src={imageMapping[groupCode]}
                   item={item}
+                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode})}}
                   keyExtractor={(item: any) => item.policyNo.toString()}
                 />
               )}
