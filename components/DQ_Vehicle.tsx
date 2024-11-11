@@ -1,9 +1,8 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import React from 'react'
 
-export default function DQ_Contract({ item }: any) {
-  
-  const excludeKeys = ['firstInception', 'canRenewPolicy', 'canPrintPolicy', 'canPrintAlpSoa', 'hasLegalAddress', 'hasBeneficiary', 'hasDuePremiums', 'hasClaims', 'hasPendingRequests'];
+export default function DQ_Vehicle({item}: any) {
+  const excludeKeys = ['vehicleNo', 'vehicleData'];
 
   return (
     <ScrollView style={styles.contractContainer}>

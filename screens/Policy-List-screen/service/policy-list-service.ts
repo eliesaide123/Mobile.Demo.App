@@ -1,12 +1,12 @@
 import axios from 'axios';
 import _shared from '../../common';
 
-export async function PolicyListService(pin:any, role :any, groupCode:any) {
+export async function PolicyListService(pin:any, role :any, groupCode:any, userId:any) {
     try {        
         const response = await axios.get(`http://dqapi-sna.dq.com.lb:88/api/policy?ProductGroup=${groupCode}`, {
             headers: {
                 'accept': 'application/json',
-                'x-auth-ims-userid': 'r-travel',
+                'x-auth-ims-userid': userId,
                 'x-auth-ims-uitoken': _shared.ui_token,
                 'x-user-ims-pin': pin,
                 'x-user-ims-role': role,
@@ -21,3 +21,4 @@ export async function PolicyListService(pin:any, role :any, groupCode:any) {
         return { success: false, error: error.response ? error.response.data : error.message };
     }
 }
+                

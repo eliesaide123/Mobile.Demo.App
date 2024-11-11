@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   tabBar: {
-    backgroundColor: 'white',
+    backgroundColor: '#ebebeb',
   },
   tabIndicator: {
     backgroundColor: '#0062af',
