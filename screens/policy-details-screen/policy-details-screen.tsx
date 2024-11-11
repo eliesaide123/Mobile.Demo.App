@@ -219,15 +219,15 @@ export default function PolicyDetails({ navigation, route }: any) {
               productName={policyData.contract[0].productName}
               policyHolder={policyData.contract[0].policyholder}
               inception={policyData.contract[0].inception}
-              expiry={policyData.expiryDate}
-              currency={policyData.currency}
-              annualPremium={policyData.annualPremium}
-              frequencyPayment={policyData.paymentFrequency}
-              nextPremium={policyData.nextPremium}
-              agentName={policyData.agentName}
-              whoPays={policyData.whoPays}
-              paymentMode={policyData.paymentMode}
-              policyStatus={policyData.status}
+              expiry={policyData.contract[0].expiry}
+              currency={policyData.contract[0].currency}
+              annualPremium={policyData.contract[0].annualPremium}
+              frequencyPayment={policyData.contract[0].frqPayment}
+              nextPremium={policyData.contract[0].nextPremium}
+              agentName={policyData.contract[0].agentName}
+              whoPays={policyData.contract[0].whoPays}
+              paymentMode={policyData.contract[0].paymentMode}
+              policyStatus={policyData.contract[0].statusDate}
             />
             </View>
           ) : (
@@ -246,8 +246,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabContent: {
-    borderWidth:2,
     flex:1,
-    width:'100%',
+    width:'100%',    
   },
 });
