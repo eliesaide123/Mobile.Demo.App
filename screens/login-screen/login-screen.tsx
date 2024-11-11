@@ -45,8 +45,7 @@ export default function LoginScreen({navigation}: any) {
   const [password, setPassword] = useState<string>('');
 
   const handleLogin = async () => {
-    const result = await login(userId, password);  
-      console.log(result)
+    const result = await login(userId, password);        
     if (result.response.status) {
       _shared.ui_token = result.response.imS_UIToken;
       const checkRoleResult = await ProductPolicyService(userId);

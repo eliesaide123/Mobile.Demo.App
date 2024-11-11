@@ -101,7 +101,7 @@ export default function RegistrationScreen({ navigation }: any) {
   );
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    
     // Perform registration logic here
   };
 
