@@ -32,8 +32,8 @@ export function DQ_TabView({ tabs }: CustomTabViewProps) {
       indicatorStyle={styles.tabIndicator}
       style={styles.tabBar}
       labelStyle={styles.tabLabel}
-      activeColor="black"
-      inactiveColor="gray"
+      activeColor="#0062af"
+      inactiveColor="#c3c3c2"
     />
   );
 
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   tabIndicator: {
-    backgroundColor: 'black',
+    backgroundColor: '#0062af',
   },
   tabLabel: {
     fontWeight: 'bold',
