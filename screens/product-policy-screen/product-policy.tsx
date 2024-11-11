@@ -42,6 +42,7 @@ const Item = ({
   pin,
   role,
   navigation,
+  userid
 }: {
   name: string;
   groupCode: string;
@@ -49,6 +50,7 @@ const Item = ({
   pin: string;
   role: string;
   navigation: NativeStackScreenProps<any>['navigation'];
+  userid: any
 }) => {
   const imageName = `${groupCode.toLowerCase()}.png`;
   const [isLongPressed, setIsLongPress] = useState(false);
@@ -78,6 +80,7 @@ const Item = ({
         pin,
         role,
         groupCode,
+        userid
       });
   };
   return (
@@ -176,6 +179,7 @@ export default function ProductPolicy({navigation, route}: any) {
                 navigation={navigation}
                 pin={pin}
                 role={role}
+                userid={userId}
               />
             )}
             keyExtractor={item => item.groupSeq.toString()}

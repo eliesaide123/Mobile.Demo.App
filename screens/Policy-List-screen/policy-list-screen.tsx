@@ -22,15 +22,18 @@ const imageMapping: {[key: string]: any} = {
 export default function PolicyList({navigation, route}: any) {
   const [groupCode, setGroupCode] = useState<string>('');
   const [policyList, setPolicyList] = useState<any[]>([]);
+  const [pin, setPin] = useState<string>('');
+  const [role, setRole] = useState<string>('');
 
   useEffect(() => {
-    const {pin, role, groupCode: _groupCode} = route.params;
+    const {pin, role, userid, groupCode: _groupCode} = route.params;
     const Get_Policy = async () => {
       const result = await PolicyListService(pin, role, _groupCode);
       const policies = result.responseData.policyList;
       setPolicyList(policies);
-      console.log(_groupCode);
       setGroupCode(_groupCode.toLowerCase());
+      setPin(pin);
+      setRole(role);
     };
 
     Get_Policy();
@@ -50,7 +53,7 @@ export default function PolicyList({navigation, route}: any) {
                 <DQ_PolicyCard
                   src={imageMapping[groupCode]}
                   item={item}
-                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode})}}
+                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role})}}
                   keyExtractor={(item: any) => item.policyNo.toString()}
                 />
               )}

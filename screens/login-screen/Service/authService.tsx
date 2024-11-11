@@ -22,9 +22,7 @@ export async function login(userId: string, password: string) {
       _data,
       {headers},
     );
-    console.log("AAAAA")
-    console.log(response)
-    console.log("AAAAA")
+
     return response.data;
   } catch (error: any) {
     console.error('An error occurred during login:', error);
