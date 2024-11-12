@@ -19,7 +19,6 @@ export default function DQ_Alert({
   btnList,
   children,
 }: any) {
-  console.log(btnList);
   return (
     <View>
       <Modal

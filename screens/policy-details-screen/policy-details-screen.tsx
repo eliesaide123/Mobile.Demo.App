@@ -9,8 +9,10 @@ import React, { useEffect, useState } from 'react';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_PolicyIconDescription from '../../components/DQ_PolicyIconDescription';
 import DQ_TabView from '../../components/DQ_TabView';
-import { GetPolicyDetails } from './service/policy-details-service';
+import { GetPolicyDetails } from './service/motor-policy-details-service';
 import DQ_Contract from '../../components/DQ_Contract'; // Importing the DQ_Contract component
+import { GetLifePolicyDetails } from './service/life-policy-details-service';
+import DQ_Vehicle from '../../components/DQ_Vehicle';
 
 const imageMapping: { [key: string]: any } = {
   health: require('../../assets/images/health.png'),
@@ -92,6 +94,8 @@ export default function PolicyDetails({ navigation, route }: any) {
   const [pin, setPin] = useState<string>('');
   const [role, setRole] = useState<string>('');
   const [policyData, setPolicyData] = useState<any>(null);
+  const [userId, setUserId] = useState<any>(null);
+  const [policyDetailsURI, setPolicyDetailsURI] = useState<any>(null);
 
   useEffect(() => {
     const {
@@ -99,39 +103,49 @@ export default function PolicyDetails({ navigation, route }: any) {
       groupCode: grpCode,
       pin: _pin,
       role: _role,
+      userId: _userId,
+      policyDetailsURI: _policyDetailsURI
     } = route.params;
     setGroupCode(grpCode);
     setPolicyNo(_policyNo);
     setPin(_pin);
     setRole(_role);
+    setUserId(_userId)
+    setPolicyDetailsURI(_policyDetailsURI)
 
     let filteredTabs = initialTab;
 
     const fetchPolicyDetails = async () => {
       const result = await GetPolicyDetails(
-        'r-travel', // Example product, adjust as necessary
+        _userId,
         _policyNo,
         _pin,
-        _role
+        _role,
+        _policyDetailsURI
       );
+
       const policyDetails = result.policyDetails;
       setPolicyData(policyDetails);
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-      console.log(policyData)
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
+      const keyArr = Object.keys(policyDetails);
+      for(var i=1; i< keyArr.length; i++){
+        if(policyDetails[keyArr[i]].length > 0){
+          
+        }
+      }
     };
 
-    // Modify tab logic based on the group code
-    switch (grpCode) {
+    
+    switch (grpCode.toLowerCase()) {
       case 'motor':
         filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Vehicle'
+          tab => tab.key === 'contract' || tab.key === 'Vehicle',
         );
         fetchPolicyDetails();
         break;
       case 'health':
         filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Insured'
+          tab => tab.key === 'contract' || tab.key === 'Insured',
         );
         fetchPolicyDetails();
         break;
@@ -140,9 +154,9 @@ export default function PolicyDetails({ navigation, route }: any) {
           tab =>
             tab.key === 'contract' ||
             tab.key === 'Insured' ||
-            tab.key === 'Insured Covers'
+            tab.key === 'Insured Covers',
         );
-        fetchPolicyDetails();
+        fetchPolicyDetails()
         break;
       case 'investment':
         filteredTabs = initialTab.filter(
@@ -150,13 +164,13 @@ export default function PolicyDetails({ navigation, route }: any) {
             tab.key === 'contract' ||
             tab.key === 'Insured' ||
             tab.key === 'Dependent' ||
-            tab.key === 'Insured Covers'
+            tab.key === 'Insured Covers',
         );
         fetchPolicyDetails();
         break;
       case 'travel':
         filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Insured'
+          tab => tab.key === 'contract' || tab.key === 'Insured',
         );
         fetchPolicyDetails();
         break;
@@ -165,13 +179,13 @@ export default function PolicyDetails({ navigation, route }: any) {
           tab =>
             tab.key === 'contract' ||
             tab.key === 'Insured' ||
-            tab.key === 'Insured Covers'
+            tab.key === 'Insured Covers',
         );
         fetchPolicyDetails();
         break;
       case 'expat':
         filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Insured Covers'
+          tab => tab.key === 'contract' || tab.key === 'Insured Covers',
         );
         fetchPolicyDetails();
         break;
@@ -180,7 +194,7 @@ export default function PolicyDetails({ navigation, route }: any) {
           tab =>
             tab.key === 'contract' ||
             tab.key === 'Insured Risks' ||
-            tab.key === 'Insured Covers'
+            tab.key === 'Insured Covers',
         );
         fetchPolicyDetails();
         break;
@@ -213,28 +227,20 @@ export default function PolicyDetails({ navigation, route }: any) {
       <DQ_TabView
         tabs={tabs.map(tab => ({
           ...tab,
-          content: tab.key === 'contract' && policyData ? (
-            <View style={styles.tabContent}>
-            <DQ_Contract
-              productName={policyData.contract[0].productName}
-              policyHolder={policyData.contract[0].policyholder}
-              inception={policyData.contract[0].inception}
-              expiry={policyData.expiryDate}
-              currency={policyData.currency}
-              annualPremium={policyData.annualPremium}
-              frequencyPayment={policyData.paymentFrequency}
-              nextPremium={policyData.nextPremium}
-              agentName={policyData.agentName}
-              whoPays={policyData.whoPays}
-              paymentMode={policyData.paymentMode}
-              policyStatus={policyData.status}
-            />
-            </View>
-          ) : (
-            <View style={styles.tabContent}>
-              <Text>Loading...</Text>
-            </View>
-          ),
+          content:
+            tab.key === 'contract' && policyData ? (
+              <View style={styles.tabContent}>
+                <DQ_Contract item={policyData.contract[0]}/>                
+              </View>
+            ) : tab.key === 'Vehicle' && policyData ? (
+              <View style={styles.tabContent}>
+                <DQ_Vehicle item={policyData.vehicle[0]}/>                    
+              </View>
+            ) : (
+              <View style={styles.tabContent}>
+                <Text>Loading...</Text>
+              </View>
+            ),
         }))}
       />
     </SafeAreaView>
@@ -244,10 +250,11 @@ export default function PolicyDetails({ navigation, route }: any) {
 const styles = StyleSheet.create({
   rootElement: {
     flex: 1,
+    backgroundColor: '#ebebeb',
   },
   tabContent: {
-    borderWidth:2,
-    flex:1,
-    width:'100%',
+    flex: 1,
+    width: '100%',
+    backgroundColor: '#ebebeb',
   },
 });
