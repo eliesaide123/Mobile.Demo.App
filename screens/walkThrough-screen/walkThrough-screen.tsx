@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { Image, View, Text, StyleSheet } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
@@ -105,9 +106,9 @@ export default function WalkThroughScreen({navigation} : any) {
         skipLabel="Skip"
         dotStyle={styles.dotStyle}
         inactiveDotStyle={styles.inactiveDotStyle}
-        onSkip={() => navigation.navigate("Login")}
+        onSkip={async() => { await AsyncStorage.setItem('walkthroughCompleted', 'true'); navigation.navigate("Login")}}
         onNext={() => console.log("TEST")}
-        onDone={()=>{navigation.navigate("Login")}}
+        onDone={async() => { await AsyncStorage.setItem('walkthroughCompleted', 'true'); navigation.navigate("Login")}}
         
       />
     </View>

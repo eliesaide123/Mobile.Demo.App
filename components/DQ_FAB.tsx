@@ -1,35 +1,40 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
+import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
 import Icon from '@react-native-vector-icons/fontawesome6';
 import DQ_Paragraph from './DQ_Paragraph';
 
-export default function DQ_FAB({ clicked, setClicked }) {
+export default function DQ_FAB({ clicked, setClicked }: any) {
   const items = ['list', 'xmark', 'list', 'list', 'list', 'list'];
 
   const itemPositions = items.map(() => useSharedValue(0));
   const itemOpacities = items.map(() => useSharedValue(0));
 
   const handleClickBtn = () => {
-    setClicked(!clicked);
+    // Toggle clicked state and immediately trigger animation
+    setClicked((prev: boolean) => {
+      const newClicked = !prev;
 
-    // Change item positions and opacity to make them appear
-    itemPositions.forEach((position, index) => {
-      position.value = withTiming(
-        clicked ? 0 : (index + 1) * 50, // Move the items upward
-        { duration: 500, easing: Easing.bezier(0.68, -0.6, 0.32, 1.6) }
-      );
-    });
+      // Change item positions and opacity to make them appear or disappear
+      itemPositions.forEach((position, index) => {
+        position.value = withSpring(
+          newClicked ? (index + 1) * 50 : 0, // Move items upward when opened, reset when closed
+          { damping: 15, stiffness: 200 } // Smooth animation
+        );
+      });
 
-    itemOpacities.forEach((opacity) => {
-      opacity.value = withTiming(
-        clicked ? 0 : 1, // Fade in and out depending on the click state
-        { duration: 500, easing: Easing.bezier(0.68, -0.6, 0.32, 1.6) }
-      );
+      itemOpacities.forEach((opacity) => {
+        opacity.value = withSpring(
+          newClicked ? 1 : 0, // Fade in when opened, fade out when closed
+          { damping: 15, stiffness: 200 } // Smooth opacity transition
+        );
+      });
+
+      return newClicked;
     });
   };
 
-  const Item = ({ index, iconName }) => {
+  const Item = ({ index, iconName }: any) => {
     const animatedStyle = useAnimatedStyle(() => ({
       transform: [{ translateY: itemPositions[index].value }], // Animation for translation
       opacity: itemOpacities[index].value, // Animation for opacity
@@ -37,7 +42,6 @@ export default function DQ_FAB({ clicked, setClicked }) {
 
     return (
       <Animated.View style={[styles.fabItem, animatedStyle]}>
-        {/* Allow text to expand without moving the openContainer */}
         <View style={styles.textContainer}>
           <DQ_Paragraph content="dsvsd" fontFamily='Nexa Light' textColor='white' textAlign='right' />
         </View>
@@ -55,7 +59,7 @@ export default function DQ_FAB({ clicked, setClicked }) {
           <Icon name={clicked ? 'xmark' : 'list'} size={18} color="white" iconStyle='solid' />
         </View>
       </TouchableOpacity>
-      <View style={styles.itemsContainer}>
+      <View style={[styles.itemsContainer, clicked && styles.visible]}>
         {items.map((iconName, index) => (
           <Item key={index} index={index} iconName={iconName} />
         ))}
@@ -69,7 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mainContainer: {
-    flex:0.2
+    flex: 0.2,
   },
   mainButton: {
     backgroundColor: '#ffbe26',
@@ -90,18 +94,21 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   itemsContainer: {
-    width:190,
-    position:'absolute',
-    top:40,
-    left:-150,
+    width: 190,
+    position: 'absolute',
+    top: 40,
+    left: -150,
+    display: 'none', // Initially hidden
+  },
+  visible: {
+    display: 'flex', // Show when clicked
   },
   fabItem: {
-    flex:1,
+    flex: 1,
     marginBottom: -10,
     flexDirection: 'row',
     alignItems: 'center',
-    gap:20
-
+    gap: 20,
   },
   textContainer: {
     flex: 1,
