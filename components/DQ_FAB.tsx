@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
 import Icon from '@react-native-vector-icons/fontawesome6';
 import DQ_Paragraph from './DQ_Paragraph';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DQ_FAB({ clicked, setClicked }: any) {
+  const [actions, setActions] = useState<any[]>([]);
   const items = ['list', 'xmark', 'list', 'list', 'list', 'list'];
 
   const itemPositions = items.map(() => useSharedValue(0));
@@ -33,6 +35,15 @@ export default function DQ_FAB({ clicked, setClicked }: any) {
       return newClicked;
     });
   };
+
+  useEffect(()=>{
+    const getActions = async()=>{
+      const acts = await AsyncStorage.getItem('contractActions')
+      console.log(acts)
+      setActions(JSON.parse(acts || 'null'));
+    }
+    getActions()
+  },[])
 
   const Item = ({ index, iconName }: any) => {
     const animatedStyle = useAnimatedStyle(() => ({
@@ -109,6 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
+    marginTop:-30
   },
   textContainer: {
     flex: 1,

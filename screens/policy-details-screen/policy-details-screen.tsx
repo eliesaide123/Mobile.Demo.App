@@ -7,6 +7,8 @@ import { GetPolicyDetails } from './service/get-policy-details-service';
 import DQ_Contract from '../../components/DQ_Contract';
 import DQ_Vehicle from '../../components/DQ_Vehicle';
 import DQ_Insured from '../../components/DQ_Insured';
+import DQ_InsuredCovers from '../../components/DQ_InsuredCovers';
+import _shared from '../common';
 
 const imageMapping: { [key: string]: any } = {
   health: require('../../assets/images/health.png'),
@@ -29,7 +31,7 @@ const componentMapping: { [key: string]: any } = {
   "vehicle": DQ_Vehicle,
   "insuredDep": DQ_Contract,
   "insuredData": DQ_Insured,
-  "insuredCoverData": DQ_Contract,
+  "insuredCoverData": DQ_InsuredCovers,
 };
 
 const titleMapping: { [key: string]: string } = {
@@ -44,41 +46,35 @@ export default function PolicyDetails({ navigation, route }: any) {
   const [groupCode, setGroupCode] = useState<string>('');
   const [policyNo, setPolicyNo] = useState<string>('');
   const [tabs, setTabs] = useState<any[]>([]);
-  const [pin, setPin] = useState<string>('');
-  const [role, setRole] = useState<string>('');
   const [policyData, setPolicyData] = useState<any>(null);
-  const [userId, setUserId] = useState<any>(null);
   const [policyDetailsURI, setPolicyDetailsURI] = useState<any>(null);
+  const [policyInsCoversURI, setPolicyInsCoversURI] = useState<any>(null);
   const [clickedFAB, setClickedFAB] = useState<boolean>(false);
 
   useEffect(() => {
     const {
       policyNo: _policyNo,
       groupCode: grpCode,
-      pin: _pin,
-      role: _role,
-      userId: _userId,
       policyDetailsURI: _policyDetailsURI,
+      policyInsCoversURI: _policyInsCoversURI
     } = route.params;
 
     // Initialize state variables from route params
     setGroupCode(grpCode);
     setPolicyNo(_policyNo);
-    setPin(_pin);
-    setRole(_role);
-    setUserId(_userId);
     setPolicyDetailsURI(_policyDetailsURI);
+    setPolicyInsCoversURI(_policyInsCoversURI);
 
     // This function fetches policy details only if they have not been fetched yet
     const fetchPolicyDetails = async () => {
       if (policyData) return; // Prevent fetching if data already exists
 
       const result = await GetPolicyDetails(
-        _userId,
+        _shared.userId,
         _policyNo,
-        _pin,
-        _role,
-        _policyDetailsURI
+        _shared.pin,
+        _shared.role,
+        _policyDetailsURI,
       );
 
       const policyDetails = result.policyDetails;
@@ -127,7 +123,15 @@ export default function PolicyDetails({ navigation, route }: any) {
               key: titleMapping[key],  // Use the titleMapping for key
               title: titleMapping[key],  // Use the titleMapping for title
               content: (
-                <TabContent item={policyDetails[key]} contractAdditional={policyDetails['contractAdditional'] !== undefined ? policyDetails['contractAdditional'] : undefined }/>
+                <TabContent item={policyDetails[key]} contractAdditional={policyDetails['contractAdditional'] !== undefined ? policyDetails['contractAdditional'] : undefined } groupCode={grpCode}/>
+              ),
+            });
+          }else if(TabContent == DQ_InsuredCovers){
+            updatedTabs.push({
+              key: titleMapping[key],  // Use the titleMapping for key
+              title: titleMapping[key],  // Use the titleMapping for title
+              content: (
+                <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyNo={_policyNo}/>
               ),
             });
           }else{
@@ -135,7 +139,7 @@ export default function PolicyDetails({ navigation, route }: any) {
               key: titleMapping[key],
               title: titleMapping[key],
               content: (
-                <TabContent item={policyDetails[key]} />
+                <TabContent item={policyDetails[key]}  />
               ),
             });
           }

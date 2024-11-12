@@ -23,7 +23,6 @@ export default function App() {
     const checkWalkthroughStatus = async () => {
       try {
         const walkthroughStatus = await AsyncStorage.getItem('walkthroughCompleted');
-        console.log(walkthroughStatus)
         if (walkthroughStatus === 'true') {
           setIsWalkthroughComplete(true);
         }

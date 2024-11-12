@@ -1,12 +1,135 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import DQ_InsuredCard from './DQ_InsuredCard';
+import DQ_Paragraph from './DQ_Paragraph';
+import {GetAdvancedLifeCover} from '../screens/policy-details-screen/service/get-advanced-life-cover-service';
+import _shared from '../screens/common';
 
-export default function DQ_InsuredCovers() {
+export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
+  const [covers, setCovers] = useState([]);
+
+  useEffect(() => {
+    const Get_Covers = async () => {
+      console.log(policyNo);
+      const result = await GetAdvancedLifeCover(
+        _shared.userId,
+        policyNo,
+        _shared.pin,
+        _shared.role,
+        item[0]?.riskNo,
+        coversURL,
+      );
+      const _covers = result?.riskDetails?.covers || [];
+      setCovers(_covers);
+    };
+    Get_Covers();
+  }, [coversURL, policyNo, item]);
+
+  const getDynamicFontSize = (text : any) => {
+    const length = String(text).length;
+    if (length <= 10) return 16; // Short text, larger font
+    if (length <= 20) return 14; // Medium text, medium font
+    if (length <= 30) return 12; // Long text, smaller font
+    return 10; // Very long text, smallest font
+  };
+
   return (
-    <View>
-      <Text>DQ_InsuredCovers</Text>
-    </View>
-  )
+    <ScrollView style={styles.contractContainer}>
+      <View>
+        {Array.isArray(item) && item.length > 0 ? (
+          item.map((obj, index) => (
+            <DQ_InsuredCard
+              title={obj['insuredData'] || 'Insured Data'}
+              key={index}
+              count={item.length}>
+                <View style={styles.additionalDataRow}>
+                  <View style={styles.header}>
+                    <DQ_Paragraph
+                      content={`Covers Description & Deductible`}
+                      textColor="white"
+                      fontFamily="Nexa Bold"
+                      fontSize={13}
+                      textAlign='center'
+                    />
+                  </View>
+                  <View style={styles.header}>
+                    <DQ_Paragraph
+                      content={`Sum Insured / USDF`}
+                      textColor="white"
+                      fontFamily="Nexa Bold"
+                      fontSize={13}
+                      textAlign='center'
+                    />
+                  </View>
+                </View>
+                {Array.isArray(covers) && covers.length > 0 ? (
+                  covers.map((cover, coverIndex) => (
+                    <View key={coverIndex}>
+                      <View style={styles.contractRow}>
+                        <DQ_Paragraph content={cover["insuredCover"]} fontFamily='Nexa Bold' fontSize={getDynamicFontSize(cover["insuredCover"])} textColor="black" textWidth={150}/>
+                        <Text style={styles.value}>
+                        <DQ_Paragraph content={cover["insuredSI"]} fontFamily='Nexa Bold' fontSize={14} textColor="black" textWidth={150}/>
+                        </Text>
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <Text>No data available</Text>
+                )}
+            </DQ_InsuredCard>
+          ))
+        ) : (
+          <Text>No data available</Text>
+        )}
+      </View>
+    </ScrollView>
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  contractContainer: {
+    padding: 12,
+    backgroundColor: '#ebebeb',
+    flex: 1,
+    width: '100%',
+  },
+  contractRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 9,
+    width:'114%',
+    marginHorizontal:-20,
+    backgroundColor:'#dcdcdc',
+    marginBottom:5,
+    padding:10,
+    borderRadius:5,
+  },
+  additionalDataRow: {
+    position:'relative',
+    top:0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 9,
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'grey',
+    backgroundColor: '#3cc8f0',
+    flexWrap: 'wrap',
+    padding: 15,
+    gap:20,
+    width:'128%',
+    marginHorizontal:-40,
+    marginBottom:7,
+  },
+  header:{
+    flex:0.4
+  },
+  label: {
+    width:50
+  },
+  value: {
+    flex: 1,
+    textAlign: 'right',
+  },
+});

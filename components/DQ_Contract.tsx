@@ -1,11 +1,13 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import DQ_Paragraph from './DQ_Paragraph';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DQ_Contract({
   item,
   setExcludedData,
   contractAdditional,
+  groupCode
 }: any) {
   const excludeKeys = [
     'firstInception',
@@ -18,6 +20,65 @@ export default function DQ_Contract({
     'hasClaims',
     'hasPendingRequests',
   ];
+
+    const actions = [
+      {
+        attr: "canRenewPolicy",
+        value: item.canRenewPolicy,
+        title: 'Renew',
+        iconName: 'plus'
+      },
+      {
+        attr: "canPrintPolicy",
+        value: item.canPrintPolicy,
+        title: 'Print Policy',
+        iconName: 'printer'
+      },
+      {
+        attr: "canPrintAlpSoa",
+        value: item.canPrintAlpSoa,
+        title: 'Print SOA',
+        iconName: 'file-text'
+      },
+      {
+        attr: "hasLegalAddress",
+        value: item.hasLegalAddress,
+        title: 'Legal Address',
+        iconName: 'map-marker'
+      },
+      {
+        attr: "hasBeneficiary",
+        value: item.hasBeneficiary,
+        title: 'Beneficiary',
+        iconName: 'user-plus'
+      },
+      {
+        attr: "hasDuePremiums",
+        value: item.hasDuePremiums,
+        title: 'Due Premiums',
+        iconName: 'dollar-sign'
+      },
+      {
+        attr: "hasClaims",
+        value: item.hasClaims,
+        title: 'Claims',
+        iconName: 'file-invoice'
+      },
+      {
+        attr: "hasPendingRequests",
+        value: item.hasPendingRequests,
+        title: 'Pending Requests',
+        iconName: 'hourglass-half'
+      }
+    ];
+
+    useEffect(()=>{
+      const setActions = async()=>{
+        await AsyncStorage.setItem('contractActions', JSON.stringify(actions))
+      }
+      setActions();
+    }, [actions])
+  
 
   return (
     <ScrollView
@@ -41,21 +102,20 @@ export default function DQ_Contract({
 
         {contractAdditional && (
           <View>
-            {Object.entries(contractAdditional[0]).map(([key, value]) => {
-              if(key.toLowerCase() == 'plan'){
+            {Object.entries(contractAdditional[0]).map(([key, value], index) => {
+              if(key.toLowerCase() == 'plan' || (groupCode.toLowerCase() == 'travel' && index == 0)){
                 return(
-                  //3cc8f0
                   <View key={key} style={styles.additionalDataRow}>
-                  <DQ_Paragraph content={value + " " + key.substring(0,1).toUpperCase() +key.substring(1,) } textColor='white'/>
+                  <DQ_Paragraph content={key.toLowerCase() == 'plan' ? value + " " + key.substring(0,1).toUpperCase() + key.substring(1,) : "Additional Data" } textColor='white'/>
                 </View>
                 )
-
               }
               return (
-                <View key={key} style={styles.contractRow}>
+                !excludeKeys.includes(key) &&
+              value !== null && ( <View key={key} style={styles.contractRow}>
                   <Text style={styles.label}>{key}</Text>
                   <Text style={styles.value}>{String(value)}</Text>
-                </View>
+                </View>)
               );
             })}
           </View>

@@ -68,7 +68,8 @@ const DQ_InsuredCard = ({ title, count, children }: any) => {
       <Animated.View
         style={{
           opacity: opacityInterpolate, // Apply the opacity fade effect here
-          marginTop: 20,
+          marginTop: 30,
+          width: '100%',
         }}
       >
         {children}
@@ -83,14 +84,14 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2,      
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 9,
     margin: 10,
     padding: 15,
-    height: 70, // Fixed height for the card to remain the same size
+    height: 70, // Fixed height for the card to remain the same size    
   },
   InlineElements: {
     flexDirection: 'row',

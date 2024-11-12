@@ -1,5 +1,3 @@
-/* eslint-disable no-trailing-spaces */
-// LoginScreen.tsx
 import React, {useState} from 'react';
 import {View, Image, StyleSheet, Alert, Pressable} from 'react-native';
 import DQ_Button from '../../components/DQ_Button';
@@ -48,12 +46,13 @@ export default function LoginScreen({navigation}: any) {
     const result = await login(userId, password);        
     if (result.response.status) {
       _shared.ui_token = result.response.imS_UIToken;
+      _shared.userId = userId;
       const checkRoleResult = await ProductPolicyService(userId);
       if (checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == 'A') {
         navigation.navigate('AgentSearch');
       } else {
         if (result.response.status) {
-          navigation.navigate('ProductPolicy', {userId: userId});
+          navigation.navigate('ProductPolicy');
         } else {
           showAlert();
         }
