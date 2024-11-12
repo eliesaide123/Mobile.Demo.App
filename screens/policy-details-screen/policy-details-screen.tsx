@@ -49,6 +49,7 @@ export default function PolicyDetails({ navigation, route }: any) {
   const [policyData, setPolicyData] = useState<any>(null);
   const [userId, setUserId] = useState<any>(null);
   const [policyDetailsURI, setPolicyDetailsURI] = useState<any>(null);
+  const [clickedFAB, setClickedFAB] = useState<boolean>(false);
 
   useEffect(() => {
     const {
@@ -151,6 +152,10 @@ export default function PolicyDetails({ navigation, route }: any) {
 
     fetchPolicyDetails();
   }, [route.params]);
+  
+  const handleOverlayClick = () => {
+    setClickedFAB((prev)=>!prev);
+  };
 
   return (
     <SafeAreaView style={styles.rootElement}>
@@ -159,11 +164,15 @@ export default function PolicyDetails({ navigation, route }: any) {
         textCenter={groupCode}
         press={() => navigation.goBack()}
       />
+      
+      {clickedFAB && <View style={styles.overlay} onTouchStart={handleOverlayClick} />}
       <View>
         {groupCode && policyNo && (
           <DQ_PolicyIconDescription
             src={imageMapping[groupCode]}
             policyNo={policyNo}
+            clickedFAB = {clickedFAB}
+            setClickedFAB={setClickedFAB}
           />
         )}
       </View>
@@ -181,5 +190,14 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: '#ebebeb',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent overlay
+    zIndex: 1,  // Ensure overlay is above other content
   },
 });

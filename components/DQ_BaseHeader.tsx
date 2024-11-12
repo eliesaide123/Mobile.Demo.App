@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderStartEndRadius: 20,
     borderEndEndRadius: 20,
+    zIndex:10
   },
   commands: {
     flexDirection: 'row',
