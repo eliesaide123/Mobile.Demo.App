@@ -1,131 +1,109 @@
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from 'react-native-reanimated';
 import Icon from '@react-native-vector-icons/fontawesome6';
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
+import DQ_Paragraph from './DQ_Paragraph';
 
-const DQ_FAB = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const animation = new Animated.Value(0);
+export default function DQ_FAB({ clicked, setClicked }) {
+  const items = ['list', 'xmark', 'list', 'list', 'list', 'list'];
 
-  const toggleOpen = () => {
-    Animated.timing(animation, {
-      toValue: isOpen ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    setIsOpen(!isOpen);
+  const itemPositions = items.map(() => useSharedValue(0));
+  const itemOpacities = items.map(() => useSharedValue(0));
+
+  const handleClickBtn = () => {
+    setClicked(!clicked);
+
+    // Change item positions and opacity to make them appear
+    itemPositions.forEach((position, index) => {
+      position.value = withTiming(
+        clicked ? 0 : (index + 1) * 50, // Move the items upward
+        { duration: 500, easing: Easing.bezier(0.68, -0.6, 0.32, 1.6) }
+      );
+    });
+
+    itemOpacities.forEach((opacity) => {
+      opacity.value = withTiming(
+        clicked ? 0 : 1, // Fade in and out depending on the click state
+        { duration: 500, easing: Easing.bezier(0.68, -0.6, 0.32, 1.6) }
+      );
+    });
   };
 
-  const item1Style = {
-    transform: [
-      {
-        scale: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-        }),
-      },
-      {
-        translateY: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -60], // Adjust as needed
-        }),
-      },
-    ],
-  };
+  const Item = ({ index, iconName }) => {
+    const animatedStyle = useAnimatedStyle(() => ({
+      transform: [{ translateY: itemPositions[index].value }], // Animation for translation
+      opacity: itemOpacities[index].value, // Animation for opacity
+    }));
 
-  const item2Style = {
-    transform: [
-      {
-        scale: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-        }),
-      },
-      {
-        translateY: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -120], // Adjust as needed
-        }),
-      },
-    ],
-  };
-
-  const item3Style = {
-    transform: [
-      {
-        scale: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-        }),
-      },
-      {
-        translateY: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -180], // Adjust as needed
-        }),
-      },
-    ],
+    return (
+      <Animated.View style={[styles.fabItem, animatedStyle]}>
+        {/* Allow text to expand without moving the openContainer */}
+        <View style={styles.textContainer}>
+          <DQ_Paragraph content="dsvsd" fontFamily='Nexa Light' textColor='white' textAlign='right' />
+        </View>
+        <TouchableOpacity style={styles.openContainer} disabled={!clicked}>
+          <Icon name={iconName} size={18} color="blue" iconStyle='solid' />
+        </TouchableOpacity>
+      </Animated.View>
+    );
   };
 
   return (
-    <View style={styles.container}>
-      {/* FAB Items */}
-      <Animated.View style={[styles.fabItem, item1Style]}>
-        <TouchableOpacity style={styles.fabButton}>
-          <Icon name="list" size={18} color="white" iconStyle='solid' />
-        </TouchableOpacity>
-      </Animated.View>
-
-      <Animated.View style={[styles.fabItem, item2Style]}>
-        <TouchableOpacity style={styles.fabButton}>
-          <Icon name="list" size={18} color="white" iconStyle='solid' />
-        </TouchableOpacity>
-      </Animated.View>
-
-      <Animated.View style={[styles.fabItem, item3Style]}>
-        <TouchableOpacity style={styles.fabButton}>
-        <Icon name="list" size={18} color="white" iconStyle='solid' />
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* Main FAB Button */}
-      <TouchableOpacity style={styles.fab} onPress={toggleOpen}>
-        <Animated.View style={{ transform: [{ rotate: animation.interpolate({
-          inputRange: [0, 1],
-          outputRange: ['0deg', '45deg'],
-        }) }]}}>
-          <Icon name="list" size={18} color="white" iconStyle='solid' />
-        </Animated.View>
+    <View style={styles.rootElement}>
+      <TouchableOpacity onPress={handleClickBtn} style={styles.mainContainer}>
+        <View style={styles.mainButton}>
+          <Icon name={clicked ? 'xmark' : 'list'} size={18} color="white" iconStyle='solid' />
+        </View>
       </TouchableOpacity>
+      <View style={styles.itemsContainer}>
+        {items.map((iconName, index) => (
+          <Item key={index} index={index} iconName={iconName} />
+        ))}
+      </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
+  rootElement: {
+    flex: 1,
   },
-  fab: {
-    width: 36,
-    height: 36,
-    borderRadius: 28,
-    backgroundColor: '#FFA000',
+  mainContainer: {
+    flex:0.2
+  },
+  mainButton: {
+    backgroundColor: '#ffbe26',
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 28,
     elevation: 5,
   },
-  fabButton: {
-    width: 18,
-    height: 18,
-    borderRadius: 24,
-    backgroundColor: '#0160ae',
+  openContainer: {
+    backgroundColor: 'white',
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 24,
+    elevation: 4,
+  },
+  itemsContainer: {
+    width:190,
+    position:'absolute',
+    top:40,
+    left:-150,
   },
   fabItem: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    opacity: 0.9,
+    flex:1,
+    marginBottom: -10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap:20
+
+  },
+  textContainer: {
+    flex: 1,
   },
 });
-
-export default DQ_FAB;

@@ -3,7 +3,7 @@ import React from 'react'
 import DQ_Paragraph from './DQ_Paragraph'
 import DQ_FAB from './DQ_FAB'
 
-export default function DQ_PolicyIconDescription({src, policyNo}: any) {
+export default function DQ_PolicyIconDescription({src, policyNo, clickedFAB, setClickedFAB}: any) {
   return (
     <View style={styles.Image_Container}>
         <View style={styles.Inline_Image}>
@@ -15,7 +15,7 @@ export default function DQ_PolicyIconDescription({src, policyNo}: any) {
           <DQ_Paragraph content={policyNo} fontFamily='Nexa Light' />
         </View>
         <View style={styles.fab}>
-          <DQ_FAB/>
+          <DQ_FAB clicked={clickedFAB} setClicked={setClickedFAB}/>
         </View>
       </View>
   )
@@ -44,9 +44,9 @@ const styles = StyleSheet.create({
         gap:10,
       },
       fab:{
-        zIndex:9999,
         position:'static',
-        top:-3,
-        right:-10
+        top:3,
+        right:-30,
+        zIndex:50
       }
 })
