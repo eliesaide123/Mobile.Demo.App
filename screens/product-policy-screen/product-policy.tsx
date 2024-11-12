@@ -158,7 +158,7 @@ export default function ProductPolicy({navigation, route}: any) {
 
     <SafeAreaView>
       {pin && (
-        <View>
+        <View style={{marginTop:10}}>
           <DQ_BaseHeader
         style={styles.mainHeader}
         press={() => navigation.goBack()}
@@ -326,7 +326,6 @@ const styles = StyleSheet.create({
   },
   mainHeader: {
     flex: 1,
-    borderColor: 'red',
   },
   cardsContainer: {
     marginTop: 30,

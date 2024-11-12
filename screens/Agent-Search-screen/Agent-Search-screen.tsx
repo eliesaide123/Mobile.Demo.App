@@ -37,9 +37,15 @@ const AgentSearchScreen = () => {
       title: 'Name',
       content: (
         <View style={styles.TextBox}>
-          <DQ_TextBox placeholder={FirstNamePlaceHolder} />
-          <DQ_TextBox placeholder={FatherNamePlaceHolder} />
-          <DQ_TextBox placeholder={LastNamePlaceHolder} />
+          <DQ_TextBox
+            placeholder={FirstNamePlaceHolder}
+            borderColor="#bbbec3"
+          />
+          <DQ_TextBox
+            placeholder={FatherNamePlaceHolder}
+            borderColor="#bbbec3"
+          />
+          <DQ_TextBox placeholder={LastNamePlaceHolder} borderColor="#bbbec3" />
         </View>
       ),
     },
@@ -49,6 +55,7 @@ const AgentSearchScreen = () => {
       content: (
         <View style={styles.TextBox}>
           <DQ_TextBox
+            borderColor="#bbbec3"
             placeholder={PolicyNumberPlaceHolder}
             hintText={HintTextPolicyNumberPlaceHolder}
           />
@@ -60,7 +67,7 @@ const AgentSearchScreen = () => {
       title: 'PIN',
       content: (
         <View style={styles.TextBox}>
-          <DQ_TextBox placeholder={PinPlaceHolder} />
+          <DQ_TextBox placeholder={PinPlaceHolder} borderColor="#bbbec3" />
         </View>
       ),
     },
@@ -70,7 +77,12 @@ const AgentSearchScreen = () => {
       <DQ_BaseHeader />
 
       <View style={styles.mainTitle}>
-        <DQ_Paragraph fontSize={18} content="p234" textAlign="center" fontFamily='Nexa Bold' />
+        <DQ_Paragraph
+          fontSize={18}
+          content="p234"
+          textAlign="center"
+          fontFamily="Nexa Bold"
+        />
       </View>
 
       <View style={styles.ButtonView}>
@@ -140,6 +152,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   TextBox: {
+    padding: 16,
     paddingTop: 20,
     flex: 1,
     width: '100%',
