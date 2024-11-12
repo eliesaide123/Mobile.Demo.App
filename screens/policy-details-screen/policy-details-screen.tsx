@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent overlay
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',  // Semi-transparent overlay
     zIndex: 1,  // Ensure overlay is above other content
   },
 });
