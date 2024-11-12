@@ -4,13 +4,13 @@ import DQ_InsuredCard from './DQ_InsuredCard';
 
 export default function DQ_Insured({ item }: any) {
   const excludeKeys = ['riskNo'];
-
+  
   return (
     <ScrollView style={styles.contractContainer}>
-      <View>
-        {Array.isArray(item) && item.length > 0 ? (
+      <View>        
+        {Array.isArray(item) && item.length > 0 ? (          
           item.map((obj, index) => (
-            <DQ_InsuredCard title={obj["insuredData"]} key={index}>
+            <DQ_InsuredCard title={obj["insuredData"]} key={index} count={item.length}>
               {typeof obj === 'object' && obj !== null ? (
                 Object.entries(obj).map(([key, value]) => (
                   !excludeKeys.includes(key) && value !== null && (

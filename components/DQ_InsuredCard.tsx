@@ -1,5 +1,5 @@
 import Icon from '@react-native-vector-icons/fontawesome6';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,21 @@ import {
   StyleSheet,
 } from 'react-native';
 
-const DQ_InsuredCard = ({ title, children }: any) => {
+const DQ_InsuredCard = ({ title, count, children }: any) => {
   const [collapsed, setCollapsed] = useState(true);
   const [animation] = useState(new Animated.Value(0));
+
+  // Open the card by default if count == 1 and start the animation
+  useEffect(() => {
+    if (count === 1) {
+      setCollapsed(false); // Open the card automatically if there's only 1 item
+      Animated.timing(animation, {
+        toValue: 1, // Trigger the expand animation (fade in content)
+        duration: 300, // Duration for the animation
+        useNativeDriver: false, // Use native driver for better performance
+      }).start();
+    }
+  }, [count]);
 
   const toggleCollapse = () => {
     // Toggle the collapsed state to trigger reanimation
@@ -18,7 +30,7 @@ const DQ_InsuredCard = ({ title, children }: any) => {
 
     // Animate the content visibility (opacity) and the chevron icon rotation
     Animated.timing(animation, {
-      toValue: collapsed ? 1 : 0,
+      toValue: collapsed ? 1 : 0, // Fade in/out effect
       duration: 300, // Duration for expansion/collapse
       useNativeDriver: false, // Use native driver
     }).start();
@@ -47,13 +59,12 @@ const DQ_InsuredCard = ({ title, children }: any) => {
           <Text style={[styles.textFormat, { color }]}>{title}</Text>
           <View style={styles.InlineElements}>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-              <Icon name="chevron-down" size={14} color={'black'} iconStyle="solid" />
+              <Icon name="chevron-down" size={14} color={color} iconStyle="solid" />
             </Animated.View>
           </View>
         </View>
       </TouchableWithoutFeedback>
 
-      {/* Content area remains fixed height, but children will fade in and out */}
       <Animated.View
         style={{
           opacity: opacityInterpolate, // Apply the opacity fade effect here
