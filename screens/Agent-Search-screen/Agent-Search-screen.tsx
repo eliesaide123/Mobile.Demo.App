@@ -1,34 +1,86 @@
 /* eslint-disable no-trailing-spaces */
-import React from 'react';
-import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_TabView from '../../components/DQ_TabView';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Button from '../../components/DQ_Button';
-import {getLocalizedEntry} from '../../Shared/SharedFunctions';
+import { getLocalizedEntry } from '../../Shared/SharedFunctions';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
+import { fetchRoleAndPin, getAgentSearchOptions, PerformSearch } from './Service/Agent-Search-Service';
+import { Dropdown } from 'react-native-element-dropdown';
 
-const AgentSearchScreen = () => {
-  const FirstNamePlaceHolder = getLocalizedEntry(
-    'AgentSearchScreen',
-    'FirstName',
-  );
-  const FatherNamePlaceHolder = getLocalizedEntry(
-    'AgentSearchScreen',
-    'FathesName',
-  );
-  const LastNamePlaceHolder = getLocalizedEntry(
-    'AgentSearchScreen',
-    'LastName',
-  );
-  const PolicyNumberPlaceHolder = getLocalizedEntry(
-    'AgentSearchScreen',
-    'PolicyNumber',
-  );
-  const HintTextPolicyNumberPlaceHolder = getLocalizedEntry(
-    'AgentSearchScreen',
-    'HintTextPolicyNumber',
-  );
+const AgentSearchScreen = ({ navigation, route }: any) => {
+  const [genders, setGenders] = useState<{ entityCode: string; entityDesc: string }[]>([]);
+  const [genderMapping, setGenderMapping] = useState<{ [key: string]: string }>({});
+  const [selectedGender, setSelectedGender] = useState('');  // Example default value
+  const [firstName, setFirstName] = useState<string>('');
+  const [fatherName, setFatherName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [policyNumber, setPolicyNumber] = useState<string>('');  // Static value for policy number
+  const [pin, setPin] = useState<string>('');  
+  const userId = route.params.userId;
+  const [_agentPinRole, setAgentPinRole] = useState<any>();
+
+  const searchParams = {
+    searchByName: {
+      gender: selectedGender || null,
+      firstName: firstName || null,
+      fatherName: fatherName || null,
+      lastName: lastName || null,
+    },
+    searchByPN: {
+      policyNo: policyNumber || null,
+    },
+    searchByPin: {
+      pin: pin || null,
+    }
+  };
+
+  useEffect(() => {
+    const fetchGenders = async () => {
+      const agentRolePin = await fetchRoleAndPin(userId);
+      setAgentPinRole(agentRolePin);
+      const options = await getAgentSearchOptions(userId);
+      setGenders(options);
+
+      // Create dynamic genderMapping based on fetched options
+      const mapping = options.reduce((acc: { [key: string]: string }, gender : any) => {
+        acc[gender.entityCode] = gender.entityDesc;
+        return acc;
+      }, {});
+      setGenderMapping(mapping);
+    };
+
+    fetchGenders();
+  }, [userId]);
+
+  const PerformSearchService = async (searchType: string) => {
+    let params;
+
+    if (searchType === 'PIN') {
+      params = { SearchType: 'PIN', ByPin: searchParams.searchByPin.pin };
+    } else if (searchType === 'P') {
+      params = { SearchType: 'P', ByPolicyNo: searchParams.searchByPN.policyNo };
+    } else if (searchType === 'PH') {
+      params = {
+        SearchType: 'PH',
+        ByGender: genderMapping[selectedGender] || null,
+        ByFirstName: searchParams.searchByName.firstName,
+        ByFather: searchParams.searchByName.fatherName,
+        ByFamily: searchParams.searchByName.lastName,
+      };
+    }
+
+    await PerformSearch(userId, _agentPinRole.role, _agentPinRole.pin, params);
+    navigation.navigate('AgentResult');
+  };
+
+  const FirstNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FirstName');
+  const FatherNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FathesName');
+  const LastNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'LastName');
+  const PolicyNumberPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'PolicyNumber');
+  const HintTextPolicyNumberPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'HintTextPolicyNumber');
   const PinPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'Pin');
 
   const tabs = [
@@ -36,35 +88,72 @@ const AgentSearchScreen = () => {
       key: 'first',
       title: 'Name',
       content: (
-        <View style={styles.TextBox}>
-          <DQ_TextBox placeholder={FirstNamePlaceHolder} />
-          <DQ_TextBox placeholder={FatherNamePlaceHolder} />
-          <DQ_TextBox placeholder={LastNamePlaceHolder} />
-        </View>
+        <ScrollView style={{ width: '100%', flex: 1 }}>
+          <View style={styles.TextBox}>
+            <Dropdown
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              data={genders.map((gender) => ({
+                label: gender.entityDesc,
+                value: gender.entityCode,
+              }))}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Gender"
+              value={selectedGender}
+              onChange={(item) => {
+                setSelectedGender(item.value);
+              }}
+            />
+            <DQ_TextBox
+              placeholder={FirstNamePlaceHolder}
+              value={firstName}
+              onChangeText={setFirstName} />
+            <DQ_TextBox placeholder={FatherNamePlaceHolder} value={fatherName} onChangeText={setFatherName} />
+            <DQ_TextBox placeholder={LastNamePlaceHolder} value={lastName} onChangeText={setLastName} />
+          </View>
+          <View style={styles.SearchButton}>
+            <DQ_Button title="Search" onPress={() => PerformSearchService('PH')} />
+          </View>
+        </ScrollView>
       ),
     },
     {
       key: 'second',
       title: 'Policy Number',
       content: (
-        <View style={styles.TextBox}>
-          <DQ_TextBox
-            placeholder={PolicyNumberPlaceHolder}
-            hintText={HintTextPolicyNumberPlaceHolder}
-          />
-        </View>
+        <ScrollView style={{ width: '100%', flex: 1 }}>
+          <View style={styles.TextBox}>
+            <DQ_TextBox
+              placeholder={PolicyNumberPlaceHolder}
+              hintText={HintTextPolicyNumberPlaceHolder}
+              value={policyNumber}
+              onChangeText={setPolicyNumber}
+            />
+          </View>
+          <View style={styles.SearchButton}>
+            <DQ_Button title="Search" onPress={() => PerformSearchService('P')} />
+          </View>
+        </ScrollView>
       ),
     },
     {
       key: 'third',
       title: 'PIN',
       content: (
-        <View style={styles.TextBox}>
-          <DQ_TextBox placeholder={PinPlaceHolder} />
-        </View>
+        <ScrollView style={{ width: '100%', flex: 1 }}>
+          <View style={styles.TextBox}>
+            <DQ_TextBox placeholder={PinPlaceHolder} value={pin} onChangeText={setPin} />
+          </View>
+          <View style={styles.SearchButton}>
+            <DQ_Button title="Search" onPress={() => PerformSearchService('PIN')} />
+          </View>
+        </ScrollView>
       ),
     },
   ];
+
   return (
     <SafeAreaView style={styles.container}>
       <DQ_BaseHeader />
@@ -74,7 +163,7 @@ const AgentSearchScreen = () => {
       </View>
 
       <View style={styles.ButtonView}>
-        <DQ_Button title="Renewal Portal System"></DQ_Button>
+        <DQ_Button title="Renewal Portal System" />
       </View>
 
       <View style={styles.SearchText}>
@@ -82,10 +171,6 @@ const AgentSearchScreen = () => {
       </View>
 
       <DQ_TabView tabs={tabs} />
-
-      {/* <TouchableOpacity style={styles.searchButton}>
-        <Text style={styles.searchButtonText}>Search</Text>
-      </TouchableOpacity> */}
     </SafeAreaView>
   );
 };
@@ -118,17 +203,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
   },
-  searchButton: {
-    backgroundColor: '#FFA500',
-    paddingVertical: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
-  },
   searchButtonText: {
     color: '#fff',
     fontWeight: 'bold',
   },
+
+  SearchButton: {
+    padding: 20,
+    width: '100%',
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+
   ButtonView: {
     paddingLeft: 50,
     paddingRight: 50,
@@ -141,8 +227,26 @@ const styles = StyleSheet.create({
   },
   TextBox: {
     paddingTop: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 20,
     flex: 1,
     width: '100%',
+  },
+  dropdown: {
+    width: '100%',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    borderColor: '#ccc',
+  },
+  placeholderStyle: {
+    color: '#888',
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    color: '#000',
+    fontSize: 16,
   },
 });
 

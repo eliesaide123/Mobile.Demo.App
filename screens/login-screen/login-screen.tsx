@@ -50,7 +50,7 @@ export default function LoginScreen({navigation}: any) {
       _shared.ui_token = result.response.imS_UIToken;
       const checkRoleResult = await ProductPolicyService(userId);
       if (checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == 'A') {
-        navigation.navigate('AgentSearch');
+        navigation.navigate('AgentSearch', {userId: userId});
       } else {
         if (result.response.status) {
           navigation.navigate('ProductPolicy', {userId: userId});
