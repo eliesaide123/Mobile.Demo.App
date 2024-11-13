@@ -12,6 +12,14 @@ const DQ_InsuredCard = ({ title, count, children }: any) => {
   const [collapsed, setCollapsed] = useState(true);
   const [animation] = useState(new Animated.Value(0));
 
+  const getDynamicFontSize = (text : any) => {
+    const length = String(text).length;
+    if (length <= 10) return 16; // Short text, larger font
+    if (length <= 20) return 14; // Medium text, medium font
+    if (length <= 30) return 12; // Long text, smaller font
+    return 10; // Very long text, smallest font
+  };
+
   // Open the card by default if count == 1 and start the animation
   useEffect(() => {
     if (count === 1) {
@@ -56,7 +64,7 @@ const DQ_InsuredCard = ({ title, count, children }: any) => {
     <View style={[styles.cardBorder, { backgroundColor }]}>
       <TouchableWithoutFeedback onPress={toggleCollapse}>
         <View style={styles.InlineElements}>
-          <Text style={[styles.textFormat, { color }]}>{title}</Text>
+          <Text style={[styles.textFormat, { color, fontSize: getDynamicFontSize(title) }]}>{title}</Text>
           <View style={styles.InlineElements}>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
               <Icon name="chevron-down" size={14} color={color} iconStyle="solid" />

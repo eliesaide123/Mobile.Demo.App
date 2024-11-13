@@ -10,7 +10,7 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
 
   useEffect(() => {
     const Get_Covers = async () => {
-      console.log(policyNo);
+      console.log(JSON.stringify(item));
       const result = await GetAdvancedLifeCover(
         _shared.userId,
         policyNo,
@@ -39,7 +39,7 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
         {Array.isArray(item) && item.length > 0 ? (
           item.map((obj, index) => (
             <DQ_InsuredCard
-              title={obj['insuredData'] || 'Insured Data'}
+              title={obj['insuredData'] || obj['riskType']  ||'Insured Data'}
               key={index}
               count={item.length}>
                 <View style={styles.additionalDataRow}>
