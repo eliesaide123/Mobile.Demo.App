@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Image, StyleSheet, ActivityIndicator, Pressable, Text } from 'react-native';
-import DQ_Button from '../../components/DQ_Button';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_Link from '../../components/DQ_Link';
@@ -13,8 +12,9 @@ import DQ_Alert from '../../components/DQ_Alert';
 import { ProductPolicyService } from '../product-policy-screen/service/product-policy.service';
 import { useAlert } from '../../hooks/useAlert';
 import { AxiosError } from 'axios';
+import DQ_LoaderBtn from '../../components/DQ_LoaderBtn';
 
-export default function LoginScreen({ navigation } : any) {
+export default function LoginScreen({ navigation }: any) {
   const logo = require('../../assets/images/DQ_LOGO.png');
   const HeaderContainerText = getLocalizedEntry('LoginScreen', 'HeaderContainer');
   const HeaderSubContainerText = getLocalizedEntry('LoginScreen', 'HeaderContainerSubText');
@@ -124,11 +124,11 @@ export default function LoginScreen({ navigation } : any) {
           </View>
 
           <View style={styles.inlineSubContainerItemsButton}>
-            {isLoading ? (
-              <ActivityIndicator size="large" color="#005faf" />
-            ) : (
-              <DQ_Button title="Login" onPress={handleLogin} />
-            )}
+            <DQ_LoaderBtn
+              title="Login"
+              onPress={handleLogin}
+              loading={isLoading}
+            />
           </View>
 
           <Pressable
