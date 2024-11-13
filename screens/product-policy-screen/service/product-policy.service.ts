@@ -2,7 +2,7 @@ import axios from 'axios';
 import _shared from '../../common';
 
 export async function ProductPolicyService(userId: string) {
-    try {        
+    try {    
         const response = await axios.get("http://dqapi-sna.dq.com.lb:88/api/csconnect", {
             headers: {
                 'accept': 'application/json',
@@ -11,7 +11,7 @@ export async function ProductPolicyService(userId: string) {
                 'x-user-ims-lang': '0',
                 'X-Requested-With': 'XMLHttpRequest'
             }
-        });                               
+        });                           
         return response.data.response;
     } catch (error: any) {
         console.error("An error occurred during CS_Connect:", error);

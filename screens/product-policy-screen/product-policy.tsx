@@ -118,8 +118,7 @@ export default function ProductPolicy({navigation, route}: any) {
     Get_CS_Connect(_shared.userId);
   }, []);
 
-  const Get_CS_Connect = async (userId: string) => {
-    console.log(userId);
+  const Get_CS_Connect = async (userId: string) => {    
     const result = await ProductPolicyService(userId);
     const roles = result.responseData.userData[0].roles;
     const _pin = result.user_Pin;

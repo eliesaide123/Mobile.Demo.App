@@ -41,7 +41,7 @@ export default function App() {
     return (
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar translucent backgroundColor="rgb(0, 95, 175)" />
-        <ActivityIndicator size="large" color="#f4511e" style={styles.loader} />
+        
       </SafeAreaView>
     );
   }

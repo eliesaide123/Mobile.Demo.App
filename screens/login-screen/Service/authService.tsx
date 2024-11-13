@@ -1,33 +1,15 @@
-import axios from 'axios';
+import {LoginCredentials, LoginResponse, SendRequest} from '../../../Shared/Types';
+import SharedService from '../../../Shared/SharedService';
 
-export async function login(userId: string, password: string) {
+export async function login(credentials: LoginCredentials) {
   try {
-    const _data = {
-      request: {
-        mA_UserID: userId,
-        cS_UserID: userId,
-        cS_Password: password,
-      },
-    };
-
-    const headers = {
-      accept: 'application/json',
-      'x-user-ims-lang': '0',
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-    };
-
-    const response = await axios.post(
-      'http://dqapi-sna.dq.com.lb:88/api/account/login',
-      _data,
-      {headers},
-    );
-
-    return response.data;
-  } catch (error: any) {    
+    const request:SendRequest<LoginCredentials> = {request: credentials}
+    const response = await SharedService.callApi<LoginResponse>('/account/login', 'POST', request);    
+    return response;
+  } catch (error: any) {
     return {
       status: false,
-      error: error.response ? error.response.data : error.message,
+      response: error.response ? error.response.data : error.message,
     };
   }
 }

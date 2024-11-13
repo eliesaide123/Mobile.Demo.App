@@ -1,5 +1,4 @@
-// SharedService.js
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // Base URL
 const BASE_URL = 'http://dqapi-sna.dq.com.lb:88/api';
@@ -12,9 +11,10 @@ const defaultHeaders = {
   'X-Requested-With': 'XMLHttpRequest'
 };
 
-// Function to call API with dynamic endpoint and optional extra headers
+// Generic SharedService with response type
 const SharedService = {
-  async callApi(endpoint: string, method = 'GET', data = null, extraHeaders = {}) {
+  // This method will accept a generic type `T` representing the response data structure
+  async callApi<T>(endpoint: string, method: 'GET' | 'POST' = 'GET', data: any = null, extraHeaders: object = {}): Promise<T> {
     try {
       // Create full URL
       const url = `${BASE_URL}${endpoint}`;
@@ -23,7 +23,7 @@ const SharedService = {
       const headers = { ...defaultHeaders, ...extraHeaders };
 
       // Configure request
-      const config = {
+      const config: AxiosRequestConfig = {
         method,
         url,
         headers,
@@ -31,13 +31,12 @@ const SharedService = {
       };
 
       // Make the request
-      const response = await axios(config);
+      const response: AxiosResponse<T> = await axios(config);
 
       // Return the relevant part of the response
-      return response.data.response;
-
+      return response.data;
     } catch (error) {
-      console.error('API call error:', error);
+      
       throw error;
     }
   }
