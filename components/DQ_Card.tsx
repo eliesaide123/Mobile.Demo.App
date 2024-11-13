@@ -1,5 +1,5 @@
 import Icon from '@react-native-vector-icons/fontawesome6';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,53 +8,40 @@ import {
   StyleSheet,
 } from 'react-native';
 
-const DQ_Card = ({ title, count = 0, children }: any) => {
-  const [collapsed, setCollapsed] = useState(true);
-  const [animation] = useState(new Animated.Value(0));
+const DQ_Card = ({ title, count = 0, children, isOpen, onPress, id }:any ) => {
+  const [animation] = useState(new Animated.Value(isOpen ? 1 : 0));
+
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: isOpen ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [isOpen]);
 
   const toggleCollapse = () => {
-    if (count === 0) return;
-    // Fade out first, then collapse, then change color back to white
-    Animated.sequence([
-      // Fade out first
-      Animated.timing(animation, {
-        toValue: 0,
-        duration: 300, // Short fade-out duration
-        useNativeDriver: false,
-      }),
-      // Collapse height after fade-out
-      Animated.timing(animation, {
-        toValue: collapsed ? 1 : 0,
-        duration: 300, // Duration for height expansion/collapse
-        useNativeDriver: false,
-      }),
-    ]).start();
-
-    // Toggle the collapsed state to trigger reanimation
-    setCollapsed(!collapsed);
+    if (count > 0 && onPress) {
+      onPress(id);
+    }
   };
 
-  // Interpolating height for the expanded content
   const heightInterpolate = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 170], // Adjust height for expanded content
+    outputRange: [0, 170],
   });
 
-  // Rotating the chevron icon
   const rotateInterpolate = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '-180deg'], // Rotates icon for collapse/expand
+    outputRange: ['0deg', '-180deg'],
   });
 
-  // Fade effect: fade in when expanding and fade out when collapsing
   const opacityInterpolate = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 1], // Fade in and out effect
+    outputRange: [0, 1],
   });
 
-  // Static background color based on collapsed state
-  const backgroundColor = collapsed ? 'white' : '#0160ae';
-  const color = collapsed ? 'black' : 'white';
+  const backgroundColor = isOpen ? '#0160ae' : 'white';
+  const color = isOpen ? 'white' : 'black';
 
   return (
     <View style={[styles.cardBorder, { backgroundColor }]}>
@@ -71,7 +58,12 @@ const DQ_Card = ({ title, count = 0, children }: any) => {
               <Text style={styles.whiteText}>{count}</Text>
             </View>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-               <Icon name="chevron-down" size={14} color={count > 0 ? 'black' : 'white'} iconStyle="solid" />
+              <Icon
+                name="chevron-down"
+                size={14}
+                color={count > 0 ? color : 'white'}
+                iconStyle="solid"
+              />
             </Animated.View>
           </View>
         </View>
@@ -79,7 +71,7 @@ const DQ_Card = ({ title, count = 0, children }: any) => {
       <Animated.View style={{ height: heightInterpolate }}>
         <Animated.View
           style={{
-            opacity: opacityInterpolate, // Apply the opacity fade effect here
+            opacity: opacityInterpolate,
             marginTop: 20,
           }}
         >
@@ -111,11 +103,11 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   bubble: {
-    width: 24, // Adjust width for a better fit
-    height: 24, // Adjust height for a better fit
-    borderRadius: 12, // Circle shape
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     justifyContent: 'center',
-    alignItems: 'center', // Center text inside the bubble
+    alignItems: 'center',
   },
   whiteText: {
     color: 'white',

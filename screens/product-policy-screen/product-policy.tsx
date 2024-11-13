@@ -19,6 +19,7 @@ import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_GoButton from '../../components/DQ_GoButton';
 import DQ_Badge from '../../components/DQ_Badge';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import _shared from '../common';
 const imageMapping: {[key: string]: any} = {
   'health.png': require('../../assets/images/health.png'),
   'life.png': require('../../assets/images/life.png'),
@@ -39,18 +40,12 @@ const Item = ({
   name,
   groupCode,
   nbrPolicies,
-  pin,
-  role,
   navigation,
-  userid
 }: {
   name: string;
   groupCode: string;
   nbrPolicies: number;
-  pin: string;
-  role: string;
   navigation: NativeStackScreenProps<any>['navigation'];
-  userid: any
 }) => {
   const imageName = `${groupCode.toLowerCase()}.png`;
   const [isLongPressed, setIsLongPress] = useState(false);
@@ -77,10 +72,7 @@ const Item = ({
   const handlePress = () => {
     if (nbrPolicies > 0)
       navigation.navigate('PolicyList', {
-        pin,
-        role,
         groupCode,
-        userid
       });
   };
   return (
@@ -119,20 +111,21 @@ export default function ProductPolicy({navigation, route}: any) {
   const [pin, setPin] = useState<string>('');
   const [role, setRole] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
+  const [openCard, setOpenCard] = useState(null);
 
-  
   useEffect(() => {
-    const {userId: id} = route.params;
-    setUserId(id);
-    Get_CS_Connect(id);
-  }, [route.params]);
-  
-  const Get_CS_Connect = async (userId:string) => {
+    setUserId(_shared.userId);
+    Get_CS_Connect(_shared.userId);
+  }, []);
+
+  const Get_CS_Connect = async (userId: string) => {    
     const result = await ProductPolicyService(userId);
     const roles = result.responseData.userData[0].roles;
     const _pin = result.user_Pin;
+    _shared.pin = _pin;
     setPin(_pin);
     const role = result.user_Role;
+    _shared.role = role;
     setRole(role);
     setRoles(roles);
 
@@ -154,129 +147,147 @@ export default function ProductPolicy({navigation, route}: any) {
     }
   };
 
-  return (
+  const handleCardPress = (cardId:any) => {
+    setOpenCard(prevOpenCard => (prevOpenCard === cardId ? null : cardId));
+  };
 
+  return (
     <SafeAreaView>
       {pin && (
-        <View>
+        <View style={{marginTop: 10}}>
           <DQ_BaseHeader
-        style={styles.mainHeader}
-        press={() => navigation.goBack()}
-        navigation={navigation}
-        roleNumber={roles.length}
-        userId={userId}
-      />
-      <ScrollView>
-        <View style={styles.Products_Container}>
-          <FlatList
-            horizontal
-            data={prodGroups}
-            renderItem={({item}) => (
-              <Item
-                name={item.groupName}
-                groupCode={item.groupCode}
-                nbrPolicies={item.nbrPolicies}
-                navigation={navigation}
-                pin={pin}
-                role={role}
-                userid={userId}
-              />
-            )}
-            keyExtractor={item => item.groupSeq.toString()}
+            style={styles.mainHeader}
+            press={() => navigation.goBack()}
+            navigation={navigation}
+            roleNumber={roles.length}
+            userId={userId}
           />
-        </View>
-        <View style={styles.cardsContainer}>
-          {osPremiums && (
-            <DQ_Card
-              title="My Outstanding Premiums"
-              count={osPremiums[0]?.nbrPremiums}>
-              <DQ_InnerCard_Grid buttonText="Pay Online" buttonWidth={120}>
-                <View style={styles.InlineElements}>
-                  <DQ_Paragraph
-                    content={osPremiums[0]?.nbrPremiums}
-                    textColor="black"
-                    fontSize={14}
+          <ScrollView>
+            <View style={styles.Products_Container}>
+              <FlatList
+                horizontal
+                data={prodGroups}
+                renderItem={({item}) => (
+                  <Item
+                    name={item.groupName}
+                    groupCode={item.groupCode}
+                    nbrPolicies={item.nbrPolicies}
+                    navigation={navigation}
                   />
-                  <DQ_Paragraph
-                    content={'Premiums'}
-                    fontSize={14}
-                    textColor="black"
-                  />
-                  <DQ_Paragraph
-                    content={osPremiums[0]?.fresh ? 'Fresh' : ''}
-                    textColor="black"
-                    fontSize={14}
-                  />
-                  <DQ_Paragraph
-                    content={
-                      osPremiums[0]?.osAmount + ' ' + osPremiums[0]?.currency
-                    }
-                    textColor="#7dadd6"
-                    fontSize={14}
-                  />
-                </View>
-              </DQ_InnerCard_Grid>
-            </DQ_Card>
-          )}
-          {osClaims && (
-            <DQ_Card title="My Claims" count={osClaims[0]?.nbrOSClaims}>
-              <DQ_InnerCard_Grid buttonText="Check My Claims" buttonWidth={160}>
-                <View style={styles.TwoInlineElements}>
-                  <DQ_Paragraph
-                    content={osClaims[0]?.nbrOSClaims}
-                    textColor="black"
-                    fontSize={14}
-                  />
-                  <DQ_Paragraph
-                    content={'Outstanding Claims'}
-                    fontSize={14}
-                    textColor="black"
-                  />
-                  <DQ_Paragraph content={''} fontSize={14} textColor="black" />
-                  <DQ_Paragraph content={''} fontSize={14} textColor="black" />
-                </View>
-                <View style={styles.InlineElements}>
-                  <DQ_Paragraph
-                    content={osClaims[0]?.nbrReadyToSettle}
-                    fontSize={14}
-                  />
-                  <View style={{width: 70}}>
-                    <DQ_Paragraph
-                      content={'Ready to Settle'}
-                      fontSize={14}
-                      textColor="black"
-                    />
-                  </View>
-                  <DQ_Paragraph
-                    content={osClaims[0]?.fresh ? 'Fresh' : ''}
-                    textColor="black"
-                    fontSize={14}
-                  />
-                  <DQ_Paragraph
-                    content={
-                      osClaims[0]?.r2SAmount + ' ' + osClaims[0]?.currency
-                    }
-                    textColor="#7dadd6"
-                    fontSize={14}
-                  />
-                </View>
-              </DQ_InnerCard_Grid>
-            </DQ_Card>
-          )}
-          {pendingRenewals && (
-            <DQ_GoButton
-              title="Renewals"
-              count={pendingRenewals[0]?.nbrRenewals}
-            />
-          )}
-          {pendingRequests && (
-            <DQ_GoButton
-              title="Pending Requests"
-              count={pendingRequests[0]?.nbrRequests}
-            />
-          )}
-        </View>
-      </ScrollView>
+                )}
+                keyExtractor={item => item.groupSeq.toString()}
+              />
+            </View>
+            <View style={styles.cardsContainer}>
+              {osPremiums && (
+                <DQ_Card
+                  title="My Outstanding Premiums"
+                  count={osPremiums[0]?.nbrPremiums}
+                  isOpen={openCard === 'osPremiums'}
+                  onPress={() => handleCardPress('osPremiums')}>
+                  <DQ_InnerCard_Grid buttonText="Pay Online" buttonWidth={120}>
+                    <View style={styles.InlineElements}>
+                      <DQ_Paragraph
+                        content={osPremiums[0]?.nbrPremiums}
+                        textColor="black"
+                        fontSize={14}
+                      />
+                      <DQ_Paragraph
+                        content={'Premiums'}
+                        fontSize={14}
+                        textColor="black"
+                      />
+                      <DQ_Paragraph
+                        content={osPremiums[0]?.fresh ? 'Fresh' : ''}
+                        textColor="black"
+                        fontSize={14}
+                      />
+                      <DQ_Paragraph
+                        content={
+                          osPremiums[0]?.osAmount +
+                          ' ' +
+                          osPremiums[0]?.currency
+                        }
+                        textColor="#7dadd6"
+                        fontSize={14}
+                      />
+                    </View>
+                  </DQ_InnerCard_Grid>
+                </DQ_Card>
+              )}
+              {osClaims && (
+                <DQ_Card
+                  title="My Claims"
+                  count={osClaims[0]?.nbrOSClaims}
+                  isOpen={openCard === 'osClaims'}
+                  onPress={() => handleCardPress('osClaims')}>
+                  <DQ_InnerCard_Grid
+                    buttonText="Check My Claims"
+                    buttonWidth={160}>
+                    <View style={styles.TwoInlineElements}>
+                      <DQ_Paragraph
+                        content={osClaims[0]?.nbrOSClaims}
+                        textColor="black"
+                        fontSize={14}
+                      />
+                      <DQ_Paragraph
+                        content={'Outstanding Claims'}
+                        fontSize={14}
+                        textColor="black"
+                      />
+                      <DQ_Paragraph
+                        content={''}
+                        fontSize={14}
+                        textColor="black"
+                      />
+                      <DQ_Paragraph
+                        content={''}
+                        fontSize={14}
+                        textColor="black"
+                      />
+                    </View>
+                    <View style={styles.InlineElements}>
+                      <DQ_Paragraph
+                        content={osClaims[0]?.nbrReadyToSettle}
+                        fontSize={14}
+                      />
+                      <View style={{width: 70}}>
+                        <DQ_Paragraph
+                          content={'Ready to Settle'}
+                          fontSize={14}
+                          textColor="black"
+                        />
+                      </View>
+                      <DQ_Paragraph
+                        content={osClaims[0]?.fresh ? 'Fresh' : ''}
+                        textColor="black"
+                        fontSize={14}
+                      />
+                      <DQ_Paragraph
+                        content={
+                          osClaims[0]?.r2SAmount + ' ' + osClaims[0]?.currency
+                        }
+                        textColor="#7dadd6"
+                        fontSize={14}
+                      />
+                    </View>
+                  </DQ_InnerCard_Grid>
+                </DQ_Card>
+              )}
+              {pendingRenewals && (
+                <DQ_GoButton
+                  title="Renewals"
+                  count={pendingRenewals[0]?.nbrRenewals}
+                />
+              )}
+              {pendingRequests && (
+                <DQ_GoButton
+                  title="Pending Requests"
+                  count={pendingRequests[0]?.nbrRequests}
+                />
+              )}
+            </View>
+          </ScrollView>
         </View>
       )}
     </SafeAreaView>
@@ -326,7 +337,6 @@ const styles = StyleSheet.create({
   },
   mainHeader: {
     flex: 1,
-    borderColor: 'red',
   },
   cardsContainer: {
     marginTop: 30,

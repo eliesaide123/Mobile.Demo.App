@@ -1,9 +1,8 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import WalkThroughScreen from './screens/walkThrough-screen/walkThrough-screen';
-import {StyleSheet, SafeAreaView, StatusBar} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { StyleSheet, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/login-screen/login-screen';
 import RegistrationScreen from './screens/registration-screen/registration-screen';
 import ProductPolicy from './screens/product-policy-screen/product-policy';
@@ -12,25 +11,59 @@ import PolicyList from './screens/Policy-List-screen/policy-list-screen';
 import AgentSearch from './screens/Agent-Search-screen/Agent-Search-screen';
 import PolicyDetails from './screens/policy-details-screen/policy-details-screen';
 import AgentResult from './screens/Agent-Result-screen/agent-result-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isWalkthroughComplete, setIsWalkthroughComplete] = useState(false);
+  const [loading, setLoading] = useState(true);  // Add loading state
+
+  useEffect(() => {
+    // Check AsyncStorage for the key that determines if walkthrough is completed
+    const checkWalkthroughStatus = async () => {
+      try {
+        const walkthroughStatus = await AsyncStorage.getItem('walkthroughCompleted');
+        if (walkthroughStatus === 'true') {
+          setIsWalkthroughComplete(true);
+        }
+      } catch (error) {
+        console.error('Error reading AsyncStorage', error);
+      } finally {
+        setLoading(false);  // Set loading to false once the check is done
+      }
+    };
+
+    checkWalkthroughStatus();
+  }, []);
+
+  // If loading, display a loading indicator until AsyncStorage check is complete
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.mainContainer}>
+        <StatusBar translucent backgroundColor="rgb(0, 95, 175)" />
+        
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <StatusBar translucent backgroundColor="rgb(0, 95, 175)" />
       <NavigationContainer>
         <Stack.Navigator>
-        <Stack.Screen
-            name="WalkThrough"
-            component={WalkThroughScreen}
-            options={{
-              headerShown: false,
-              headerStyle: {
-                backgroundColor: '#f4511e',
-              },
-            }}
-          />
+          {!isWalkthroughComplete && (
+            <Stack.Screen
+              name="WalkThrough"
+              component={WalkThroughScreen}
+              options={{
+                headerShown: false,
+                headerStyle: {
+                  backgroundColor: '#f4511e',
+                },
+              }}
+            />
+          )}
           <Stack.Screen
             name="Login"
             component={LoginScreen}
@@ -86,7 +119,7 @@ export default function App() {
               headerStyle: {
                 backgroundColor: '#f4511e',
               },
-            }}            
+            }}
           />
           <Stack.Screen
             name="AgentResult"
@@ -106,8 +139,8 @@ export default function App() {
               headerStyle: {
                 backgroundColor: '#f4511e',
               },
-            }}            
-          />             
+            }}
+          />   
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
@@ -117,5 +150,10 @@ export default function App() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

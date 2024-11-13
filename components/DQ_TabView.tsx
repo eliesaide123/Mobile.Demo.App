@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, useWindowDimensions, StyleSheet } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 interface TabConfig {
@@ -10,11 +10,12 @@ interface TabConfig {
 
 interface CustomTabViewProps {
   tabs: TabConfig[];
+  initialIndex?: number;  // Optional prop to set the initial tab
 }
 
-export function DQ_TabView({ tabs }: CustomTabViewProps) {
+export function DQ_TabView({ tabs, initialIndex = 0 }: CustomTabViewProps) {
   const layout = useWindowDimensions();
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(initialIndex);
 
   const routes = tabs.map(tab => ({ key: tab.key, title: tab.title }));
   const scenes = tabs.reduce((acc, tab) => {
@@ -39,13 +40,17 @@ export function DQ_TabView({ tabs }: CustomTabViewProps) {
 
   return (
     <View style={styles.container}>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={SceneMap(scenes)}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={renderTabBar}
-      />
+      {tabs.length > 0 ? (
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={SceneMap(scenes)}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={renderTabBar}
+        />
+      ) : (
+        <View><Text>No Tabs Available</Text></View>
+      )}
     </View>
   );
 }
@@ -62,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   tabBar: {
-    backgroundColor: 'white',
+    backgroundColor: '#ebebeb',
   },
   tabIndicator: {
     backgroundColor: '#0062af',

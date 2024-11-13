@@ -107,11 +107,17 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
               }}
             />
             <DQ_TextBox
+           
               placeholder={FirstNamePlaceHolder}
+            borderColor="#bbbec3"
+         
               value={firstName}
               onChangeText={setFirstName} />
-            <DQ_TextBox placeholder={FatherNamePlaceHolder} value={fatherName} onChangeText={setFatherName} />
-            <DQ_TextBox placeholder={LastNamePlaceHolder} value={lastName} onChangeText={setLastName} />
+            <DQ_TextBox
+            placeholder={FatherNamePlaceHolder}
+            borderColor="#bbbec3"
+          value={fatherName} onChangeText={setFatherName} />
+            <DQ_TextBox placeholder={LastNamePlaceHolder} borderColor="#bbbec3" value={lastName} onChangeText={setLastName} />
           </View>
           <View style={styles.SearchButton}>
             <DQ_Button title="Search" onPress={() => PerformSearchService('PH')} />
@@ -126,6 +132,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
         <ScrollView style={{ width: '100%', flex: 1 }}>
           <View style={styles.TextBox}>
             <DQ_TextBox
+            borderColor="#bbbec3"
               placeholder={PolicyNumberPlaceHolder}
               hintText={HintTextPolicyNumberPlaceHolder}
               value={policyNumber}
@@ -159,7 +166,12 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
       <DQ_BaseHeader />
 
       <View style={styles.mainTitle}>
-        <DQ_Paragraph fontSize={18} content="p234" textAlign="center" fontFamily='Nexa Bold' />
+        <DQ_Paragraph
+          fontSize={18}
+          content="p234"
+          textAlign="center"
+          fontFamily="Nexa Bold"
+        />
       </View>
 
       <View style={styles.ButtonView}>
@@ -226,6 +238,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   TextBox: {
+    padding: 16,
     paddingTop: 20,
     paddingLeft: 20,
     paddingRight: 20,

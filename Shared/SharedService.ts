@@ -1,41 +1,45 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosHeaders } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
+// Base URL
+const BASE_URL = 'http://dqapi-sna.dq.com.lb:88/api';
 
-const api: AxiosInstance = axios.create({
-    baseURL: 'http://dqapi-sna.dq.com.lb:88/api/',
-    headers: {
-        'Content-Type': 'application/json',
-        'accept': 'application/json',
-        'x-user-ims-lang': '0'
-    }
-});
+// Default headers
+const defaultHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+  'x-user-ims-lang': '0',
+  'X-Requested-With': 'XMLHttpRequest'
+};
 
-async function request<T>(config: AxiosRequestConfig) {
-    try {
-        const response: AxiosResponse<T> = await api.request<T>(config);
-        return { success: true, data: response.data };
-    } catch (error: any) {
-        console.error(`API error:`, error);
-        return { success: false, error: error.response ? error.response.data : error.message };
-    }
-}
-
+// Generic SharedService with response type
 const SharedService = {
-    get: function <T>(url: string) {
-        return request<T>({ method: 'GET', url});
-    },
+  // This method will accept a generic type `T` representing the response data structure
+  async callApi<T>(endpoint: string, method: 'GET' | 'POST' = 'GET', data: any = null, extraHeaders: object = {}): Promise<T> {
+    try {
+      // Create full URL
+      const url = `${BASE_URL}${endpoint}`;
 
-    post: function <T>(url: string, data?: any) {
-        return request<T>({ method: 'POST', url, data: JSON.stringify(data)});
-    },
+      // Merge default headers with any extra headers
+      const headers = { ...defaultHeaders, ...extraHeaders };
 
-    put: function <T>(url: string, data?: any) {
-        return request<T>({ method: 'PUT', url, data: JSON.stringify(data) });
-    },
+      // Configure request
+      const config: AxiosRequestConfig = {
+        method,
+        url,
+        headers,
+        data
+      };
 
-    delete: function <T>(url: string) {
-        return request<T>({ method: 'DELETE', url });
-    },
+      // Make the request
+      const response: AxiosResponse<T> = await axios(config);
+
+      // Return the relevant part of the response
+      return response.data;
+    } catch (error) {
+      
+      throw error;
+    }
+  }
 };
 
 export default SharedService;

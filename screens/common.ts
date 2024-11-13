@@ -1,5 +1,8 @@
 let _shared = {
-    ui_token : ''
+    ui_token : '',
+    pin:'',
+    role:'',
+    userId:''
 }
 
 export default _shared;

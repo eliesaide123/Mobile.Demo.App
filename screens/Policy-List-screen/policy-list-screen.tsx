@@ -4,6 +4,7 @@ import {PolicyListService} from './service/policy-list-service';
 import DQ_PolicyIcon from '../../components/DQ_PolicyIcon';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_PolicyCard from '../../components/DQ_PolicyCard';
+import _shared from '../common';
 const imageMapping: {[key: string]: any} = {
   health: require('../../assets/images/health.png'),
   life: require('../../assets/images/life.png'),
@@ -24,16 +25,18 @@ export default function PolicyList({navigation, route}: any) {
   const [policyList, setPolicyList] = useState<any[]>([]);
   const [pin, setPin] = useState<string>('');
   const [role, setRole] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
 
   useEffect(() => {
-    const {pin, role, userid, groupCode: _groupCode} = route.params;
+    const {groupCode: _groupCode} = route.params;
     const Get_Policy = async () => {
-      const result = await PolicyListService(pin, role, _groupCode);
-      const policies = result.responseData.policyList;
+      const result = await PolicyListService(_shared.pin, _shared.role, _groupCode, _shared.userId);    
+      const policies = result.responseData.policyList;      
       setPolicyList(policies);
       setGroupCode(_groupCode.toLowerCase());
       setPin(pin);
       setRole(role);
+      setUserId(userId);
     };
 
     Get_Policy();
@@ -53,7 +56,7 @@ export default function PolicyList({navigation, route}: any) {
                 <DQ_PolicyCard
                   src={imageMapping[groupCode]}
                   item={item}
-                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role})}}
+                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role, userId, policyDetailsURI: item.policyDetailsURI, policyInsCoversURI: item.policyInsCoversURI})}}
                   keyExtractor={(item: any) => item.policyNo.toString()}
                 />
               )}
@@ -79,5 +82,6 @@ const styles = StyleSheet.create({
   marginList: {
     flex: 0.6,
     marginHorizontal:10,
+    marginTop:-20,
   },
 });

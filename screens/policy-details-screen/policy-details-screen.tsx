@@ -9,10 +9,15 @@ import React, { useEffect, useState } from 'react';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_PolicyIconDescription from '../../components/DQ_PolicyIconDescription';
 import DQ_TabView from '../../components/DQ_TabView';
-import { GetPolicyDetails } from './service/policy-details-service';
-import DQ_Contract from '../../components/DQ_Contract'; // Importing the DQ_Contract component
+import { GetPolicyDetails } from './service/get-policy-details-service';
+import DQ_Contract from '../../components/DQ_Contract';
+import DQ_Vehicle from '../../components/DQ_Vehicle';
+import DQ_Insured from '../../components/DQ_Insured';
+import DQ_InsuredCovers from '../../components/DQ_InsuredCovers';
+import _shared from '../common';
+import DQ_Loader from '../../components/DQ_Loader';
 
-const imageMapping: { [key: string]: any } = {
+const imageMapping: {[key: string]: any} = {
   health: require('../../assets/images/health.png'),
   life: require('../../assets/images/life.png'),
   motor: require('../../assets/images/motor.png'),
@@ -28,172 +33,111 @@ const imageMapping: { [key: string]: any } = {
   protection: require('../../assets/images/protection.png'),
 };
 
-const initialTab = [
-  {
-    key: 'contract',
-    title: 'Contract',
-    content: (
-      <View>
-        <Text>Contract</Text>
-      </View>
-    ),
-  },
-  {
-    key: 'Vehicle',
-    title: 'Vehicle',
-    content: (
-      <View>
-        <Text>Vehicle Details</Text>
-      </View>
-    ),
-  },
-  {
-    key: 'Insured',
-    title: 'Insured',
-    content: (
-      <View>
-        <Text>Insured Details</Text>
-      </View>
-    ),
-  },
-  {
-    key: 'Insured Covers',
-    title: 'Insured Covers',
-    content: (
-      <View>
-        <Text>Insured Covers</Text>
-      </View>
-    ),
-  },
-  {
-    key: 'Dependent',
-    title: 'Dependent',
-    content: (
-      <View>
-        <Text>Dependent Details</Text>
-      </View>
-    ),
-  },
-  {
-    key: 'Insured Risks',
-    title: 'Insured Risks',
-    content: (
-      <View>
-        <Text>Insured Risks</Text>
-      </View>
-    ),
-  },
-];
+const componentMapping: {[key: string]: any} = {
+  contract: DQ_Contract,
+  vehicle: DQ_Vehicle,
+  insuredDep: DQ_Contract,
+  insuredData: DQ_Insured,
+  insuredCoverData: DQ_InsuredCovers,
+};
 
-export default function PolicyDetails({ navigation, route }: any) {
+const titleMapping: {[key: string]: string} = {
+  contract: 'Contract',
+  vehicle: 'Vehicle',
+  insuredDep: 'Dependant',
+  insuredData: 'Insured',
+  insuredCoverData: 'Insured Covers',
+};
+
+export default function PolicyDetails({navigation, route}: any) {
   const [groupCode, setGroupCode] = useState<string>('');
   const [policyNo, setPolicyNo] = useState<string>('');
-  const [tabs, setTabs] = useState<any[]>(initialTab);
-  const [pin, setPin] = useState<string>('');
-  const [role, setRole] = useState<string>('');
+  const [tabs, setTabs] = useState<any[]>([]);
   const [policyData, setPolicyData] = useState<any>(null);
+  const [policyDetailsURI, setPolicyDetailsURI] = useState<any>(null);
+  const [policyInsCoversURI, setPolicyInsCoversURI] = useState<any>(null);
+  const [clickedFAB, setClickedFAB] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const {
-      policyNo: _policyNo,
-      groupCode: grpCode,
-      pin: _pin,
-      role: _role,
-    } = route.params;
-    setGroupCode(grpCode);
-    setPolicyNo(_policyNo);
-    setPin(_pin);
-    setRole(_role);
-
-    let filteredTabs = initialTab;
-
     const fetchPolicyDetails = async () => {
-      const result = await GetPolicyDetails(
-        'r-travel', // Example product, adjust as necessary
-        _policyNo,
-        _pin,
-        _role
-      );
-      const policyDetails = result.policyDetails;
-      setPolicyData(policyDetails);
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-      console.log(policyData)
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+      try {
+        const {
+          policyNo: _policyNo,
+          groupCode: grpCode,
+          policyDetailsURI: _policyDetailsURI,
+          policyInsCoversURI: _policyInsCoversURI,
+        } = route.params;
+
+        setGroupCode(grpCode);
+        setPolicyNo(_policyNo);
+        setPolicyDetailsURI(_policyDetailsURI);
+        setPolicyInsCoversURI(_policyInsCoversURI);
+
+        // Fetch the policy details only if they haven't been fetched yet
+        if (policyData) return;
+
+        setIsLoading(true);
+
+        const result = await GetPolicyDetails(
+          _shared.userId,
+          _policyNo,
+          _shared.pin,
+          _shared.role,
+          _policyDetailsURI,
+        );
+
+        const policyDetails = result.policyDetails;
+        const keysArr = Object.keys(policyDetails);
+
+        const groupedKeys = groupAndReplaceRelatedKeys(keysArr);
+
+        const updatedTabs: any[] = [];
+        Object.keys(componentMapping).forEach(key => {
+          if (policyDetails[key] && (Array.isArray(policyDetails[key]) ? policyDetails[key].length > 0 : true)) {
+            const TabContent = componentMapping[key];
+            updatedTabs.push({
+              key: titleMapping[key],
+              title: titleMapping[key],
+              content: <TabContent item={policyDetails[key]} />,
+            });
+          }
+        });
+
+        setTabs(updatedTabs);
+        setPolicyData(policyDetails);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    // Modify tab logic based on the group code
-    switch (grpCode) {
-      case 'motor':
-        filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Vehicle'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'health':
-        filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Insured'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'life':
-        filteredTabs = initialTab.filter(
-          tab =>
-            tab.key === 'contract' ||
-            tab.key === 'Insured' ||
-            tab.key === 'Insured Covers'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'investment':
-        filteredTabs = initialTab.filter(
-          tab =>
-            tab.key === 'contract' ||
-            tab.key === 'Insured' ||
-            tab.key === 'Dependent' ||
-            tab.key === 'Insured Covers'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'travel':
-        filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Insured'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'personal':
-        filteredTabs = initialTab.filter(
-          tab =>
-            tab.key === 'contract' ||
-            tab.key === 'Insured' ||
-            tab.key === 'Insured Covers'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'expat':
-        filteredTabs = initialTab.filter(
-          tab => tab.key === 'contract' || tab.key === 'Insured Covers'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'property':
-        filteredTabs = initialTab.filter(
-          tab =>
-            tab.key === 'contract' ||
-            tab.key === 'Insured Risks' ||
-            tab.key === 'Insured Covers'
-        );
-        fetchPolicyDetails();
-        break;
-      case 'other':
-        filteredTabs = initialTab.filter(tab => tab.key === 'contract');
-        fetchPolicyDetails();
-        break;
-      default:
-        break;
-    }
+    fetchPolicyDetails();
+  }, [route.params, policyData]);
 
-    setTabs(filteredTabs);
-  }, [route.params]);
+  const groupAndReplaceRelatedKeys = (keys: any) => {
+    let groupedKeys: any[] = [];
+    let visited = new Set();
+    keys.forEach((key1: any) => {
+      if (visited.has(key1)) return;
+      let relatedGroup = [key1];
+      keys.forEach((key2: any) => {
+        if (key1 !== key2 && !visited.has(key2) && key2.includes(key1)) {
+          relatedGroup.push(key2);
+          visited.add(key2);
+        }
+      });
+      groupedKeys.push(relatedGroup);
+      visited.add(key1);
+    });
+
+    return groupedKeys.map(group => (group.length > 1 ? group : group[0]));
+  };
+
+  const handleOverlayClick = () => {
+    setClickedFAB(prev => !prev);
+  };
 
   return (
     <SafeAreaView style={styles.rootElement}>
@@ -202,41 +146,23 @@ export default function PolicyDetails({ navigation, route }: any) {
         textCenter={groupCode}
         press={() => navigation.goBack()}
       />
+      {clickedFAB && <View style={styles.overlay} onTouchStart={handleOverlayClick} />}
+
       <View>
         {groupCode && policyNo && (
           <DQ_PolicyIconDescription
             src={imageMapping[groupCode]}
             policyNo={policyNo}
+            clickedFAB={clickedFAB}
+            setClickedFAB={setClickedFAB}
           />
         )}
       </View>
-      <DQ_TabView
-        tabs={tabs.map(tab => ({
-          ...tab,
-          content: tab.key === 'contract' && policyData ? (
-            <View style={styles.tabContent}>
-            <DQ_Contract
-              productName={policyData.contract[0].productName}
-              policyHolder={policyData.contract[0].policyholder}
-              inception={policyData.contract[0].inception}
-              expiry={policyData.contract[0].expiry}
-              currency={policyData.contract[0].currency}
-              annualPremium={policyData.contract[0].annualPremium}
-              frequencyPayment={policyData.contract[0].frqPayment}
-              nextPremium={policyData.contract[0].nextPremium}
-              agentName={policyData.contract[0].agentName}
-              whoPays={policyData.contract[0].whoPays}
-              paymentMode={policyData.contract[0].paymentMode}
-              policyStatus={policyData.contract[0].statusDate}
-            />
-            </View>
-          ) : (
-            <View style={styles.tabContent}>
-              <Text>Loading...</Text>
-            </View>
-          ),
-        }))}
-      />
+      {isLoading ? (
+        <DQ_Loader loading={isLoading} />
+      ) : (
+        <DQ_TabView tabs={tabs} />
+      )}
     </SafeAreaView>
   );
 }
@@ -244,9 +170,15 @@ export default function PolicyDetails({ navigation, route }: any) {
 const styles = StyleSheet.create({
   rootElement: {
     flex: 1,
+    backgroundColor: '#ebebeb',
   },
-  tabContent: {
-    flex:1,
-    width:'100%',    
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    zIndex: 1,
   },
 });

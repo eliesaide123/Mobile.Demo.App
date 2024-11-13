@@ -1,8 +1,12 @@
-/* eslint-disable no-trailing-spaces */
-// LoginScreen.tsx
-import React, {useState} from 'react';
-import {View, Image, StyleSheet, Alert, Pressable} from 'react-native';
-import DQ_Button from '../../components/DQ_Button';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+  Pressable,
+  Text,
+} from 'react-native';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_Link from '../../components/DQ_Link';
@@ -14,6 +18,9 @@ import {getLocalizedEntry} from '../../Shared/SharedFunctions';
 import DQ_Alert from '../../components/DQ_Alert';
 import {ProductPolicyService} from '../product-policy-screen/service/product-policy.service';
 import {useAlert} from '../../hooks/useAlert';
+import {AxiosError} from 'axios';
+import DQ_LoaderBtn from '../../components/DQ_LoaderBtn';
+import {LoginCredentials} from '../../Shared/Types';
 
 export default function LoginScreen({navigation}: any) {
   const logo = require('../../assets/images/DQ_LOGO.png');
@@ -33,7 +40,7 @@ export default function LoginScreen({navigation}: any) {
     'LoginScreen',
     'DQ_RegisterPhrase',
   ) as string[] | null;
-  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : ''; // Access the second element if it exists
+  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : '';
   const DQ_ProceedAsAGuest = getLocalizedEntry(
     'LoginScreen',
     'DQ_ProceedAsAGuest',
@@ -43,23 +50,48 @@ export default function LoginScreen({navigation}: any) {
 
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>(
+    'Something went wrong! Try again',
+  );
+
+  let credentials: LoginCredentials;
 
   const handleLogin = async () => {
-    const result = await login(userId, password);        
-    if (result.response.status) {
-      _shared.ui_token = result.response.imS_UIToken;
-      const checkRoleResult = await ProductPolicyService(userId);
-      if (checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == 'A') {
-        navigation.navigate('AgentSearch', {userId: userId});
-      } else {
-        if (result.response.status) {
-          navigation.navigate('ProductPolicy', {userId: userId});
+    try {
+      setIsLoading(true); // Show loader
+      credentials = {
+        mA_UserID: userId,
+        cS_UserID: userId,
+        cS_Password: password,
+      };
+      const result = await login(credentials);
+      console.log(result)
+      if ('response' in result) {
+        if (result && (result?.response?.status || result?.response.status)) {
+          // Check if result and status are defined
+          _shared.ui_token = result.response.imS_UIToken;
+          _shared.userId = userId;
+          const checkRoleResult = await ProductPolicyService(userId);
+          if (checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() === 'A') {
+            navigation.navigate('AgentSearch');
+          } else {
+            navigation.navigate('ProductPolicy');
+          }
         } else {
+          setErrorMsg(
+            result?.response?.error.details ||
+              'Something went wrong! Try again',
+          );
           showAlert();
-        }
-      }
-    } else {
+        }  
+      }    
+    } catch (err: any) {
+      console.error(err)
+      setErrorMsg(err.message || 'An unexpected error occurred');
       showAlert();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +109,7 @@ export default function LoginScreen({navigation}: any) {
           },
         ]}>
         <DQ_Paragraph
-          content="Something went wrong! Try again"
+          content={errorMsg}
           textColor="black"
           textAlign="center"
           fontSize={14}
@@ -87,6 +119,7 @@ export default function LoginScreen({navigation}: any) {
       <View style={styles.headerText}>
         <Image source={logo} />
       </View>
+
       <View style={styles.container}>
         <View style={styles.subContainer}>
           <View style={styles.inlineSubContainer}>
@@ -103,6 +136,7 @@ export default function LoginScreen({navigation}: any) {
               textAlign="center"
             />
           </View>
+
           <View style={styles.inlineSubContainerItems}>
             <DQ_TextBox
               placeholder={WebUserIDPlaceHolder}
@@ -126,16 +160,21 @@ export default function LoginScreen({navigation}: any) {
               onPress={() => navigation.navigate('ForgotPassword')}
             />
           </View>
+
           <View style={styles.inlineSubContainerItemsButton}>
-            <DQ_Button title="Login" onPress={handleLogin} />
+            <DQ_LoaderBtn
+              title="Login"
+              onPress={handleLogin}
+              loading={isLoading}
+            />
           </View>
+
           <Pressable
             style={styles.inlineSubContainerFooter}
             onPress={() => navigation.navigate('Register')}>
-            <DQ_Paragraph
-              fontSize={12}
-              content={RegisterPhrase ? RegisterPhrase[0] : ''}
-            />
+            <Text style={{fontSize: 12}}>
+              {RegisterPhrase ? RegisterPhrase[0] : ''}
+            </Text>
             <DQ_Link
               textAlign="center"
               fontSize={12}
@@ -147,6 +186,7 @@ export default function LoginScreen({navigation}: any) {
           </Pressable>
         </View>
       </View>
+
       <View style={styles.footer}>
         <DQ_Link
           textAlign="center"
