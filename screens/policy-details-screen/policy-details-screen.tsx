@@ -10,6 +10,7 @@ import DQ_Insured from '../../components/DQ_Insured';
 import DQ_InsuredCovers from '../../components/DQ_InsuredCovers';
 import _shared from '../common';
 import DQ_Loader from '../../components/DQ_Loader';
+import DQ_InsuredRisks from '../../components/DQ_InsuredRisks';
 const imageMapping: { [key: string]: any } = {
   health: require('../../assets/images/health.png'),
   life: require('../../assets/images/life.png'),
@@ -31,6 +32,7 @@ const componentMapping: { [key: string]: any } = {
   "vehicle": DQ_Vehicle,
   "insuredDep": DQ_Contract,
   "insuredData": DQ_Insured,
+  "insuredRisks" : DQ_InsuredRisks,
   "insuredCoverData": DQ_InsuredCovers,
 };
 
@@ -39,6 +41,7 @@ const titleMapping: { [key: string]: string } = {
   "vehicle": "Vehicle",
   "insuredDep": "Dependant",
   "insuredData": "Insured",
+  "insuredRisks": "Insured Risks",
   "insuredCoverData": "Insured Covers",
 };
 
@@ -49,6 +52,7 @@ export default function PolicyDetails({ navigation, route }: any) {
   const [policyData, setPolicyData] = useState<any>(null);
   const [policyDetailsURI, setPolicyDetailsURI] = useState<any>(null);
   const [policyInsCoversURI, setPolicyInsCoversURI] = useState<any>(null);
+  const [policyDataURI, setPolicyDataURI] = useState<any>(null);
   const [clickedFAB, setClickedFAB] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -61,13 +65,15 @@ export default function PolicyDetails({ navigation, route }: any) {
         policyNo: _policyNo,
         groupCode: grpCode,
         policyDetailsURI: _policyDetailsURI,
-        policyInsCoversURI: _policyInsCoversURI
+        policyInsCoversURI: _policyInsCoversURI,
+        policyDataURI : _policyDataURI
       } = route.params;
 
       setGroupCode(grpCode);
       setPolicyNo(_policyNo);
       setPolicyDetailsURI(_policyDetailsURI);
       setPolicyInsCoversURI(_policyInsCoversURI);
+      setPolicyDataURI(_policyDataURI);
 
       const fetchPolicyDetails = async () => {
         if (policyData) return; // Skip fetch if data is already loaded
@@ -124,6 +130,14 @@ export default function PolicyDetails({ navigation, route }: any) {
                 title: titleMapping[key],
                 content: (
                   <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyNo={_policyNo} />
+                ),
+              });
+            }else if (TabContent == DQ_InsuredRisks) {
+              updatedTabs.push({
+                key: titleMapping[key],
+                title: titleMapping[key],
+                content: (
+                  <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyDataURI={_policyDataURI} policyNo={_policyNo} />
                 ),
               });
             } else {

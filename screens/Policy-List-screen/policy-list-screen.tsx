@@ -56,7 +56,7 @@ export default function PolicyList({navigation, route}: any) {
                 <DQ_PolicyCard
                   src={imageMapping[groupCode]}
                   item={item}
-                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role, userId, policyDetailsURI: item.policyDetailsURI, policyInsCoversURI: item.policyInsCoversURI})}}
+                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role, userId, policyDetailsURI: item.policyDetailsURI, policyInsCoversURI: item.policyInsCoversURI, policyDataURI: item.policyDataURI})}}
                   keyExtractor={(item: any) => item.policyNo.toString()}
                 />
               )}

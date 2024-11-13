@@ -66,10 +66,8 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
                   covers.map((cover, coverIndex) => (
                     <View key={coverIndex}>
                       <View style={styles.contractRow}>
-                        <DQ_Paragraph content={cover["insuredCover"]} fontFamily='Nexa Bold' fontSize={getDynamicFontSize(cover["insuredCover"])} textColor="black" textWidth={150}/>
-                        <Text style={styles.value}>
-                        <DQ_Paragraph content={cover["insuredSI"]} fontFamily='Nexa Bold' fontSize={14} textColor="black" textWidth={150}/>
-                        </Text>
+                        <DQ_Paragraph content={cover["insuredCover"]} fontFamily='Nexa Bold' textAlign='left' fontSize={getDynamicFontSize(cover["insuredCover"])} textColor="black" textWidth={150}/>
+                        <DQ_Paragraph content={cover["insuredSI"]} fontFamily='Nexa Bold' textAlign='right' fontSize={14} textColor="black" textWidth={150}/>
                       </View>
                     </View>
                   ))
