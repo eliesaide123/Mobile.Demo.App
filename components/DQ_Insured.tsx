@@ -3,7 +3,7 @@ import React from 'react';
 import DQ_InsuredCard from './DQ_InsuredCard';
 
 export default function DQ_Insured({ item }: any) {
-  const excludeKeys = ['riskNo'];
+  const excludeKeys = ['riskNo', 'insuredData'];
   
   return (
     <ScrollView style={styles.contractContainer}>

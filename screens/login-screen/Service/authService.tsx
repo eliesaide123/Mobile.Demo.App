@@ -24,10 +24,9 @@ export async function login(userId: string, password: string) {
     );
 
     return response.data;
-  } catch (error: any) {
-    console.error('An error occurred during login:', error);
+  } catch (error: any) {    
     return {
-      success: false,
+      status: false,
       error: error.response ? error.response.data : error.message,
     };
   }

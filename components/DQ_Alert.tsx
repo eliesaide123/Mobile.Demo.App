@@ -76,11 +76,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    width: '80%', // Ensures it doesn't expand to the whole screen
+    width: '85%', // Ensures it doesn't expand to the whole screen
     maxWidth: 400,
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf:'center'
   },
   alert: {
     width: '100%',
