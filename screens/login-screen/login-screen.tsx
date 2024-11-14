@@ -69,7 +69,7 @@ export default function LoginScreen({navigation}: any) {
       console.log(result)
       if (result && (result?.response?.status)) {
         // Check if result and status are defined
-        _shared.ui_token = result.response.IMS_UIToken;
+        _shared.ui_token = result.response.imS_UIToken;
         _shared.userId = userId;
         const checkRoleResult = await ProductPolicyService(userId);
         if (
