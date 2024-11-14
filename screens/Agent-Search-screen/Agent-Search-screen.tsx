@@ -9,6 +9,9 @@ import { getLocalizedEntry } from '../../Shared/SharedFunctions';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import { fetchRoleAndPin, getAgentSearchOptions, PerformSearch } from './Service/Agent-Search-Service';
 import { Dropdown } from 'react-native-element-dropdown';
+import _shared from '../common';
+import DQ_Alert from '../../components/DQ_Alert';
+import { useAlert } from '../../hooks/useAlert';
 
 const AgentSearchScreen = ({ navigation, route }: any) => {
   const [genders, setGenders] = useState<{ entityCode: string; entityDesc: string }[]>([]);
@@ -18,9 +21,12 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
   const [fatherName, setFatherName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [policyNumber, setPolicyNumber] = useState<string>('');  // Static value for policy number
-  const [pin, setPin] = useState<string>('');  
-  const userId = route.params.userId;
+  const [pin, setPin] = useState<string>('');
   const [_agentPinRole, setAgentPinRole] = useState<any>();
+  const [errorMsg, setErrorMsg] = useState<string>(
+    "No Data Found!"
+  );
+  const {isVisible, showAlert, hideAlert} = useAlert();
 
   const searchParams = {
     searchByName: {
@@ -39,9 +45,10 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
 
   useEffect(() => {
     const fetchGenders = async () => {
-      const agentRolePin = await fetchRoleAndPin(userId);
+      const id = _shared.userId;
+      const agentRolePin = await fetchRoleAndPin(id);
       setAgentPinRole(agentRolePin);
-      const options = await getAgentSearchOptions(userId);
+      const options = await getAgentSearchOptions(id);
       setGenders(options);
 
       // Create dynamic genderMapping based on fetched options
@@ -53,7 +60,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
     };
 
     fetchGenders();
-  }, [userId]);
+  }, []);
 
   const PerformSearchService = async (searchType: string) => {
     let params;
@@ -72,8 +79,13 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
       };
     }
 
-    await PerformSearch(userId, _agentPinRole.role, _agentPinRole.pin, params);
-    navigation.navigate('AgentResult');
+    const result = await PerformSearch(_shared.userId, _agentPinRole.role, _agentPinRole.pin, params);
+    if(result.length > 0){
+      navigation.navigate('AgentResult', {params});
+    }else{
+      setErrorMsg("No Data Found!")
+      showAlert()
+    }
   };
 
   const FirstNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FirstName');
@@ -163,12 +175,30 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <DQ_BaseHeader />
+      <DQ_Alert
+        isVisible={isVisible}
+        hideAlert={hideAlert}
+        btnList={[
+          {
+            title: 'Ok',
+            press: () => {
+              hideAlert();
+            },
+          },
+        ]}>
+        <DQ_Paragraph
+          content={errorMsg}
+          textColor="black"
+          textAlign="center"
+          fontSize={14}
+        />
+      </DQ_Alert>
+      <DQ_BaseHeader navigation={navigation} press={()=>navigation.goBack()} />
 
       <View style={styles.mainTitle}>
         <DQ_Paragraph
           fontSize={18}
-          content="p234"
+          content={_shared.userId}
           textAlign="center"
           fontFamily="Nexa Bold"
         />

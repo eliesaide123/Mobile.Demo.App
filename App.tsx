@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import WalkThroughScreen from './screens/walkThrough-screen/walkThrough-screen';
-import { StyleSheet, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/login-screen/login-screen';

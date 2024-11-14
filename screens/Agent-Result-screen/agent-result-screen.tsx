@@ -1,18 +1,37 @@
-import { Image, StyleSheet, View } from 'react-native';
-import React from 'react';
+import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
-// import DQ_PolicyCard from '../../components/DQ_PolicyCard';
+import _shared from '../common';
+import { PerformSearch } from '../Agent-Search-screen/Service/Agent-Search-Service';
+import DQ_PolicyCard from '../../components/DQ_PolicyCard';
+import Icon from '@react-native-vector-icons/fontawesome6';
 
-export default function AgentResult() {
 
-    const imageMapping: {[key: string]: any} = {
-        'dq.png': require('../../assets/images/DataQuest_Logo.png'),
-        'agent.png': require('../../assets/images/agent.png'),
+const imageMapping: {[key: string]: any} = {
+    'dq.png': require('../../assets/images/DataQuest_Logo.png'),
+    'agent.png': require('../../assets/images/agent.png'),
+  };
+
+export default function AgentResult({navigation, route}:any) {
+  const [searchResults, setSearchResults] = useState<any[]>([])
+
+      useEffect(()=>{
+        const {params} = route.params;
+        PerformSearchService(params);
+
+      },[route.params])
+
+      const PerformSearchService = async (params:any) => {
+        const result = await PerformSearch(_shared.userId, _shared.role, _shared.pin, params);
+        setSearchResults(result)
       };
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Icon name="chevron-left" size={18} color="#005faf" iconStyle="solid" />
+        </TouchableOpacity>
         <View style={styles.dqLogo}>
         <Image
           source={imageMapping['dq.png']}
@@ -26,19 +45,23 @@ export default function AgentResult() {
           resizeMode="contain"
           style={styles.AgentlogoImage}
         />
-        <DQ_Paragraph content="p234" fontFamily='Nexa Bold' fontSize={20} textAlign='center'/>
+        <DQ_Paragraph content={_shared.userId} fontFamily='Nexa Bold' fontSize={20} textAlign='center'/>
       </View>
-      {/* <FlatList
-              data={policyList}
+
+      {searchResults.length > 0 &&(
+        <View style={styles.users}>
+          <FlatList
+              data={searchResults}
               renderItem={({item}) => (
                 <DQ_PolicyCard
-                  src={imageMapping[groupCode]}
                   item={item}
-                  press={()=>{navigation.navigate('ProductPolicy',{policyNo: item.policyNo, groupCode, pin, role})}}
-                  keyExtractor={(item: any) => item.policyNo.toString()}
-                />
-              )}
-            /> */}
+                  variant='agent'
+                  press={()=>{navigation.navigate("ProductPolicy", {pin: item.pin})}}
+                  />)}  
+              keyExtractor={(item: any) => String(item.pin)}
+            />
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -69,5 +92,15 @@ const styles = StyleSheet.create({
         width: 120,
         height:120,
         alignSelf: 'center',
+    },
+    users:{
+      flex:0.5,
+      margin:10
+    },
+    backButton: {
+      padding: 15,
+      height: 50,
+      alignItems: 'flex-start',
+      justifyContent: 'center',
     },
 })

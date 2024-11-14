@@ -10,13 +10,15 @@ export async function fetchRoleAndPin(userId: string) {
       'x-user-ims-lang': '0',
       'X-Requested-With': 'XMLHttpRequest',
     };
-
+ 
     const response = await axios.get(
       'http://dqapi-sna.dq.com.lb:88/api/csconnect',
       { headers }
     );
 
     const { user_Role: role, user_Pin: pin } = response.data.response;
+    _shared.pin = pin;
+    _shared.role = role
     return { role, pin };
   } catch (error: any) {
     console.error('An error occurred while fetching role and pin:', error);
@@ -78,10 +80,13 @@ export async function PerformSearch(userId: string, role: string, pin: string, s
         params: searchParams,
       }
     );
-    console.log("Response: " , response.data.response.agentClientsData.agentClients)
+    console.log("Responseee: " , response.data.response.agentClientsData.agentClients)
     return response.data.response.agentClientsData.agentClients || [];
   } catch (error: any) {
-    console.error('An error occurred while performing search:', error);
-    return [];
+    
+    return {
+      status: false,
+      response: error.response ? error.response.data : error.message,
+    };
   }
 }
