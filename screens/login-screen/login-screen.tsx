@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -11,51 +11,42 @@ import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_Link from '../../components/DQ_Link';
 import DQ_EyeComponentTextBox from '../../components/DQ_EyeComponentTextBox';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {login} from './Service/authService';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { login } from './Service/authService';
 import _shared from '../common';
-import {getLocalizedEntry} from '../../Shared/SharedFunctions';
+import { getLocalizedEntry } from '../../Shared/SharedFunctions';
 import DQ_Alert from '../../components/DQ_Alert';
-import {ProductPolicyService} from '../product-policy-screen/service/product-policy.service';
-import {useAlert} from '../../hooks/useAlert';
-import {AxiosError} from 'axios';
+import { ProductPolicyService } from '../product-policy-screen/service/product-policy.service';
+import { useAlert } from '../../hooks/useAlert';
+import { AxiosError } from 'axios';
 import DQ_LoaderBtn from '../../components/DQ_LoaderBtn';
-import {LoginCredentials} from '../../Shared/Types';
+import { LoginCredentials } from '../../Shared/Types';
+import SharedService from '../../Shared/SharedService';
 
-export default function LoginScreen({navigation}: any) {
+export default function LoginScreen({ navigation }: any) {
   const logo = require('../../assets/images/DQ_LOGO.png');
-  const HeaderContainerText = getLocalizedEntry(
-    'LoginScreen',
-    'HeaderContainer',
-  );
+  const HeaderContainerText = getLocalizedEntry('LoginScreen', 'HeaderContainer');
   const HeaderSubContainerText = getLocalizedEntry(
     'LoginScreen',
-    'HeaderContainerSubText',
+    'HeaderContainerSubText'
   );
-  const WebUserIDPlaceHolder = getLocalizedEntry(
-    'LoginScreen',
-    'DQ_TextBoxUserID',
-  );
-  const RegisterPhrase = getLocalizedEntry(
-    'LoginScreen',
-    'DQ_RegisterPhrase',
-  ) as string[] | null;
+  const WebUserIDPlaceHolder = getLocalizedEntry('LoginScreen', 'DQ_TextBoxUserID');
+  const RegisterPhrase = getLocalizedEntry('LoginScreen', 'DQ_RegisterPhrase') as string[] | null;
   const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : '';
-  const DQ_ProceedAsAGuest = getLocalizedEntry(
-    'LoginScreen',
-    'DQ_ProceedAsAGuest',
-  );
+  const DQ_ProceedAsAGuest = getLocalizedEntry('LoginScreen', 'DQ_ProceedAsAGuest');
 
-  const {isVisible, showAlert, hideAlert} = useAlert();
+  const { isVisible, showAlert, hideAlert, errorMessage } = useAlert();
 
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string>(
-    'Something went wrong! Try again',
-  );
 
   let credentials: LoginCredentials;
+
+  // Set alert handler in useEffect
+  useEffect(() => {
+    SharedService.setAlertHandler(showAlert);
+  }, [showAlert]);
 
   const handleLogin = async () => {
     try {
@@ -66,9 +57,7 @@ export default function LoginScreen({navigation}: any) {
         cS_Password: password,
       };
       const result = await login(credentials);
-      console.log(result)
-      if (result && (result?.response?.status)) {
-        // Check if result and status are defined
+      if (result && result?.response?.status) {
         _shared.ui_token = result.response.imS_UIToken;
         _shared.userId = userId;
         const checkRoleResult = await ProductPolicyService(userId);
@@ -80,15 +69,8 @@ export default function LoginScreen({navigation}: any) {
         } else {
           navigation.navigate('ProductPolicy');
         }
-      } else {
-        setErrorMsg(
-          result?.response?.error_Description || result?.response?.error?.details  || 'Something went wrong! Try again',
-        ); // Use error message from the response if available
-        showAlert();
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'An unexpected error occurred');
-      showAlert();
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +90,7 @@ export default function LoginScreen({navigation}: any) {
           },
         ]}>
         <DQ_Paragraph
-          content={errorMsg}
+          content={errorMessage}
           textColor="black"
           textAlign="center"
           fontSize={14}
@@ -171,7 +153,7 @@ export default function LoginScreen({navigation}: any) {
           <Pressable
             style={styles.inlineSubContainerFooter}
             onPress={() => navigation.navigate('Register')}>
-            <Text style={{fontSize: 12}}>
+            <Text style={{ fontSize: 12 }}>
               {RegisterPhrase ? RegisterPhrase[0] : ''}
             </Text>
             <DQ_Link

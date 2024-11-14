@@ -1,45 +1,68 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-// Base URL
+interface ApiResponse {
+  response?: {
+    error_Description?: string;
+    details?: string;
+  };
+}
+
 const BASE_URL = 'http://dqapi-sna.dq.com.lb:88/api';
 
-// Default headers
 const defaultHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
   'x-user-ims-lang': '0',
-  'X-Requested-With': 'XMLHttpRequest'
+  'X-Requested-With': 'XMLHttpRequest',
 };
 
-// Generic SharedService with response type
+let setAlert: any = () => {}; // Placeholder for alert setter function
+
 const SharedService = {
-  // This method will accept a generic type `T` representing the response data structure
-  async callApi<T>(endpoint: string, method: 'GET' | 'POST' = 'GET', data: any = null, extraHeaders: object = {}): Promise<T> {
+  // Set the alert handler function (so we can trigger alerts globally)
+  setAlertHandler: (handler: any) => {
+    setAlert = handler;
+  },
+
+  // Show an alert with a message
+  showAlert: (message: string) => {
+    if (setAlert) {
+      setAlert(message);
+    }
+  },
+
+  // Generic API call method
+  async callApi<T extends ApiResponse>(
+    endpoint: string,
+    method: 'GET' | 'POST' = 'GET',
+    data: any = null,
+    extraHeaders: object = {}
+  ): Promise<T> {
     try {
-      // Create full URL
       const url = `${BASE_URL}${endpoint}`;
-
-      // Merge default headers with any extra headers
       const headers = { ...defaultHeaders, ...extraHeaders };
-
-      // Configure request
       const config: AxiosRequestConfig = {
         method,
         url,
         headers,
-        data
+        data,
       };
 
-      // Make the request
       const response: AxiosResponse<T> = await axios(config);
 
-      // Return the relevant part of the response
+      if (response.status && response.data?.response) {
+        SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
+      }
+
       return response.data;
-    } catch (error) {
-      
-      throw error;
+    } catch (error: any) {
+      // Check if the error contains a response or just the message
+      const errorDetails = error.response ? error.response.data.error.details : error.message;
+      SharedService.showAlert(errorDetails);
+
+      throw new Error(errorDetails);
     }
-  }
+  },
 };
 
 export default SharedService;
