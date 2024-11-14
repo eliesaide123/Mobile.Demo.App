@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ebebeb',
     flex: 1, // Ensures it takes full available space
     width: '100%',
+    overflow:'scroll'
   },
   contractRow: {
     flexDirection: 'row',
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     padding: 15,
     gap: 20,
     width: '128%',
-    height: '100%',
+    height: 50,
     marginHorizontal: -40,
     marginBottom: 7,
   },

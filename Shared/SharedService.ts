@@ -4,6 +4,7 @@ interface ApiResponse {
   response?: {
     error_Description?: string;
     details?: string;
+    status:boolean
   };
 }
 
@@ -50,7 +51,7 @@ const SharedService = {
 
       const response: AxiosResponse<T> = await axios(config);
 
-      if (response.status && response.data?.response) {
+      if (response.data?.response?.status == false) {
         SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
       }
 
