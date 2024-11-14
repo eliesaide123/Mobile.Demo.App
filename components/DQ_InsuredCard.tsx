@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Animated,
   StyleSheet,
+  ScrollView
 } from 'react-native';
 
 const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
@@ -78,10 +79,12 @@ const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
         style={{
           opacity: opacityInterpolate, // Apply the opacity fade effect here
           marginTop: 45,
-          width: '100%',
+          width: '100%', 
+          height: 'auto'         
         }}
       >
         {children}
+        
       </Animated.View>
     </View>
   );

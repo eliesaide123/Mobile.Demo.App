@@ -1,9 +1,9 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import DQ_InsuredCard from './DQ_InsuredCard';
 import DQ_Paragraph from './DQ_Paragraph';
 import _shared from '../screens/common';
-import { GetGenRisk } from '../screens/policy-details-screen/service/get-genrisk-service';
+import {GetGenRisk} from '../screens/policy-details-screen/service/get-genrisk-service';
 
 export default function DQ_InsuredRisks({
   item,
@@ -12,10 +12,10 @@ export default function DQ_InsuredRisks({
   policyDataURI,
 }: any) {
   const [items, setItems] = useState([]);
+  const [covers, setCovers] = useState([]);
 
   useEffect(() => {
     const Get_Covers = async () => {
-      console.log(JSON.stringify(item));
       const result = await GetGenRisk(
         _shared.userId,
         policyNo,
@@ -26,15 +26,24 @@ export default function DQ_InsuredRisks({
         policyDataURI,
       );
       setItems(result || []); // Update this based on your response structure
+      console.log('COVERSSSSS', result?.riskDetails?.dataItems);
+      setCovers(result?.riskDetails?.dataItems || []); // Update this based on your response structure
     };
     Get_Covers();
   }, [coversURL, policyDataURI, policyNo, item]);
 
   // Check if all itemCovers properties are null
-  const isAllCoversNull = (covers: any[]) => {
-    return covers ? Object.values(covers).every(value => value === null): true;
+  const isAllCoversNull = (covers: any) => {
+    if (Array.isArray(covers)) {
+      // If covers is an array, check if it's empty
+      return covers.length === 0;
+    } else if (covers && typeof covers === 'object') {
+      // If covers is an object, check if all values (except those in excludeKeys) are null
+      return Object.entries(covers).every(([key, value]) => value === null);
+    }
+    // If covers is neither an array nor an object, treat it as empty
+    return true;
   };
-  
 
   const getDynamicFontSize = (text: any) => {
     const length = String(text).length;
@@ -47,13 +56,14 @@ export default function DQ_InsuredRisks({
   return (
     <ScrollView style={styles.contractContainer}>
       <View>
-        {Array.isArray(item) && item.length > 0 &&
+        {Array.isArray(item) &&
+          item.length > 0 &&
           item.map((obj, index) => {
-            const locked = isAllCoversNull(obj[0]?.itemCovers);
+            const locked = isAllCoversNull(covers);
 
             return (
               <DQ_InsuredCard
-                title={ obj['riskType']}
+                title={obj['riskType']}
                 key={index}
                 count={item.length}
                 locked={locked} // Apply locked attribute here
@@ -78,8 +88,9 @@ export default function DQ_InsuredRisks({
                     />
                   </View>
                 </View>
-                {Array.isArray(items) && items.length > 0 &&
-                  items.map((it: any, itIndex) => (
+                {Array.isArray(covers) &&
+                  covers.length > 0 &&
+                  covers.map((it: any, itIndex) => (
                     <View key={itIndex} style={styles.propertyRow}>
                       <View style={styles.contractRow}>
                         <DQ_Paragraph
@@ -99,22 +110,25 @@ export default function DQ_InsuredRisks({
                           textWidth={150}
                         />
                       </View>
-                      {it?.itemCovers.map((i: any) => (
-                        <View key={i.itemCoverName} style={styles.description}>
-                          <DQ_Paragraph
-                            content={i.itemCoverName}
-                            fontFamily="Nexa Light"
-                            fontSize={getDynamicFontSize(i.itemCoverName + 'extratextextra')}
-                            textColor="#727272"
-                          />
-                        </View>
-                      ))}
+                      {it.itemCovers.map((i: any) =>
+                          <View
+                            key={i.itemCoverName}
+                            style={styles.description}>
+                            <DQ_Paragraph
+                              content={i.itemCoverName}
+                              fontFamily="Nexa Light"
+                              fontSize={getDynamicFontSize(
+                                i.itemCoverName + 'extratextextra',
+                              )}
+                              textColor="#727272"
+                            />
+                          </View>
+                      )}
                     </View>
                   ))}
               </DQ_InsuredCard>
             );
-          })
-        }
+          })}
       </View>
     </ScrollView>
   );
