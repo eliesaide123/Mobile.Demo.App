@@ -92,6 +92,7 @@ export default function PolicyDetails({navigation, route}: any) {
       await getRequestsActions(_policyNo);
       await getActions(policyDetails.contract);
 
+<<<<<<< HEAD
       const updatedTabs: any[] = [];
         Object.keys(componentMapping).forEach((key) => {
           if (policyDetails[key] && (Array.isArray(policyDetails[key]) ? policyDetails[key].length > 0 : true)) {
@@ -129,6 +130,19 @@ export default function PolicyDetails({navigation, route}: any) {
             }
           }
         });
+=======
+      const updatedTabs = Object.keys(componentMapping).reduce((acc, key) => {
+        if (policyDetails[key]) {
+          const TabContent = componentMapping[key];
+          acc.push({
+            key: titleMapping[key],
+            title: titleMapping[key],
+            content: <TabContent item={policyDetails[key]} />,
+          });
+        }
+        return acc;
+      }, []);
+>>>>>>> 74476e6098cfbd85b52cc1b5fcbe2a3462ce72e1
 
       setTabs(updatedTabs);
       setPolicyData(policyDetails);
@@ -148,6 +162,7 @@ export default function PolicyDetails({navigation, route}: any) {
     );
     setPolicyActions(result.policyActionsData.policyActions);
     setSpecialActions(result.policyActionsData.specialActions);
+<<<<<<< HEAD
     setActions((prev: any) => ({
       ...prev,
       policyActions: result.policyActionsData.policyActions?.map((item: any) => ({
@@ -155,6 +170,15 @@ export default function PolicyDetails({navigation, route}: any) {
         iconName: 'clipboard-list',
       })),
       specialActions: result.policyActionsData.specialActions?.map((item: any) => ({
+=======
+    setActions(prev => ({
+      ...prev,
+      policyActions: result.policyActionsData.policyActions.map((item: any) => ({
+        ...item,
+        iconName: 'clipboard-list',
+      })),
+      specialActions: result.policyActionsData.specialActions.map((item: any) => ({
+>>>>>>> 74476e6098cfbd85b52cc1b5fcbe2a3462ce72e1
         ...item,
         iconName: item.actionCode === 'MOBILE' ? 'mobile-screen-button' : 'envelope',
       })),
@@ -218,7 +242,11 @@ export default function PolicyDetails({navigation, route}: any) {
         iconName: 'clipboard-list',
       },
     ];
+<<<<<<< HEAD
     setActions((prev : any) => ({
+=======
+    setActions(prev => ({
+>>>>>>> 74476e6098cfbd85b52cc1b5fcbe2a3462ce72e1
       ...prev,
       predefinedActions,
     }));
@@ -239,7 +267,11 @@ export default function PolicyDetails({navigation, route}: any) {
       />
       {clickedFAB && (
         <View style={styles.overlay} onTouchStart={handleOverlayClick} />
+<<<<<<< HEAD
       )}      
+=======
+      )}
+>>>>>>> 74476e6098cfbd85b52cc1b5fcbe2a3462ce72e1
       <View style={styles.fab}>
         {actions.predefinedActions.length > 0 && (
           <DQ_FAB
