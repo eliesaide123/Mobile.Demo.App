@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-const DQ_InsuredCard = ({ title, count, children }: any) => {
+const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
   const [collapsed, setCollapsed] = useState(true);
   const [animation] = useState(new Animated.Value(0));
 
@@ -33,7 +33,7 @@ const DQ_InsuredCard = ({ title, count, children }: any) => {
   }, [count]);
 
   const toggleCollapse = () => {
-    // Toggle the collapsed state to trigger reanimation
+    if (locked) return;
     setCollapsed(!collapsed);
 
     // Animate the content visibility (opacity) and the chevron icon rotation
@@ -57,17 +57,18 @@ const DQ_InsuredCard = ({ title, count, children }: any) => {
   });
 
   // Static background color based on collapsed state
-  const backgroundColor = collapsed ? 'white' : '#0160ae';
-  const color = collapsed ? 'black' : 'white';
+  const backgroundColor = collapsed ? locked ? '#0160ae' : 'white' : '#0160ae';
+  const color = collapsed ? locked ? 'white' : 'black' : 'white';
+  const chevronColor = collapsed ? locked ? '#0160ae' : 'black' : 'white';
 
   return (
     <View style={[styles.cardBorder, { backgroundColor }]}>
       <TouchableWithoutFeedback onPress={toggleCollapse}>
         <View style={styles.InlineElements}>
-          <Text style={[styles.textFormat, { color, fontSize: getDynamicFontSize(title) }]}>{title}</Text>
+          <Text style={[styles.textFormat, { color, fontSize: locked? 13 : getDynamicFontSize(title), textAlign:'left' }]}>{title}</Text>
           <View style={styles.InlineElements}>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-              <Icon name="chevron-down" size={14} color={color} iconStyle="solid" />
+              <Icon name="chevron-down" size={14} color={chevronColor} iconStyle="solid" />
             </Animated.View>
           </View>
         </View>

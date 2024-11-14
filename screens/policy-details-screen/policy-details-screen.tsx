@@ -11,6 +11,7 @@ import DQ_InsuredCovers from '../../components/DQ_InsuredCovers';
 import _shared from '../common';
 import DQ_Loader from '../../components/DQ_Loader';
 import DQ_InsuredRisks from '../../components/DQ_InsuredRisks';
+import DQ_Dependent from '../../components/DQ_Dependent';
 const imageMapping: { [key: string]: any } = {
   health: require('../../assets/images/health.png'),
   life: require('../../assets/images/life.png'),
@@ -30,7 +31,7 @@ const imageMapping: { [key: string]: any } = {
 const componentMapping: { [key: string]: any } = {
   "contract": DQ_Contract,
   "vehicle": DQ_Vehicle,
-  "insuredDep": DQ_Contract,
+  "insuredDep": DQ_Dependent,
   "insuredData": DQ_Insured,
   "insuredRisks" : DQ_InsuredRisks,
   "insuredCoverData": DQ_InsuredCovers,
@@ -39,7 +40,7 @@ const componentMapping: { [key: string]: any } = {
 const titleMapping: { [key: string]: string } = {
   "contract": "Contract",
   "vehicle": "Vehicle",
-  "insuredDep": "Dependant",
+  "insuredDep": "Dependent",
   "insuredData": "Insured",
   "insuredRisks": "Insured Risks",
   "insuredCoverData": "Insured Covers",
