@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Image,
@@ -67,27 +67,26 @@ export default function LoginScreen({navigation}: any) {
       };
       const result = await login(credentials);
       console.log(result)
-      if ('response' in result) {
-        if (result && (result?.response?.status || result?.response.status)) {
-          // Check if result and status are defined
-          _shared.ui_token = result.response.imS_UIToken;
-          _shared.userId = userId;
-          const checkRoleResult = await ProductPolicyService(userId);
-          if (checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() === 'A') {
-            navigation.navigate('AgentSearch');
-          } else {
-            navigation.navigate('ProductPolicy');
-          }
+      if (result && (result?.response?.status)) {
+        // Check if result and status are defined
+        _shared.ui_token = result.response.IMS_UIToken;
+        _shared.userId = userId;
+        const checkRoleResult = await ProductPolicyService(userId);
+        if (
+          checkRoleResult.user_Role &&
+          checkRoleResult.user_Role.toUpperCase() === 'A'
+        ) {
+          navigation.navigate('AgentSearch');
         } else {
-          setErrorMsg(
-            result?.response?.error.details ||
-              'Something went wrong! Try again',
-          );
-          showAlert();
-        }  
-      }    
+          navigation.navigate('ProductPolicy');
+        }
+      } else {
+        setErrorMsg(
+          result?.response?.error_Description || result?.response?.error?.details  || 'Something went wrong! Try again',
+        ); // Use error message from the response if available
+        showAlert();
+      }
     } catch (err: any) {
-      console.error(err)
       setErrorMsg(err.message || 'An unexpected error occurred');
       showAlert();
     } finally {
