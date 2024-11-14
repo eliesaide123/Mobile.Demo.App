@@ -40,7 +40,7 @@ export function DQ_TabView({ tabs, initialIndex = 0 }: CustomTabViewProps) {
 
   return (
     <View style={styles.container}>
-      {tabs.length > 0 ? (
+      {tabs.length > 0 && (
         <TabView
           navigationState={{ index, routes }}
           renderScene={SceneMap(scenes)}
@@ -48,8 +48,6 @@ export function DQ_TabView({ tabs, initialIndex = 0 }: CustomTabViewProps) {
           initialLayout={{ width: layout.width }}
           renderTabBar={renderTabBar}
         />
-      ) : (
-        <View><Text>No Tabs Available</Text></View>
       )}
     </View>
   );
