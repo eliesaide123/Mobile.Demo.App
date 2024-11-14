@@ -6,6 +6,7 @@ import _shared from '../common';
 import { PerformSearch } from '../Agent-Search-screen/Service/Agent-Search-Service';
 import DQ_PolicyCard from '../../components/DQ_PolicyCard';
 import Icon from '@react-native-vector-icons/fontawesome6';
+import DQ_Loader from '../../components/DQ_Loader';
 
 
 const imageMapping: {[key: string]: any} = {
@@ -14,7 +15,8 @@ const imageMapping: {[key: string]: any} = {
   };
 
 export default function AgentResult({navigation, route}:any) {
-  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
       useEffect(()=>{
         const {params} = route.params;
@@ -23,12 +25,15 @@ export default function AgentResult({navigation, route}:any) {
       },[route.params])
 
       const PerformSearchService = async (params:any) => {
+        setLoading(true);
         const result = await PerformSearch(_shared.userId, _shared.role, _shared.pin, params);
-        setSearchResults(result)
+        setSearchResults(result);
+        setLoading(false);
       };
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+      {loading && <DQ_Loader loading={loading} />}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="chevron-left" size={18} color="#005faf" iconStyle="solid" />
         </TouchableOpacity>

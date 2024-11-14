@@ -13,6 +13,7 @@ import _shared from '../common';
 import DQ_Alert from '../../components/DQ_Alert';
 import { useAlert } from '../../hooks/useAlert';
 
+
 const AgentSearchScreen = ({ navigation, route }: any) => {
   const [genders, setGenders] = useState<{ entityCode: string; entityDesc: string }[]>([]);
   const [genderMapping, setGenderMapping] = useState<{ [key: string]: string }>({});
@@ -27,6 +28,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
     "No Data Found!"
   );
   const {isVisible, showAlert, hideAlert} = useAlert();
+  const [loading, setLoading] = useState(false);
 
   const searchParams = {
     searchByName: {
@@ -63,6 +65,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
   }, []);
 
   const PerformSearchService = async (searchType: string) => {
+    setLoading(true);
     let params;
 
     if (searchType === 'PIN') {
@@ -86,6 +89,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
       setErrorMsg("No Data Found!")
       showAlert()
     }
+    setLoading(false);
   };
 
   const FirstNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FirstName');
@@ -132,7 +136,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
             <DQ_TextBox placeholder={LastNamePlaceHolder} borderColor="#bbbec3" value={lastName} onChangeText={setLastName} />
           </View>
           <View style={styles.SearchButton}>
-            <DQ_Button title="Search" onPress={() => PerformSearchService('PH')} />
+            <DQ_Button title="Search" onPress={() => PerformSearchService('PH')} loading={loading}/>
           </View>
         </ScrollView>
       ),
@@ -152,7 +156,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
             />
           </View>
           <View style={styles.SearchButton}>
-            <DQ_Button title="Search" onPress={() => PerformSearchService('P')} />
+            <DQ_Button title="Search" onPress={() => PerformSearchService('P')} loading={loading} />
           </View>
         </ScrollView>
       ),
@@ -166,7 +170,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
             <DQ_TextBox placeholder={PinPlaceHolder} value={pin} onChangeText={setPin} />
           </View>
           <View style={styles.SearchButton}>
-            <DQ_Button title="Search" onPress={() => PerformSearchService('PIN')} />
+            <DQ_Button title="Search"  onPress={() => PerformSearchService('PIN')}  loading={loading}/>
           </View>
         </ScrollView>
       ),

@@ -18,7 +18,7 @@ export async function fetchRoleAndPin(userId: string) {
 
     const { user_Role: role, user_Pin: pin } = response.data.response;
     _shared.pin = pin;
-    _shared.role = role
+    _shared.role = role;
     return { role, pin };
   } catch (error: any) {
     console.error('An error occurred while fetching role and pin:', error);

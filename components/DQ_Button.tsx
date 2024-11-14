@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pressable, Text, StyleSheet} from 'react-native';
+import {Pressable, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
 export default function DQ_Button({
   title,
@@ -7,16 +7,23 @@ export default function DQ_Button({
   backgroundColor = '#ffbe23',
   textColor = '#FFFFFF',
   fontFamily = 'Nexa Regular',
-  fontSize
+  fontSize,
+  loading = false
 }: any) {
   return (
     <Pressable
       style={({pressed}) => [
         styles.button,
-        {backgroundColor: pressed ? '#ffcc22' : backgroundColor},
+        {backgroundColor: pressed ? '#ffcc22' : backgroundColor, opacity: loading ? 0.5 : 1},
       ]}
-      onPress={onPress}>
+      onPress={onPress}
+      disabled={loading}
+      >
+      {loading ? (
+                <ActivityIndicator size="small" color="#0160ae" />
+            ) : (
       <Text style={[styles.buttonText, {color: textColor, fontFamily, fontSize}]}>{title}</Text>
+      )}
     </Pressable>
   );
 }

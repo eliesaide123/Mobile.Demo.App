@@ -112,14 +112,21 @@ export default function ProductPolicy({navigation, route}: any) {
   const [role, setRole] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
   const [openCard, setOpenCard] = useState(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setUserId(_shared.userId);
     Get_CS_Connect(_shared.userId);
   }, []);
 
-  const Get_CS_Connect = async (userId: string) => {    
-    const result = await ProductPolicyService(userId);
+  const Get_CS_Connect = async (userId: string) => {
+    setIsLoading(true)
+    let _UserPin = null;
+    if(route.params){
+      const {pin : UserPin} = route.params;
+      _UserPin = String(UserPin)
+    }
+    const result = await ProductPolicyService(userId, _UserPin);
     const roles = result.responseData.userData[0].roles;
     const _pin = result.user_Pin;
     _shared.pin = _pin;
@@ -145,6 +152,8 @@ export default function ProductPolicy({navigation, route}: any) {
       if (result.responseData.pendingRenewals)
         setPendingRenewals(result.responseData.pendingRenewals);
     }
+
+    setIsLoading(false)
   };
 
   const handleCardPress = (cardId:any) => {
@@ -153,7 +162,7 @@ export default function ProductPolicy({navigation, route}: any) {
 
   return (
     <SafeAreaView>
-      {pin && (
+      {!isLoading && (
         <View style={{marginTop: 10}}>
           <DQ_BaseHeader
             style={styles.mainHeader}
