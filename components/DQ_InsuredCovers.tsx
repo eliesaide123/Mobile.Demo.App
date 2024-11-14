@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 9,
+    paddingHorizontal: 20,
     borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
     backgroundColor: '#3cc8f0',

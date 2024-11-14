@@ -1,13 +1,23 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
-import {default as Ionicon} from '@react-native-vector-icons/ionicons';
-import {default as FAIcon} from '@react-native-vector-icons/fontawesome6';
+import { default as Ionicon } from '@react-native-vector-icons/ionicons';
+import { default as FAIcon } from '@react-native-vector-icons/fontawesome6';
 import DQ_Paragraph from './DQ_Paragraph';
 
 export default function DQ_FAB({ clicked, setClicked, actions }: any) {
-  const itemPositions = actions.map(() => useSharedValue(0));
-  const itemOpacities = actions.map(() => useSharedValue(0));
+  console.log(actions);
+  const filteredActions = actions.predefinedActions?.filter((item: any) => item.value === "true") || [];
+  const filteredSpecialActions = actions.specialActions?.filter((item: any) => item.actionValue !== "") || [];
+  const actualActions = [
+    ...(actions.policyActions || []),
+    ...(filteredSpecialActions || []),
+    ...filteredActions
+  ];
+
+  // Initialize shared values based on the length of actualActions
+  const itemPositions = actualActions.map(() => useSharedValue(0));
+  const itemOpacities = actualActions.map(() => useSharedValue(0));
 
   const handleClickBtn = () => {
     setClicked((prev: boolean) => {
@@ -26,23 +36,43 @@ export default function DQ_FAB({ clicked, setClicked, actions }: any) {
     });
   };
 
-  // Filter out actions where value is not "true"
-  const filteredActions = actions.filter((item: any) => item.value === "true");
-
   // Render each action item with animation
-  const Item = ({ title, index, iconName }: any) => {
+  const Item = ({ title, index, iconName, action }: any) => {
     const animatedStyle = useAnimatedStyle(() => ({
       transform: [{ translateY: itemPositions[index].value }],
       opacity: itemOpacities[index].value,
     }));
+
+    const handleActionPress = () => {
+      const { actionCode, actionValue, actionSubject, url, actionPrint, goTo } = action;
+  
+      // Handle different action cases
+      if (actionCode === "MOBILE") {
+        console.log("Hereeee")
+        // Open phone dialer
+        Linking.openURL(`tel:${actionValue}`);
+      } else if (actionCode === "EMAIL") {
+        // Open email client with subject
+        Linking.openURL(`mailto:${actionValue}?subject=${actionSubject}`);
+      } else if (url) {
+        // Call service with URL and policyNo
+        //callServiceWithURL(url, policyNo, actionCode);
+      } else if (actionPrint) {
+        // Call service with URL and policyNo if actionPrint is true
+        //callPrintService(url, policyNo, actionCode);
+      } else if (goTo) {
+        // Navigate to the specified page
+        //navigateToPage(goTo);
+      }
+    };
 
     return (
       <Animated.View style={[styles.fabItem, animatedStyle]}>
         <View style={styles.textContainer}>
           <DQ_Paragraph content={title} fontFamily="Nexa Light" textColor="white" textAlign="right" />
         </View>
-        <TouchableOpacity style={styles.openContainer} disabled={!clicked}>
-          <FAIcon name={iconName} size={18} color="blue" iconStyle="solid" />
+        <TouchableOpacity style={styles.openContainer} disabled={!clicked} onPress={handleActionPress}>
+          <FAIcon name={iconName} size={18} color="blue" iconStyle={iconName == 'envelope' ? "regular": "solid"} />
         </TouchableOpacity>
       </Animated.View>
     );
@@ -60,16 +90,13 @@ export default function DQ_FAB({ clicked, setClicked, actions }: any) {
       {/* Render the action items when clicked is true */}
       <Animated.View style={[styles.itemsContainer, { opacity: clicked ? 1 : 0 }]}>
         {clicked &&
-          filteredActions.map((item: any, index: number) => {
-            return (
-              <Item key={index} title={item.title} index={index} iconName={item.iconName} />
-            );
-          })}
+          actualActions.map((item: any, index: number) => (
+            <Item key={index} title={item.title || item.actionDesc} index={index} iconName={item.iconName || 'list'} action={item} />
+          ))}
       </Animated.View>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   rootElement: {
@@ -98,10 +125,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   itemsContainer: {
-    width: 190,
+    width: '80%',
     position: 'absolute',
     top: 50,
-    left: -150,
+    left: -245,
     display: 'flex',
     flexDirection: 'column',
   },
@@ -111,9 +138,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    marginTop:-10
+    marginTop: -10,
+    width: '100%',
   },
   textContainer: {
-    flex: 1,
+    flex: 3,
+    width: 500,
   },
 });
