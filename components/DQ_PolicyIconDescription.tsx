@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import DQ_Paragraph from './DQ_Paragraph'
-import DQ_FAB from './DQ_FAB'
 
 export default function DQ_PolicyIconDescription({src, policyNo, clickedFAB, setClickedFAB}: any) {
   return (
@@ -13,9 +12,6 @@ export default function DQ_PolicyIconDescription({src, policyNo, clickedFAB, set
             resizeMode="contain"
           />
           <DQ_Paragraph content={policyNo} fontFamily='Nexa Light' />
-        </View>
-        <View style={styles.fab}>
-          <DQ_FAB clicked={clickedFAB} setClicked={setClickedFAB}/>
         </View>
       </View>
   )
@@ -43,10 +39,4 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap:10,
       },
-      fab:{
-        position:'static',
-        top:3,
-        right:-30,
-        zIndex:50
-      }
 })

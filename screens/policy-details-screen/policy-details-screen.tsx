@@ -12,6 +12,10 @@ import _shared from '../common';
 import DQ_Loader from '../../components/DQ_Loader';
 import DQ_InsuredRisks from '../../components/DQ_InsuredRisks';
 import DQ_Dependent from '../../components/DQ_Dependent';
+import DQ_FAB from '../../components/DQ_FAB';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GetRequestActions } from './service/get-requests-service';
+
 const imageMapping: { [key: string]: any } = {
   health: require('../../assets/images/health.png'),
   life: require('../../assets/images/life.png'),
@@ -56,6 +60,9 @@ export default function PolicyDetails({ navigation, route }: any) {
   const [policyDataURI, setPolicyDataURI] = useState<any>(null);
   const [clickedFAB, setClickedFAB] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [policyActions, setPolicyActions] = useState<any>(null);
+  const [specialActions, setSpecialActions] = useState<any>(null);
+  const [actions, setActions] = useState<any[] | null>([]);
 
   useEffect(() => {
   const initializePolicyDetails = async () => {
@@ -69,6 +76,32 @@ export default function PolicyDetails({ navigation, route }: any) {
         policyInsCoversURI: _policyInsCoversURI,
         policyDataURI : _policyDataURI
       } = route.params;
+    const getRequestsActions = async()=>{
+      const result = await GetRequestActions(_shared.userId, _policyNo, _shared.pin, _shared.role );
+      const _policyActions = result.policyActionsData.policyActions;
+      const _specialActions = result.policyActionsData.specialActions;
+      setPolicyActions(_policyActions);
+      setSpecialActions(_specialActions);
+      console.log(JSON.stringify(_policyActions))
+      console.log(JSON.stringify(_specialActions))
+    }
+
+      const getActions = async () => {
+        try {
+          const acts = await AsyncStorage.getItem('contractActions');
+          setActions(acts ? JSON.parse(acts) : []);
+        } catch (error) {
+          console.error("Failed to load actions", error);
+        }
+      };
+      getRequestsActions()
+      getActions();
+
+    // Initialize state variables from route params
+    setGroupCode(grpCode);
+    setPolicyNo(_policyNo);
+    setPolicyDetailsURI(_policyDetailsURI);
+    setPolicyInsCoversURI(_policyInsCoversURI);
 
       setGroupCode(grpCode);
       setPolicyNo(_policyNo);
@@ -181,13 +214,14 @@ export default function PolicyDetails({ navigation, route }: any) {
       />
       
       {clickedFAB && <View style={styles.overlay} onTouchStart={handleOverlayClick} />}
+      <View style={styles.fab}>
+        {actions && <DQ_FAB clicked={clickedFAB} setClicked={setClickedFAB} actions={actions}/>}
+      </View>
       <View>
         {groupCode && policyNo && (
           <DQ_PolicyIconDescription
             src={imageMapping[groupCode]}
             policyNo={policyNo}
-            clickedFAB = {clickedFAB}
-            setClickedFAB={setClickedFAB}
           />
         )}
       </View>
@@ -219,4 +253,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.75)',  // Semi-transparent overlay
     zIndex: 1,  // Ensure overlay is above other content
   },
+  
+  fab:{
+    position:'relative',
+    top:13,
+    right:-290,
+    zIndex:500
+  }
 });

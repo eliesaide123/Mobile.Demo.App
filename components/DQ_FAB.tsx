@@ -1,63 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
-import Icon from '@react-native-vector-icons/fontawesome6';
+import {default as Ionicon} from '@react-native-vector-icons/ionicons';
+import {default as FAIcon} from '@react-native-vector-icons/fontawesome6';
 import DQ_Paragraph from './DQ_Paragraph';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function DQ_FAB({ clicked, setClicked }: any) {
-  const [actions, setActions] = useState<any[]>([]);
-  const items = ['list', 'xmark', 'list', 'list', 'list', 'list'];
-
-  const itemPositions = items.map(() => useSharedValue(0));
-  const itemOpacities = items.map(() => useSharedValue(0));
+export default function DQ_FAB({ clicked, setClicked, actions }: any) {
+  const itemPositions = actions.map(() => useSharedValue(0));
+  const itemOpacities = actions.map(() => useSharedValue(0));
 
   const handleClickBtn = () => {
-    // Toggle clicked state and immediately trigger animation
     setClicked((prev: boolean) => {
       const newClicked = !prev;
 
-      // Change item positions and opacity to make them appear or disappear
-      itemPositions.forEach((position, index) => {
-        position.value = withSpring(
-          newClicked ? (index + 1) * 50 : 0, // Move items upward when opened, reset when closed
-          { damping: 15, stiffness: 200 } // Smooth animation
-        );
+      // Update the positions and opacity of each action item
+      itemPositions.forEach((position: any, index: any) => {
+        position.value = withSpring(newClicked ? (index + 1) * 15 : 0, { damping: 15, stiffness: 200 });
       });
 
-      itemOpacities.forEach((opacity) => {
-        opacity.value = withSpring(
-          newClicked ? 1 : 0, // Fade in when opened, fade out when closed
-          { damping: 15, stiffness: 200 } // Smooth opacity transition
-        );
+      itemOpacities.forEach((opacity: any) => {
+        opacity.value = withSpring(newClicked ? 1 : 0, { damping: 15, stiffness: 200 });
       });
 
       return newClicked;
     });
   };
 
-  useEffect(()=>{
-    const getActions = async()=>{
-      const acts = await AsyncStorage.getItem('contractActions')
-      console.log(acts)
-      setActions(JSON.parse(acts || 'null'));
-    }
-    getActions()
-  },[])
+  // Filter out actions where value is not "true"
+  const filteredActions = actions.filter((item: any) => item.value === "true");
 
-  const Item = ({ index, iconName }: any) => {
+  // Render each action item with animation
+  const Item = ({ title, index, iconName }: any) => {
     const animatedStyle = useAnimatedStyle(() => ({
-      transform: [{ translateY: itemPositions[index].value }], // Animation for translation
-      opacity: itemOpacities[index].value, // Animation for opacity
+      transform: [{ translateY: itemPositions[index].value }],
+      opacity: itemOpacities[index].value,
     }));
 
     return (
       <Animated.View style={[styles.fabItem, animatedStyle]}>
         <View style={styles.textContainer}>
-          <DQ_Paragraph content="dsvsd" fontFamily='Nexa Light' textColor='white' textAlign='right' />
+          <DQ_Paragraph content={title} fontFamily="Nexa Light" textColor="white" textAlign="right" />
         </View>
         <TouchableOpacity style={styles.openContainer} disabled={!clicked}>
-          <Icon name={iconName} size={18} color="blue" iconStyle='solid' />
+          <FAIcon name={iconName} size={18} color="blue" iconStyle="solid" />
         </TouchableOpacity>
       </Animated.View>
     );
@@ -65,19 +50,26 @@ export default function DQ_FAB({ clicked, setClicked }: any) {
 
   return (
     <View style={styles.rootElement}>
+      {/* Main button to toggle the state */}
       <TouchableOpacity onPress={handleClickBtn} style={styles.mainContainer}>
         <View style={styles.mainButton}>
-          <Icon name={clicked ? 'xmark' : 'list'} size={18} color="white" iconStyle='solid' />
+          <Ionicon name={clicked ? 'close' : 'grid'} size={18} color="white" />
         </View>
       </TouchableOpacity>
-      <View style={[styles.itemsContainer, clicked && styles.visible]}>
-        {items.map((iconName, index) => (
-          <Item key={index} index={index} iconName={iconName} />
-        ))}
-      </View>
+
+      {/* Render the action items when clicked is true */}
+      <Animated.View style={[styles.itemsContainer, { opacity: clicked ? 1 : 0 }]}>
+        {clicked &&
+          filteredActions.map((item: any, index: number) => {
+            return (
+              <Item key={index} title={item.title} index={index} iconName={item.iconName} />
+            );
+          })}
+      </Animated.View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   rootElement: {
@@ -85,6 +77,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 0.2,
+    zIndex: 10, // Ensure the main button is above other items
   },
   mainButton: {
     backgroundColor: '#ffbe26',
@@ -107,20 +100,18 @@ const styles = StyleSheet.create({
   itemsContainer: {
     width: 190,
     position: 'absolute',
-    top: 40,
+    top: 50,
     left: -150,
-    display: 'none', // Initially hidden
-  },
-  visible: {
-    display: 'flex', // Show when clicked
+    display: 'flex',
+    flexDirection: 'column',
   },
   fabItem: {
     flex: 1,
-    marginBottom: -10,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    marginTop:-30
+    marginTop:-10
   },
   textContainer: {
     flex: 1,
