@@ -6,12 +6,10 @@ export default function DQ_Dependent({item}:any) {
   return (
     <ScrollView style={styles.contractContainer}>
       <View>        
-        {Array.isArray(item) && item.length > 0 ? (          
+        {Array.isArray(item) && item.length > 0 && (          
           item.map((obj, index) => (
             <DQ_InsuredCard title={obj["insuredData"]} key={index} locked></DQ_InsuredCard>
           ))
-        ) : (
-          <Text>No data available</Text>
         )}
       </View>
     </ScrollView>

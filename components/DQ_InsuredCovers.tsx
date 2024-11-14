@@ -27,16 +27,16 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
 
   const getDynamicFontSize = (text : any) => {
     const length = String(text).length;
-    if (length <= 10) return 16; // Short text, larger font
-    if (length <= 20) return 14; // Medium text, medium font
-    if (length <= 30) return 12; // Long text, smaller font
+    if (length <= 10) return 14; // Short text, larger font
+    if (length <= 20) return 12; // Medium text, medium font
+    if (length <= 30) return 10; // Long text, smaller font
     return 10; // Very long text, smallest font
   };
 
   return (
     <ScrollView style={styles.contractContainer}>
       <View>
-        {Array.isArray(item) && item.length > 0 ? (
+        {Array.isArray(item) && item.length > 0 && (
           item.map((obj, index) => (
             <DQ_InsuredCard
               title={obj['insuredData'] || obj['riskType']  ||'Insured Data'}
@@ -62,7 +62,7 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
                     />
                   </View>
                 </View>
-                {Array.isArray(covers) && covers.length > 0 ? (
+                {Array.isArray(covers) && covers.length > 0 && (
                   covers.map((cover, coverIndex) => (
                     <View key={coverIndex}>
                       <View style={styles.contractRow}>
@@ -71,13 +71,9 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
                       </View>
                     </View>
                   ))
-                ) : (
-                  <Text>No data available</Text>
                 )}
             </DQ_InsuredCard>
           ))
-        ) : (
-          <Text>No data available</Text>
         )}
       </View>
     </ScrollView>
@@ -117,8 +113,10 @@ const styles = StyleSheet.create({
     padding: 15,
     gap:20,
     width:'128%',
+    height:50,
     marginHorizontal:-40,
     marginBottom:7,
+    marginTop:10  
   },
   header:{
     flex:0.4

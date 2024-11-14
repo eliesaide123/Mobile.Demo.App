@@ -1,13 +1,9 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import DQ_InsuredCard from './DQ_InsuredCard';
 import DQ_Paragraph from './DQ_Paragraph';
 import _shared from '../screens/common';
-import {GetAdvancedLifeCover} from '../screens/policy-details-screen/service/get-advanced-life-cover-service';
-import {
-  GetGenRisk,
-  GetGenRiskCovers,
-} from '../screens/policy-details-screen/service/get-genrisk-service';
+import { GetGenRisk } from '../screens/policy-details-screen/service/get-genrisk-service';
 
 export default function DQ_InsuredRisks({
   item,
@@ -16,8 +12,6 @@ export default function DQ_InsuredRisks({
   policyDataURI,
 }: any) {
   const [items, setItems] = useState([]);
-  const [covers, setCovers] = useState([]);
-  const [currency, setCurrency] = useState([]);
 
   useEffect(() => {
     const Get_Covers = async () => {
@@ -31,25 +25,16 @@ export default function DQ_InsuredRisks({
         coversURL,
         policyDataURI,
       );
-      const _items = result?.riskDetails?.dataItems || [];
-      setItems(_items);
-      setCurrency(result?.currency);
-      const resultCovers = await GetGenRiskCovers(
-        _shared.userId,
-        policyNo,
-        _shared.pin,
-        _shared.role,
-        item[0]?.riskNo,
-        coversURL,
-        policyDataURI,
-      );
-
-      const _covers = resultCovers?.riskDetails?.covers || [];
-      setCovers(_covers);
-      console.log(_covers);
+      setItems(result || []); // Update this based on your response structure
     };
     Get_Covers();
   }, [coversURL, policyDataURI, policyNo, item]);
+
+  // Check if all itemCovers properties are null
+  const isAllCoversNull = (covers: any[]) => {
+    return covers ? Object.values(covers).every(value => value === null): true;
+  };
+  
 
   const getDynamicFontSize = (text: any) => {
     const length = String(text).length;
@@ -62,75 +47,74 @@ export default function DQ_InsuredRisks({
   return (
     <ScrollView style={styles.contractContainer}>
       <View>
-        {Array.isArray(item) && item.length > 0 ? (
-          item.map((obj, index) => (
-            <DQ_InsuredCard
-              title={obj['riskType']}
-              key={index}
-              count={item.length}>
-              <View style={styles.additionalDataRow}>
-                <View style={styles.header}>
-                  <DQ_Paragraph
-                    content={`Item Insured`}
-                    textColor="white"
-                    fontFamily="Nexa Bold"
-                    fontSize={13}
-                    textAlign="center"
-                  />
+        {Array.isArray(item) && item.length > 0 &&
+          item.map((obj, index) => {
+            const locked = isAllCoversNull(obj[0]?.itemCovers);
+
+            return (
+              <DQ_InsuredCard
+                title={ obj['riskType']}
+                key={index}
+                count={item.length}
+                locked={locked} // Apply locked attribute here
+              >
+                <View style={styles.additionalDataRow}>
+                  <View style={styles.header}>
+                    <DQ_Paragraph
+                      content={`Item Insured`}
+                      textColor="white"
+                      fontFamily="Nexa Bold"
+                      fontSize={13}
+                      textAlign="center"
+                    />
+                  </View>
+                  <View style={styles.header}>
+                    <DQ_Paragraph
+                      content={`Sum Insured / USDF`}
+                      textColor="white"
+                      fontFamily="Nexa Bold"
+                      fontSize={13}
+                      textAlign="center"
+                    />
+                  </View>
                 </View>
-                <View style={styles.header}>
-                  <DQ_Paragraph
-                    content={`Sum Insured / USDF`}
-                    textColor="white"
-                    fontFamily="Nexa Bold"
-                    fontSize={13}
-                    textAlign="center"
-                  />
-                </View>
-              </View>
-              {Array.isArray(items) && items.length > 0 ? (
-                items.map((item: any, itemIndex) => (
-                  <View key={itemIndex} style={styles.propertyRow}>
-                    <View style={styles.contractRow}>
-                      <DQ_Paragraph
-                        content={item['itemDesc']}
-                        fontFamily="Nexa Bold"
-                        fontSize={14}
-                        textColor="black"
-                        textAlign="left"
-                        textWidth={150}
-                      />
-                      <DQ_Paragraph
-                        content={item['itemSI']}
-                        fontFamily="Nexa Light"
-                        fontSize={14}
-                        textColor="black"
-                        textAlign="right"
-                        textWidth={150}
-                      />
-                    </View>
-                    {item?.itemCovers.map((i: any) => (
-                      <View key={i.itemCoverName} style={styles.description}>
+                {Array.isArray(items) && items.length > 0 &&
+                  items.map((it: any, itIndex) => (
+                    <View key={itIndex} style={styles.propertyRow}>
+                      <View style={styles.contractRow}>
                         <DQ_Paragraph
-                          content={i.itemCoverName}
+                          content={it['itemDesc']}
+                          fontFamily="Nexa Bold"
+                          fontSize={14}
+                          textColor="black"
+                          textAlign="left"
+                          textWidth={150}
+                        />
+                        <DQ_Paragraph
+                          content={it['itemSI']}
                           fontFamily="Nexa Light"
-                          fontSize={getDynamicFontSize(
-                            i.itemCoverName + 'extratextextra',
-                          )}
-                          textColor="#727272"
+                          fontSize={14}
+                          textColor="black"
+                          textAlign="right"
+                          textWidth={150}
                         />
                       </View>
-                    ))}
-                  </View>
-                ))
-              ) : (
-                <Text>No data available</Text>
-              )}
-            </DQ_InsuredCard>
-          ))
-        ) : (
-          <Text>No data available</Text>
-        )}
+                      {it?.itemCovers.map((i: any) => (
+                        <View key={i.itemCoverName} style={styles.description}>
+                          <DQ_Paragraph
+                            content={i.itemCoverName}
+                            fontFamily="Nexa Light"
+                            fontSize={getDynamicFontSize(i.itemCoverName + 'extratextextra')}
+                            textColor="#727272"
+                          />
+                        </View>
+                      ))}
+                    </View>
+                  ))}
+              </DQ_InsuredCard>
+            );
+          })
+        }
       </View>
     </ScrollView>
   );
@@ -157,9 +141,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
   },
-  description:{
-    paddingHorizontal:15,
-    marginTop: 5
+  description: {
+    paddingHorizontal: 15,
+    marginTop: 5,
   },
   additionalDataRow: {
     position: 'relative',

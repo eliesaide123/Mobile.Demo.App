@@ -22,7 +22,7 @@ const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
 
   // Open the card by default if count == 1 and start the animation
   useEffect(() => {
-    if (count === 1) {
+    if (count === 1 && !locked) {
       setCollapsed(false); // Open the card automatically if there's only 1 item
       Animated.timing(animation, {
         toValue: 1, // Trigger the expand animation (fade in content)
@@ -77,7 +77,7 @@ const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
       <Animated.View
         style={{
           opacity: opacityInterpolate, // Apply the opacity fade effect here
-          marginTop: 30,
+          marginTop: 45,
           width: '100%',
         }}
       >
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     elevation: 9,
     margin: 10,
     padding: 15,
-    height: 70, // Fixed height for the card to remain the same size    
+    height: 80, // Fixed height for the card to remain the same size    
   },
   InlineElements: {
     flexDirection: 'row',
