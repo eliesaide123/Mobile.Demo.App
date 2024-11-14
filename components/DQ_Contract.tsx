@@ -1,7 +1,6 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect, useMemo } from 'react';
+import React from 'react';
 import DQ_Paragraph from './DQ_Paragraph';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DQ_Contract({
   item,
@@ -19,68 +18,6 @@ export default function DQ_Contract({
     'hasClaims',
     'hasPendingRequests',
   ];
-
-    const actions : any[] = useMemo(()=>(
-      [
-        {
-          attr: "canPrintPolicy",
-          value: String(item[0].canPrintPolicy),
-          title: 'Print Policy',
-          iconName: 'person-circle-plus',
-        },
-        {
-          attr: "hasBeneficiary",
-          value: String(item[0].hasBeneficiary),
-          title: 'Beneficiary',
-          iconName: 'person-circle-plus',
-        },
-        {
-          attr: "hasLegalAddress",
-          value: String(item[0].hasLegalAddress),
-          title: 'Legal Address',
-          iconName: 'location-dot',
-        },
-        {
-          attr: "hasClaims",
-          value: String(item[0].hasClaims),
-          title: 'Policy Claims',
-          iconName: 'file-pen',
-        },
-        {
-          attr: "hasDuePremiums",
-          value: String(item[0].hasDuePremiums),
-          title: 'Due Premiums',
-          iconName: 'business-time',
-        },
-        {
-          attr: 'hasPendingRequests',
-          value: String(item[0].hasPendingRequests),
-          title: 'My Requests',
-          iconName: 'clipboard-list',
-        },
-        {
-          attr: "canPrintAlpSoa",
-          value: String(item[0].canPrintAlpSoa),
-          title: 'Print SOA',
-          iconName: 'person-circle-plus',
-        },
-        {
-          attr: "canRenewPolicy",
-          value: String(item[0].canRenewPolicy),
-          title: 'Renew',
-          iconName: 'clipboard-list',
-        }
-      ]
-    ), [item])
-
-    useEffect(()=>{
-      const setActions = async()=>{
-        await AsyncStorage.setItem('contractActions', JSON.stringify(actions))
-      }
-      setActions();
-    }, [actions])
-  
-
   return (
     <ScrollView
       style={styles.contractContainer}
