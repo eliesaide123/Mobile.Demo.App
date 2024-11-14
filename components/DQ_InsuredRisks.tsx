@@ -1,9 +1,9 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import DQ_InsuredCard from './DQ_InsuredCard';
 import DQ_Paragraph from './DQ_Paragraph';
 import _shared from '../screens/common';
-import {GetGenRisk} from '../screens/policy-details-screen/service/get-genrisk-service';
+import { GetGenRisk } from '../screens/policy-details-screen/service/get-genrisk-service';
 
 export default function DQ_InsuredRisks({
   item,
@@ -38,7 +38,7 @@ export default function DQ_InsuredRisks({
       // If covers is an array, check if it's empty
       return covers.length === 0;
     } else if (covers && typeof covers === 'object') {
-      // If covers is an object, check if all values (except those in excludeKeys) are null
+      // If covers is an object, check if all values are null
       return Object.entries(covers).every(([key, value]) => value === null);
     }
     // If covers is neither an array nor an object, treat it as empty
@@ -59,8 +59,8 @@ export default function DQ_InsuredRisks({
         {Array.isArray(item) &&
           item.length > 0 &&
           item.map((obj, index) => {
+            // Check if covers are null or empty to set the locked state
             const locked = isAllCoversNull(covers);
-
             return (
               <DQ_InsuredCard
                 title={obj['riskType']}
@@ -90,11 +90,11 @@ export default function DQ_InsuredRisks({
                 </View>
                 {Array.isArray(covers) &&
                   covers.length > 0 &&
-                  covers.map((it: any, itIndex) => (
+                  covers.map((itm: any, itIndex) => (
                     <View key={itIndex} style={styles.propertyRow}>
                       <View style={styles.contractRow}>
                         <DQ_Paragraph
-                          content={it['itemDesc']}
+                          content={itm['itemDesc']}
                           fontFamily="Nexa Bold"
                           fontSize={14}
                           textColor="black"
@@ -102,7 +102,7 @@ export default function DQ_InsuredRisks({
                           textWidth={150}
                         />
                         <DQ_Paragraph
-                          content={it['itemSI']}
+                          content={itm['itemSI']}
                           fontFamily="Nexa Light"
                           fontSize={14}
                           textColor="black"
@@ -110,20 +110,21 @@ export default function DQ_InsuredRisks({
                           textWidth={150}
                         />
                       </View>
-                      {it.itemCovers.map((i: any) =>
-                          <View
-                            key={i.itemCoverName}
-                            style={styles.description}>
-                            <DQ_Paragraph
-                              content={i.itemCoverName}
-                              fontFamily="Nexa Light"
-                              fontSize={getDynamicFontSize(
-                                i.itemCoverName + 'extratextextra',
-                              )}
-                              textColor="#727272"
-                            />
-                          </View>
-                      )}
+                      {itm.itemCovers.map((i: any) => (
+                        <View
+                          key={i.itemCoverName}
+                          style={styles.description}
+                        >
+                          <DQ_Paragraph
+                            content={i.itemCoverName}
+                            fontFamily="Nexa Light"
+                            fontSize={getDynamicFontSize(
+                              i.itemCoverName + 'extratextextra',
+                            )}
+                            textColor="#727272"
+                          />
+                        </View>
+                      ))}
                     </View>
                   ))}
               </DQ_InsuredCard>
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   contractContainer: {
     padding: 12,
     backgroundColor: '#ebebeb',
-    flex: 1,
+    flex: 1, // Ensures it takes full available space
     width: '100%',
   },
   contractRow: {
@@ -147,8 +148,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   propertyRow: {
-    paddingVertical: 9,
-    width: '114%',
+    paddingVertical: 7,
+    width: '100%',
     marginHorizontal: -20,
     marginBottom: 5,
     padding: 10,
@@ -157,15 +158,15 @@ const styles = StyleSheet.create({
   },
   description: {
     paddingHorizontal: 15,
-    marginTop: 5,
+    marginTop: 15,
   },
   additionalDataRow: {
     position: 'relative',
-    top: 0,
+    top: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 9,
+    paddingVertical: 10,
     borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
     backgroundColor: '#6e6e6e',

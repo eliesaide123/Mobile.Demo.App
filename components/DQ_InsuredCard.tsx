@@ -23,7 +23,7 @@ const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
 
   // Open the card by default if count == 1 and start the animation
   useEffect(() => {
-    if (count === 1 && !locked) {
+    if (count === 1 && locked != true) {
       setCollapsed(false); // Open the card automatically if there's only 1 item
       Animated.timing(animation, {
         toValue: 1, // Trigger the expand animation (fade in content)
@@ -31,10 +31,10 @@ const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
         useNativeDriver: false, // Use native driver for better performance
       }).start();
     }
-  }, [count]);
+  }, [count, locked]);
 
   const toggleCollapse = () => {
-    if (locked) return;
+    if (locked == true) return;
     setCollapsed(!collapsed);
 
     // Animate the content visibility (opacity) and the chevron icon rotation
@@ -74,7 +74,6 @@ const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-
       <Animated.View
         style={{
           opacity: opacityInterpolate, // Apply the opacity fade effect here
