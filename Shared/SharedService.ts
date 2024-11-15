@@ -50,7 +50,6 @@ const SharedService = {
       };
 
       const response: AxiosResponse<T> = await axios(config);
-      console.log("efdwfs", response.data)
       if (response && response.data?.response?.status == false) {
         SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
       }else if(response && response.data?.response?.status) {

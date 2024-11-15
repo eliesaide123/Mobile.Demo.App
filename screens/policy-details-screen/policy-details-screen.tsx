@@ -120,7 +120,9 @@ export default function PolicyDetails({navigation, route}: any) {
           },
         },
       ]);
+      if (policyDetails && 'legalAddress' in policyDetails) {
       showAlert(policyDetails?.legalAddress[0].addressString);
+      }
     } else if (url.includes('beneficiary')) {
       handleOverlayClick();
       setBtnList([
@@ -131,7 +133,10 @@ export default function PolicyDetails({navigation, route}: any) {
           },
         },
       ]);
-      showAlert(policyDetails?.beneficiaries[0].textClause);
+      if (policyDetails && 'beneficiaries' in policyDetails) {
+        const textClause = policyDetails.beneficiaries[0]?.textClause;
+        showAlert(policyDetails?.beneficiaries[0].textClause);
+      }
     }
   };
 
