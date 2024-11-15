@@ -14,6 +14,8 @@ import DQ_InsuredRisks from '../../components/DQ_InsuredRisks';
 import DQ_Dependent from '../../components/DQ_Dependent';
 import DQ_FAB from '../../components/DQ_FAB';
 import {GetRequestActions} from './service/get-requests-service';
+import { RequestPrint } from './service/request-print-service';
+import { GetDetails } from './service/get-details-service';
 
 const imageMapping: {[key: string]: any} = {
   health: require('../../assets/images/health.png'),
@@ -65,79 +67,26 @@ export default function PolicyDetails({navigation, route}: any) {
     specialActions: [],
   });
 
-  const initializePolicyDetails = async () => {
-    try {
-      setIsLoading(true);
-
-      const {
-        policyNo: _policyNo,
-        groupCode: grpCode,
-        policyDetailsURI: _policyDetailsURI,
-        policyInsCoversURI: _policyInsCoversURI,
-        policyDataURI: _policyDataURI,
-      } = route.params;
-
-      setGroupCode(grpCode);
-      setPolicyNo(_policyNo);
-
-      const result = await GetPolicyDetails(
-        _shared.userId,
-        _policyNo,
-        _shared.pin,
-        _shared.role,
-        _policyDetailsURI,
-      );
-
-      const policyDetails = result.policyDetails;
-      await getRequestsActions(_policyNo);
-      await getActions(policyDetails.contract);
-
-      const updatedTabs: any[] = [];
-        Object.keys(componentMapping).forEach((key) => {
-          if (policyDetails[key] && (Array.isArray(policyDetails[key]) ? policyDetails[key].length > 0 : true)) {
-            const TabContent = componentMapping[key];
-            if (TabContent == DQ_Contract) {
-              updatedTabs.push({
-                key: titleMapping[key],
-                title: titleMapping[key],
-                content: (
-                  <TabContent item={policyDetails[key]} contractAdditional={policyDetails['contractAdditional']} groupCode={grpCode} />
-                ),
-              });
-            } else if (TabContent == DQ_InsuredCovers) {
-              updatedTabs.push({
-                key: titleMapping[key],
-                title: titleMapping[key],
-                content: (
-                  <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyNo={_policyNo} />
-                ),
-              });
-            }else if (TabContent == DQ_InsuredRisks) {
-              updatedTabs.push({
-                key: titleMapping[key],
-                title: titleMapping[key],
-                content: (
-                  <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyDataURI={_policyDataURI} policyNo={_policyNo} />
-                ),
-              });
-            } else {
-              updatedTabs.push({
-                key: titleMapping[key],
-                title: titleMapping[key],
-                content: <TabContent item={policyDetails[key]} />,
-              });
-            }
-          }
-        });
-
-      setTabs(updatedTabs);
-      setPolicyData(policyDetails);
-    } catch (error) {
-      console.error('Error fetching policy details:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const navigateToComponent = (navigateTo:any)=>{
+    return navigation.navigate(navigateTo);
   };
+  const {
+    policyNo: _policyNo,
+    groupCode: grpCode,
+    policyDetailsURI: _policyDetailsURI,
+    policyInsCoversURI: _policyInsCoversURI,
+    policyDataURI: _policyDataURI,
+  } = route.params;
+
+  const callPrintService = async(url:any, actionCode:any)=>{
+    const result = await RequestPrint(_shared.userId, _shared.pin, _shared.role, _policyNo, url, actionCode);
+    console.log(result);
+  }
+
+  const callServiceWithURL = async(url:any)=>{
+    const result = await GetDetails(_shared.userId, _shared.pin, _shared.role, _policyNo, url);
+    console.log(result);
+  }
 
   const getRequestsActions = async (policyNo: string) => {
     const result = await GetRequestActions(
@@ -169,7 +118,8 @@ export default function PolicyDetails({navigation, route}: any) {
         title: 'Print Policy',
         iconName: 'person-circle-plus',
         actionCode:"RqPrintPolicy",
-        url:"/request/print"
+        url:"/request/print",
+        actionPrint:true,
       },
       {
         attr: 'hasBeneficiary',
@@ -225,8 +175,73 @@ export default function PolicyDetails({navigation, route}: any) {
   };
 
   useEffect(() => {
+    const initializePolicyDetails = async () => {
+      try {
+        setIsLoading(true);
+  
+        setGroupCode(grpCode);
+        setPolicyNo(_policyNo);
+  
+        const result = await GetPolicyDetails(
+          _shared.userId,
+          _policyNo,
+          _shared.pin,
+          _shared.role,
+          _policyDetailsURI,
+        );
+  
+        const policyDetails = result.policyDetails;
+        await getRequestsActions(_policyNo);
+        await getActions(policyDetails.contract);
+  
+        const updatedTabs: any[] = [];
+          Object.keys(componentMapping).forEach((key) => {
+            if (policyDetails[key] && (Array.isArray(policyDetails[key]) ? policyDetails[key].length > 0 : true)) {
+              const TabContent = componentMapping[key];
+              if (TabContent == DQ_Contract) {
+                updatedTabs.push({
+                  key: titleMapping[key],
+                  title: titleMapping[key],
+                  content: (
+                    <TabContent item={policyDetails[key]} contractAdditional={policyDetails['contractAdditional']} groupCode={grpCode} />
+                  ),
+                });
+              } else if (TabContent == DQ_InsuredCovers) {
+                updatedTabs.push({
+                  key: titleMapping[key],
+                  title: titleMapping[key],
+                  content: (
+                    <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyNo={_policyNo} />
+                  ),
+                });
+              }else if (TabContent == DQ_InsuredRisks) {
+                updatedTabs.push({
+                  key: titleMapping[key],
+                  title: titleMapping[key],
+                  content: (
+                    <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyDataURI={_policyDataURI} policyNo={_policyNo} />
+                  ),
+                });
+              } else {
+                updatedTabs.push({
+                  key: titleMapping[key],
+                  title: titleMapping[key],
+                  content: <TabContent item={policyDetails[key]} />,
+                });
+              }
+            }
+          });
+  
+        setTabs(updatedTabs);
+        setPolicyData(policyDetails);
+      } catch (error) {
+        console.error('Error fetching policy details:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     initializePolicyDetails();
-  }, [route.params]);
+  }, [route.params, _policyDataURI, _policyDetailsURI, _policyInsCoversURI, _policyNo, grpCode]);
 
   const handleOverlayClick = () => setClickedFAB(prev => !prev);
 
@@ -246,6 +261,9 @@ export default function PolicyDetails({navigation, route}: any) {
             clicked={clickedFAB}
             setClicked={setClickedFAB}
             actions={actions}
+            navigateToComponent={navigateToComponent}
+            callPrintService={callPrintService}
+            callServiceWithURL={callServiceWithURL}
           />
         )}
       </View>
