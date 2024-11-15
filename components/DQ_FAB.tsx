@@ -5,14 +5,14 @@ import { default as Ionicon } from '@react-native-vector-icons/ionicons';
 import { default as FAIcon } from '@react-native-vector-icons/fontawesome6';
 import DQ_Paragraph from './DQ_Paragraph';
 
-export default function DQ_FAB({ clicked, setClicked, actions }: any) {
+export default function DQ_FAB({ clicked, setClicked, actions, navigateToComponent, callServiceWithURL, callPrintService }: any) {
   console.log(actions);
-  const filteredActions = actions.predefinedActions?.filter((item: any) => item.value === "true") || [];
-  const filteredSpecialActions = actions.specialActions?.filter((item: any) => item.actionValue !== "") || [];
+  const filteredActions = actions.predefinedActions?.filter((item: any) => item.value === 'true') || [];
+  const filteredSpecialActions = actions.specialActions?.filter((item: any) => item.actionValue !== '') || [];
   const actualActions = [
     ...(actions.policyActions || []),
     ...(filteredSpecialActions || []),
-    ...filteredActions
+    ...filteredActions,
   ];
 
   // Initialize shared values based on the length of actualActions
@@ -45,24 +45,18 @@ export default function DQ_FAB({ clicked, setClicked, actions }: any) {
 
     const handleActionPress = () => {
       const { actionCode, actionValue, actionSubject, url, actionPrint, goTo } = action;
-  
-      // Handle different action cases
       if (actionCode === "MOBILE") {
-        console.log("Hereeee")
-        // Open phone dialer
         Linking.openURL(`tel:${actionValue}`);
       } else if (actionCode === "EMAIL") {
         // Open email client with subject
         Linking.openURL(`mailto:${actionValue}?subject=${actionSubject}`);
-      } else if (url) {
-        // Call service with URL and policyNo
-        //callServiceWithURL(url, policyNo, actionCode);
       } else if (actionPrint) {
         // Call service with URL and policyNo if actionPrint is true
-        //callPrintService(url, policyNo, actionCode);
+        callPrintService(url, actionCode);
+      }else if (url) {
+        callServiceWithURL(url);
       } else if (goTo) {
-        // Navigate to the specified page
-        //navigateToPage(goTo);
+        navigateToComponent(goTo);
       }
     };
 
@@ -91,7 +85,7 @@ export default function DQ_FAB({ clicked, setClicked, actions }: any) {
       <Animated.View style={[styles.itemsContainer, { opacity: clicked ? 1 : 0 }]}>
         {clicked &&
           actualActions.map((item: any, index: number) => (
-            <Item key={index} title={item.title || item.actionDesc} index={index} iconName={item.iconName || 'list'} action={item} />
+            <Item key={index} title={item.title || item.actionDesc} index={index} iconName={item.iconName} action={item} />
           ))}
       </Animated.View>
     </View>

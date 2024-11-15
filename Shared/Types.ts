@@ -135,3 +135,14 @@ export interface UpdateProfileResponse {
 export interface GetConnectDataResponse {
   response: GetConnectData;
 }
+
+//Request Print endpoint response
+export interface RequestPrintResponse {
+  response: MainResponse;
+}
+
+//Request Print Credentials
+export interface RequestPrintCredentials {
+  policyNo:string,
+  actionCode:string
+}
