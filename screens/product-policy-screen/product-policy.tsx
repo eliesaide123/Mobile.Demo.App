@@ -117,7 +117,7 @@ export default function ProductPolicy({navigation, route}: any) {
 
   useEffect(() => {
     setUserId(_shared.userId);
-    Get_CS_Connect(_shared.userId);
+    Get_CS_Connect(_shared.userId);    
   }, []);
 
   const Get_CS_Connect = async (userId: string) => {

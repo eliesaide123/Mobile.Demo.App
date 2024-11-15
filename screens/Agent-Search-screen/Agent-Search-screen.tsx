@@ -45,7 +45,7 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {    
     const fetchGenders = async () => {
       const id = _shared.userId;
       const agentRolePin = await fetchRoleAndPin(id);
