@@ -1,39 +1,94 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
-import DQ_Button from '../../components/DQ_Button';
-import DQ_TextBox from '../../components/DQ_TextBox';
-import DQ_Dropdown from '../../components/DQ_Dropdown';
-import {GetClaims} from './service/claims-service';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
+import {GetClaims} from './service/claims-service';
+import DQ_Button from '../../components/DQ_Button';
 
 export default function ClaimsScreen({navigation, route}: any) {
   const [outstandingClaims, setOutStandingClaims] = useState<any>({});
   const [labels, setLabels] = useState<string[]>([]);
-  const [policyNo, setPolicyNo] = useState<string[]>([]);
+  const [policyNo, setPolicyNo] = useState<string>('');
+  const [productName, setProductName] = useState<string>('');
+
+  const exclusions = [
+    'imsClaimNo',
+    'policySerno',
+    'declaredOn',
+    'fnolReference',
+    'tpaReference',
+    'r2S_Amount',
+    'r2S_Status',
+    'r2S_Mode',
+    'dateSettled',
+    'allowSettle',
+    'claimNotes',
+    'missingDocuments',
+    'settleDetails',
+  ];
 
   useEffect(() => {
     const {PolicyNo, OS_Only} = route.params;
     const Get_Claims = async () => {
       const result: any = await GetClaims(PolicyNo, OS_Only);
       if ('response' in result) {
-        console.log('PolicyNoPolicyNo: ', PolicyNo);
-        setLabels(Object.keys(result.response?.claimsData?.policies[0]?.outstandingClaims[0]));
-        setOutStandingClaims(result.response?.claimsData?.policies[0]?.outstandingClaims[0]);
-        setPolicyNo(result.response?.claimsData?.policies[0]?.policyNo)
+        const allLabels = Object.keys(
+          result.response?.claimsData?.policies[0]?.outstandingClaims[0],
+        );
+        const filteredLabels = allLabels.filter(
+          key => !exclusions.includes(key),
+        );
+
+        setLabels(filteredLabels);
+        setOutStandingClaims(
+          result.response?.claimsData?.policies[0]?.outstandingClaims[0],
+        );
+        setPolicyNo(result.response?.claimsData?.policies[0]?.policyNo);
+        setProductName(result.response?.claimsData?.policies[0]?.productName);
       }
     };
     Get_Claims();
   }, [route.params]);
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <DQ_BaseHeader press={() => navigation.goBack()} variant="textCenter" />
-      <View>
-      <DQ_Paragraph content={policyNo}/>
-      </View>      
-      <View></View>
-      <View></View>
+      <View style={styles.claimCard}>
+        <View style={styles.claimsContainer}>
+          <View style={styles.leftSection}>
+            <View style={styles.claimItem}>
+              <View>
+                <DQ_Paragraph content={`IMS Claim:`} textColor="black" />
+                <DQ_Paragraph content={outstandingClaims.imsClaimRef} textColor="black" />
+              </View>
+              <View>
+                <DQ_Paragraph content={`Product Name:`} />
+                <DQ_Paragraph content={productName} />
+              </View>
+              <View>
+                <DQ_Paragraph content={`Settled Amount:`} />
+                <DQ_Paragraph content={outstandingClaims.settledAmount} />
+              </View>              
+            </View>
+          </View>
+
+          {/* Static right-side content */}
+          <View style={styles.rightSection}>
+            <View>            
+              <DQ_Paragraph content={`Occurred On:`} />
+              <DQ_Paragraph content={outstandingClaims.occuredOn} />
+            </View>
+            <View>
+              <DQ_Paragraph content={`Status:`} textColor="black" />
+              <DQ_Paragraph content={outstandingClaims.claimStatus} />     
+            </View>       
+          </View>
+        </View>
+        <View style={{alignSelf: 'center'}}>
+          <DQ_Button title="Payment Method"  />
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -42,10 +97,36 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  btnSubmit: {
-    padding: 20,
-    width: '100%',
-    alignContent: 'center',
-    alignSelf: 'center',
+  claimCard: {
+    margin: 10,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#f9f9f9',
+    // iOS shadow properties
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,    
+    elevation: 5,
+  },
+  
+  claimsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  leftSection: {
+    flex: 1,
+    flexDirection: 'column',
+    gap: 15,
+  },
+  rightSection: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-end',    
+    gap: 20
+  },
+  claimItem: {
+    marginBottom: 10,
+    gap: 15
   },
 });
