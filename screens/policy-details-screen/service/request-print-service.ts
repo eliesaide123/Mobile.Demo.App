@@ -15,7 +15,7 @@ export async function RequestPrint(
   try {
     const request:SendRequest<RequestPrintCredentials> = {request: {policyNo, actionCode }}
     const response = await SharedService.callApi<RequestPrintResponse>(
-      `http://dqapi-sna.dq.com.lb:88/api${url}`,
+      `${url}`,
       'POST',
       request,
       {
@@ -26,9 +26,7 @@ export async function RequestPrint(
       },
     );
 
-    console.log(response.response.error_Description);
     return response.response;
   } catch (error: any) {
-    console.error('An error occurred during Request Print:', error);
   }
 }

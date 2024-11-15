@@ -143,6 +143,24 @@ export interface RequestPrintResponse {
 
 //Request Print Credentials
 export interface RequestPrintCredentials {
-  policyNo:string,
-  actionCode:string
+  policyNo: string;
+  actionCode: string;
+}
+
+export interface GetDetailsLegalAddressResponse {
+  response: {
+    error_Code: number;
+    error_Description: string;
+    policyDetails: {legalAddress: any[]};
+    status: boolean;
+  };
+}
+
+export interface GetDetailsBeneficiaryResponse {
+  response: {
+    error_Code: number;
+    error_Description: string;
+    policyDetails: {beneficiaries: any[]};
+    status: boolean;
+  };
 }

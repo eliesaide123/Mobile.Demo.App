@@ -38,7 +38,7 @@ const SharedService = {
     method: 'GET' | 'POST' = 'GET',
     data: any = null,
     extraHeaders: object = {}
-  ): Promise<T> {
+  ) {
     try {
       const url = `${BASE_URL}${endpoint}`;
       const headers = { ...defaultHeaders, ...extraHeaders };
@@ -50,12 +50,14 @@ const SharedService = {
       };
 
       const response: AxiosResponse<T> = await axios(config);
-
-      if (response.data?.response?.status == false) {
+      console.log("efdwfs", response.data)
+      if (response && response.data?.response?.status == false) {
         SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
+      }else if(response && response.data?.response?.status) {
+        return response.data;
       }
 
-      return response.data;
+      
     } catch (error: any) {
       // Check if the error contains a response or just the message
       const errorDetails = error.response ? error.response.data.error.details : error.message;
