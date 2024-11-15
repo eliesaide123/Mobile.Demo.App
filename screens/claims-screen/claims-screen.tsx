@@ -11,6 +11,7 @@ export default function ClaimsScreen({navigation, route}: any) {
   const [labels, setLabels] = useState<string[]>([]);
   const [policyNo, setPolicyNo] = useState<string>('');
   const [productName, setProductName] = useState<string>('');
+  const [allowSettle, setAllowSettle] = useState<boolean>(false)
 
   const exclusions = [
     'imsClaimNo',
@@ -46,6 +47,7 @@ export default function ClaimsScreen({navigation, route}: any) {
         );
         setPolicyNo(result.response?.claimsData?.policies[0]?.policyNo);
         setProductName(result.response?.claimsData?.policies[0]?.productName);
+        setAllowSettle(result.response?.claimsData?.policies[0]?.outstandingClaims[0].allowSettle)
       }
     };
     Get_Claims();
@@ -91,7 +93,7 @@ export default function ClaimsScreen({navigation, route}: any) {
           </View>
         </View>
         <View style={{alignSelf: 'center'}}>
-          <DQ_Button title="Payment Method" />
+          {allowSettle && <DQ_Button title="Payment Method" />}
         </View>
       </View>
     </SafeAreaView>
