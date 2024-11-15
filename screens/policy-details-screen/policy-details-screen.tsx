@@ -74,8 +74,8 @@ export default function PolicyDetails({navigation, route}: any) {
 
   const {isVisible, showAlert, hideAlert, errorMessage} = useAlert();
 
-  const navigateToComponent = (navigateTo: any) => {
-    return navigation.navigate(navigateTo);
+  const navigateToComponent = (navigateTo: any, params?:any) => {
+    return navigation.navigate(navigateTo, params || {});
   };
   const {
     policyNo: _policyNo,
@@ -213,6 +213,8 @@ export default function PolicyDetails({navigation, route}: any) {
         value: String(contractData[0].hasClaims || ''),
         title: 'Policy Claims',
         iconName: 'file-pen',
+        goTo:'Claims',
+        params:{PolicyNo:_policyNo, OS_Only:_policyNo.length > 0}
       },
       {
         attr: 'hasDuePremiums',
