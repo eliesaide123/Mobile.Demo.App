@@ -51,6 +51,11 @@ export default function ClaimsScreen({navigation, route}: any) {
     Get_Claims();
   }, [route.params]);
 
+  const imsClaimRefLabel: any = labels.find(l => l === 'imsClaimRef');
+  const settledAmount: any = labels.find(l => l === 'settledAmount');
+  const occuredOn: any = labels.find(l => l === 'occuredOn');
+  const claimStatus: any = labels.find(l => l === 'claimStatus');
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <DQ_BaseHeader press={() => navigation.goBack()} variant="textCenter" />
@@ -59,34 +64,34 @@ export default function ClaimsScreen({navigation, route}: any) {
           <View style={styles.leftSection}>
             <View style={styles.claimItem}>
               <View>
-                <DQ_Paragraph content={`IMS Claim:`} textColor="black" />
-                <DQ_Paragraph content={outstandingClaims.imsClaimRef} textColor="black" />
+                {imsClaimRefLabel && ( <DQ_Paragraph content={imsClaimRefLabel} textColor="black" /> )}
+                <DQ_Paragraph content={outstandingClaims.imsClaimRef} />
               </View>
               <View>
-                <DQ_Paragraph content={`Product Name:`} />
+                <DQ_Paragraph content={policyNo} textColor="black" />
                 <DQ_Paragraph content={productName} />
               </View>
               <View>
-                <DQ_Paragraph content={`Settled Amount:`} />
+                <DQ_Paragraph content={settledAmount} textColor="black" />
                 <DQ_Paragraph content={outstandingClaims.settledAmount} />
-              </View>              
+              </View>
             </View>
           </View>
 
           {/* Static right-side content */}
           <View style={styles.rightSection}>
-            <View>            
-              <DQ_Paragraph content={`Occurred On:`} />
+            <View>
+              <DQ_Paragraph content={occuredOn} textColor="black" />
               <DQ_Paragraph content={outstandingClaims.occuredOn} />
             </View>
             <View>
-              <DQ_Paragraph content={`Status:`} textColor="black" />
-              <DQ_Paragraph content={outstandingClaims.claimStatus} />     
-            </View>       
+              <DQ_Paragraph content={claimStatus} textColor="black" />
+              <DQ_Paragraph content={outstandingClaims.claimStatus} />
+            </View>
           </View>
         </View>
         <View style={{alignSelf: 'center'}}>
-          <DQ_Button title="Payment Method"  />
+          <DQ_Button title="Payment Method" />
         </View>
       </View>
     </SafeAreaView>
@@ -104,12 +109,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     // iOS shadow properties
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
-    shadowRadius: 5,    
+    shadowRadius: 5,
     elevation: 5,
   },
-  
+
   claimsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -122,11 +127,11 @@ const styles = StyleSheet.create({
   rightSection: {
     flex: 1,
     flexDirection: 'column',
-    alignItems: 'flex-end',    
-    gap: 20
+    alignItems: 'flex-end',
+    gap: 20,
   },
   claimItem: {
     marginBottom: 10,
-    gap: 15
+    gap: 15,
   },
 });
