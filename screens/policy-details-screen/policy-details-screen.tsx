@@ -86,15 +86,30 @@ export default function PolicyDetails({navigation, route}: any) {
   } = route.params;
 
   const callPrintService = async (url: any, actionCode: any) => {
-    const result = await RequestPrint(
-      _shared.userId,
-      _shared.pin,
-      _shared.role,
-      _policyNo,
-      url,
-      actionCode,
-    );
     handleOverlayClick();
+    setBtnList([
+      {
+        title: 'Ok',
+        press: async() => {
+          await RequestPrint(
+            _shared.userId,
+            _shared.pin,
+            _shared.role,
+            _policyNo,
+            url,
+            actionCode,
+          );
+          hideAlert()
+        },
+      },
+      {
+        title: 'Cancel',
+        press: () => {
+          hideAlert();
+        },
+      },
+    ]);
+    showAlert('Are you sure you want to print the policy')
   };
 
   const callServiceWithURL = async (url: any) => {
