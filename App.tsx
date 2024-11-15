@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import WalkThroughScreen from './screens/walkThrough-screen/walkThrough-screen';
-import { StyleSheet, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/login-screen/login-screen';
@@ -10,6 +10,7 @@ import ChangeRole from './screens/change-role-screen/ChangeRole';
 import PolicyList from './screens/Policy-List-screen/policy-list-screen';
 import AgentSearch from './screens/Agent-Search-screen/Agent-Search-screen';
 import PolicyDetails from './screens/policy-details-screen/policy-details-screen';
+import AgentResult from './screens/Agent-Result-screen/agent-result-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
@@ -121,6 +122,16 @@ export default function App() {
             }}
           />
           <Stack.Screen
+            name="AgentResult"
+            component={AgentResult}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+            }}            
+          />       
+          <Stack.Screen
             name="PolicyDetails"
             component={PolicyDetails}
             options={{
@@ -129,7 +140,7 @@ export default function App() {
                 backgroundColor: '#f4511e',
               },
             }}
-          />
+          />   
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

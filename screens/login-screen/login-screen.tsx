@@ -18,7 +18,6 @@ import {getLocalizedEntry} from '../../Shared/SharedFunctions';
 import DQ_Alert from '../../components/DQ_Alert';
 import {ProductPolicyService} from '../product-policy-screen/service/product-policy.service';
 import {useAlert} from '../../hooks/useAlert';
-import {AxiosError} from 'axios';
 import DQ_LoaderBtn from '../../components/DQ_LoaderBtn';
 import {LoginCredentials} from '../../Shared/Types';
 import SharedService from '../../Shared/SharedService';
