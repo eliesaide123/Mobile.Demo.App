@@ -21,7 +21,8 @@ export default function DQ_Insured({ item }: any) {
             console.log(obj)
             const locked = isAllCoversNull(obj);
             return(
-              <DQ_InsuredCard title={obj["insuredData"]} key={index} count={item.length} locked={locked}>
+              <View key={index} style={{marginVertical:7}}>
+                <DQ_InsuredCard title={obj["insuredData"]} count={item.length} locked={locked}>
                 {typeof obj === 'object' && obj !== null ? (
                   Object.entries(obj).map(([key, value]) => (
                     !excludeKeys.includes(key) && value !== null && (
@@ -36,6 +37,7 @@ export default function DQ_Insured({ item }: any) {
                   <Text>{String(obj)}</Text>
                 )}
               </DQ_InsuredCard>
+              </View>
             )
           })
         )}
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#ebebeb',
     flex: 1,
-    width: '100%',
+    width: '100%'    
   },
   contractRow: {
     flexDirection: 'row',
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 9,
     borderBottomWidth: 0.5,
-    borderBottomColor: 'grey',
+    borderBottomColor: 'grey',        
   },
   label: {
     fontWeight: 'bold',
