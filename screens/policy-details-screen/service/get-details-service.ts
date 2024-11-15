@@ -1,5 +1,6 @@
 import _shared from '../../common';
 import SharedService from '../../../Shared/SharedService';
+import { GetDetailsBeneficiaryResponse, GetDetailsLegalAddressResponse } from '../../../Shared/Types';
 
 export async function GetDetails(
   userId: string,
@@ -9,8 +10,9 @@ export async function GetDetails(
   url: string,
 ) {
   try {
-    const response = await SharedService.callApi(
-      `http://dqapi-sna.dq.com.lb:88/api${url}?policyNo=${policyNo}`,
+    console.log(url)
+    const response = await SharedService.callApi<GetDetailsLegalAddressResponse | GetDetailsBeneficiaryResponse>(
+      `${url}?policyNo=${policyNo}`,
       'GET',
       {},
       {
@@ -21,8 +23,7 @@ export async function GetDetails(
       },
     );
 
-    console.log(response?.response);
-    return response.response;
+    return response;
   } catch (error: any) {
     console.error('An error occurred during Request Print:', error);
   }

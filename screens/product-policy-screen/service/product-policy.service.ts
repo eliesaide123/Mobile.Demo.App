@@ -24,7 +24,5 @@ export async function ProductPolicyService(userId: string, pin?: string) {
         console.log("Response Data: ", response.data.response);
         return response.data.response;
     } catch (error: any) {
-        console.error("An error occurred during CS_Connect:", error);
-        return { status: false, error: error.response ? error.response.data : error.message };
     }
 }

@@ -6,7 +6,6 @@ import { default as FAIcon } from '@react-native-vector-icons/fontawesome6';
 import DQ_Paragraph from './DQ_Paragraph';
 
 export default function DQ_FAB({ clicked, setClicked, actions, navigateToComponent, callServiceWithURL, callPrintService }: any) {
-  console.log(actions);
   const filteredActions = actions.predefinedActions?.filter((item: any) => item.value === 'true') || [];
   const filteredSpecialActions = actions.specialActions?.filter((item: any) => item.actionValue !== '') || [];
   const actualActions = [

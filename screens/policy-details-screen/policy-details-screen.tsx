@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
@@ -16,6 +17,9 @@ import DQ_FAB from '../../components/DQ_FAB';
 import {GetRequestActions} from './service/get-requests-service';
 import { RequestPrint } from './service/request-print-service';
 import { GetDetails } from './service/get-details-service';
+import { useAlert } from '../../hooks/useAlert';
+import DQ_Alert from '../../components/DQ_Alert';
+import DQ_Paragraph from '../../components/DQ_Paragraph';
 
 const imageMapping: {[key: string]: any} = {
   health: require('../../assets/images/health.png'),
@@ -60,12 +64,15 @@ export default function PolicyDetails({navigation, route}: any) {
   const [clickedFAB, setClickedFAB] = useState<boolean>(false);
   const [policyActions, setPolicyActions] = useState<any>(null);
   const [specialActions, setSpecialActions] = useState<any>(null);
+  const [btnList, setBtnList] = useState<any[]>([]);
 
   const [actions, setActions] = useState<any>({
     predefinedActions: [],
     policyActions: [],
     specialActions: [],
   });
+
+  const {isVisible, showAlert, hideAlert, errorMessage} = useAlert();
 
   const navigateToComponent = (navigateTo:any, params?:any)=>{
     return navigation.navigate(navigateTo, params|| {});
@@ -80,12 +87,43 @@ export default function PolicyDetails({navigation, route}: any) {
 
   const callPrintService = async(url:any, actionCode:any)=>{
     const result = await RequestPrint(_shared.userId, _shared.pin, _shared.role, _policyNo, url, actionCode);
-    console.log(result);
+    handleOverlayClick()
   }
 
   const callServiceWithURL = async(url:any)=>{
     const result = await GetDetails(_shared.userId, _shared.pin, _shared.role, _policyNo, url);
-    console.log(result);
+    const policyDetails = result?.response?.policyDetails;
+    if(url.includes('address')){
+      handleOverlayClick()
+      setBtnList(
+        [ 
+          {
+            title: 'Go To Direction',
+            press: () => {},
+          },
+          {
+            title: 'Cancel',
+            press: () => {
+              hideAlert();
+            },
+          }]
+      )
+      showAlert(policyDetails?.legalAddress[0].addressString);
+    }else if(url.includes('beneficiary')){
+      handleOverlayClick()
+      setBtnList(
+        [
+          {
+            title: 'Ok',
+            press: () => {
+              hideAlert();
+            },
+          }]
+      )
+      showAlert(policyDetails?.beneficiaries[0].textClause)
+    }
+
+    
   }
 
   const getRequestsActions = async (policyNo: string) => {
@@ -249,6 +287,17 @@ export default function PolicyDetails({navigation, route}: any) {
 
   return (
     <SafeAreaView style={styles.rootElement}>
+       <DQ_Alert
+        isVisible={isVisible}
+        hideAlert={hideAlert}
+        btnList={btnList}>
+        <DQ_Paragraph
+          content={errorMessage}
+          textColor="black"
+          textAlign="center"
+          fontSize={14}
+        />
+      </DQ_Alert>
       <DQ_BaseHeader
         variant="textCenter"
         textCenter={groupCode}
