@@ -70,18 +70,16 @@ export default function LoginScreen({navigation}: any) {
       };
       const result = await login(credentials);
 
-      _shared.ui_token = result.response.imS_UIToken;
+      _shared.ui_token = result?.response.imS_UIToken || '';
       _shared.userId = userId;
-      if(result?.response.status){
-        const checkRoleResult = await ProductPolicyService(userId);
-        if (
-          checkRoleResult.user_Role &&
-          checkRoleResult.user_Role.toUpperCase() === 'A'
-        ) {
-          navigation.navigate('AgentSearch');
-        } else {
-          navigation.navigate('ProductPolicy');
-        }
+      const checkRoleResult = await ProductPolicyService(userId);
+      if (
+        checkRoleResult.user_Role &&
+        checkRoleResult.user_Role.toUpperCase() === 'A'
+      ) {
+        navigation.navigate('AgentSearch');
+      } else {
+        navigation.navigate('ProductPolicy');
       }
     } catch (err: any) {
     } finally {

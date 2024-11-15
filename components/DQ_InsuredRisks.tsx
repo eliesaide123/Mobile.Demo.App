@@ -1,9 +1,9 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import DQ_InsuredCard from './DQ_InsuredCard';
 import DQ_Paragraph from './DQ_Paragraph';
 import _shared from '../screens/common';
-import { GetGenRisk } from '../screens/policy-details-screen/service/get-genrisk-service';
+import {GetGenRisk} from '../screens/policy-details-screen/service/get-genrisk-service';
 
 export default function DQ_InsuredRisks({
   item,
@@ -68,6 +68,7 @@ export default function DQ_InsuredRisks({
                 count={item.length}
                 locked={locked} // Apply locked attribute here
               >
+                <>
                 <View style={styles.additionalDataRow}>
                   <View style={styles.header}>
                     <DQ_Paragraph
@@ -88,6 +89,7 @@ export default function DQ_InsuredRisks({
                     />
                   </View>
                 </View>
+                <ScrollView style={{overflow: 'visible', padding: 20}}>
                 {Array.isArray(covers) &&
                   covers.length > 0 &&
                   covers.map((itm: any, itIndex) => (
@@ -110,23 +112,26 @@ export default function DQ_InsuredRisks({
                           textWidth={150}
                         />
                       </View>
-                      {itm.itemCovers.map((i: any) => (
-                        <View
-                          key={i.itemCoverName}
-                          style={styles.description}
-                        >
-                          <DQ_Paragraph
-                            content={i.itemCoverName}
-                            fontFamily="Nexa Light"
-                            fontSize={getDynamicFontSize(
-                              i.itemCoverName + 'extratextextra',
-                            )}
-                            textColor="#727272"
-                          />
-                        </View>
-                      ))}
+
+                      
+                        {itm.itemCovers.map((i: any) => (
+                          <View
+                            key={i.itemCoverName}
+                            style={styles.description}>
+                            <DQ_Paragraph
+                              content={i.itemCoverName}
+                              fontFamily="Nexa Light"
+                              fontSize={getDynamicFontSize(
+                                i.itemCoverName + 'extratextextra',
+                              )}
+                              textColor="#727272"
+                            />
+                          </View>
+                        ))}
                     </View>
                   ))}
+                  </ScrollView>
+                  </>
               </DQ_InsuredCard>
             );
           })}
@@ -141,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ebebeb',
     flex: 1, // Ensures it takes full available space
     width: '100%',
-    overflow:'scroll'
+    overflow: 'scroll',
   },
   contractRow: {
     flexDirection: 'row',
@@ -173,6 +178,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#6e6e6e',
     flexWrap: 'wrap',
     padding: 15,
+    paddingHorizontal: 20,
     gap: 20,
     width: '128%',
     height: 50,

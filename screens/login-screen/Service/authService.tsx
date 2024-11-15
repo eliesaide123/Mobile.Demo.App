@@ -7,9 +7,5 @@ export async function login(credentials: LoginCredentials) {
     const response = await SharedService.callApi<LoginResponse>('/account/login', 'POST', request);    
     return response;
   } catch (error: any) {
-    return {
-      status: false,
-      response: error.response ? error.response.data : error.message,
-    };
   }
 }
