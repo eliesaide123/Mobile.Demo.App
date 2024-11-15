@@ -50,11 +50,12 @@ const SharedService = {
       };
 
       const response: AxiosResponse<T> = await axios(config);
-
+      
       if (response.data?.response?.status == false) {
         SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
       }
 
+      
       return response.data;
     } catch (error: any) {
       // Check if the error contains a response or just the message

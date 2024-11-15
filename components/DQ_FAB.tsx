@@ -44,7 +44,7 @@ export default function DQ_FAB({ clicked, setClicked, actions, navigateToCompone
     }));
 
     const handleActionPress = () => {
-      const { actionCode, actionValue, actionSubject, url, actionPrint, goTo } = action;
+      const { actionCode, actionValue, actionSubject, url, actionPrint, goTo, params } = action;
       if (actionCode === "MOBILE") {
         Linking.openURL(`tel:${actionValue}`);
       } else if (actionCode === "EMAIL") {
@@ -56,7 +56,11 @@ export default function DQ_FAB({ clicked, setClicked, actions, navigateToCompone
       }else if (url) {
         callServiceWithURL(url);
       } else if (goTo) {
-        navigateToComponent(goTo);
+        if(params){
+          navigateToComponent(goTo, params);
+        }else{
+          navigateToComponent(goTo);
+        }
       }
     };
 
