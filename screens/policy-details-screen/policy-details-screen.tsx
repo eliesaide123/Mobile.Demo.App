@@ -15,9 +15,9 @@ import DQ_InsuredRisks from '../../components/DQ_InsuredRisks';
 import DQ_Dependent from '../../components/DQ_Dependent';
 import DQ_FAB from '../../components/DQ_FAB';
 import {GetRequestActions} from './service/get-requests-service';
-import { RequestPrint } from './service/request-print-service';
-import { GetDetails } from './service/get-details-service';
-import { useAlert } from '../../hooks/useAlert';
+import {RequestPrint} from './service/request-print-service';
+import {GetDetails} from './service/get-details-service';
+import {useAlert} from '../../hooks/useAlert';
 import DQ_Alert from '../../components/DQ_Alert';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 
@@ -72,9 +72,9 @@ export default function PolicyDetails({navigation, route}: any) {
     specialActions: [],
   });
 
-  const {isVisible, showAlert, hideAlert, errorMessage} = useAlert()
+  const {isVisible, showAlert, hideAlert, errorMessage} = useAlert();
 
-  const navigateToComponent = (navigateTo:any)=>{
+  const navigateToComponent = (navigateTo: any) => {
     return navigation.navigate(navigateTo);
   };
   const {
@@ -85,46 +85,55 @@ export default function PolicyDetails({navigation, route}: any) {
     policyDataURI: _policyDataURI,
   } = route.params;
 
-  const callPrintService = async(url:any, actionCode:any)=>{
-    const result = await RequestPrint(_shared.userId, _shared.pin, _shared.role, _policyNo, url, actionCode);
-    handleOverlayClick()
-  }
+  const callPrintService = async (url: any, actionCode: any) => {
+    const result = await RequestPrint(
+      _shared.userId,
+      _shared.pin,
+      _shared.role,
+      _policyNo,
+      url,
+      actionCode,
+    );
+    handleOverlayClick();
+  };
 
-  const callServiceWithURL = async(url:any)=>{
-    const result = await GetDetails(_shared.userId, _shared.pin, _shared.role, _policyNo, url);
+  const callServiceWithURL = async (url: any) => {
+    const result = await GetDetails(
+      _shared.userId,
+      _shared.pin,
+      _shared.role,
+      _policyNo,
+      url,
+    );
     const policyDetails = result?.response?.policyDetails;
-    if(url.includes('address')){
-      handleOverlayClick()
-      setBtnList(
-        [ 
-          {
-            title: 'Go To Direction',
-            press: () => {},
+    if (url.includes('address')) {
+      handleOverlayClick();
+      setBtnList([
+        {
+          title: 'Go To Direction',
+          press: () => {},
+        },
+        {
+          title: 'Cancel',
+          press: () => {
+            hideAlert();
           },
-          {
-            title: 'Cancel',
-            press: () => {
-              hideAlert();
-            },
-          }]
-      )
+        },
+      ]);
       showAlert(policyDetails?.legalAddress[0].addressString);
-    }else if(url.includes('beneficiary')){
-      handleOverlayClick()
-      setBtnList(
-        [
-          {
-            title: 'Ok',
-            press: () => {
-              hideAlert();
-            },
-          }]
-      )
-      showAlert(policyDetails?.beneficiaries[0].textClause)
+    } else if (url.includes('beneficiary')) {
+      handleOverlayClick();
+      setBtnList([
+        {
+          title: 'Ok',
+          press: () => {
+            hideAlert();
+          },
+        },
+      ]);
+      showAlert(policyDetails?.beneficiaries[0].textClause);
     }
-
-    
-  }
+  };
 
   const getRequestsActions = async (policyNo: string) => {
     const result = await GetRequestActions(
@@ -137,14 +146,20 @@ export default function PolicyDetails({navigation, route}: any) {
     setSpecialActions(result.policyActionsData.specialActions);
     setActions((prev: any) => ({
       ...prev,
-      policyActions: result.policyActionsData.policyActions?.map((item: any) => ({
-        ...item,
-        iconName: 'clipboard-list',
-      })),
-      specialActions: result.policyActionsData.specialActions?.map((item: any) => ({
-        ...item,
-        iconName: item.actionCode === 'MOBILE' ? 'mobile-screen-button' : 'envelope',
-      })),
+      policyActions: result.policyActionsData.policyActions?.map(
+        (item: any) => ({
+          ...item,
+          goTo: item.actionDesc?.trim().replace(/\s+/g, ''),
+          iconName: 'clipboard-list',
+        }),
+      ),
+      specialActions: result.policyActionsData.specialActions?.map(
+        (item: any) => ({
+          ...item,
+          iconName:
+            item.actionCode === 'MOBILE' ? 'mobile-screen-button' : 'envelope',
+        }),
+      ),
     }));
   };
 
@@ -155,23 +170,23 @@ export default function PolicyDetails({navigation, route}: any) {
         value: String(contractData[0].canPrintPolicy || ''),
         title: 'Print Policy',
         iconName: 'person-circle-plus',
-        actionCode:"RqPrintPolicy",
-        url:"/request/print",
-        actionPrint:true,
+        actionCode: 'RqPrintPolicy',
+        url: '/request/print',
+        actionPrint: true,
       },
       {
         attr: 'hasBeneficiary',
         value: String(contractData[0].hasBeneficiary || ''),
         title: 'Beneficiary',
         iconName: 'person-circle-plus',
-        url:"/policy/beneficiary"
+        url: '/policy/beneficiary',
       },
       {
         attr: 'hasLegalAddress',
         value: String(contractData[0].hasLegalAddress || ''),
         title: 'Legal Address',
         iconName: 'location-dot',
-        url:"/policy/address"
+        url: '/policy/address',
       },
       {
         attr: 'hasClaims',
@@ -196,8 +211,8 @@ export default function PolicyDetails({navigation, route}: any) {
         value: String(contractData[0].canPrintAlpSoa || ''),
         title: 'Print SOA',
         iconName: 'person-circle-plus',
-        actionCode:"RqPrintPolicy",
-        url:"/request/print"
+        actionCode: 'RqPrintPolicy',
+        url: '/request/print',
       },
       {
         attr: 'canRenewPolicy',
@@ -206,7 +221,7 @@ export default function PolicyDetails({navigation, route}: any) {
         iconName: 'clipboard-list',
       },
     ];
-    setActions((prev : any) => ({
+    setActions((prev: any) => ({
       ...prev,
       predefinedActions,
     }));
@@ -216,10 +231,10 @@ export default function PolicyDetails({navigation, route}: any) {
     const initializePolicyDetails = async () => {
       try {
         setIsLoading(true);
-  
+
         setGroupCode(grpCode);
         setPolicyNo(_policyNo);
-  
+
         const result = await GetPolicyDetails(
           _shared.userId,
           _policyNo,
@@ -227,49 +242,67 @@ export default function PolicyDetails({navigation, route}: any) {
           _shared.role,
           _policyDetailsURI,
         );
-  
+
         const policyDetails = result.policyDetails;
         await getRequestsActions(_policyNo);
         await getActions(policyDetails.contract);
-  
+
         const updatedTabs: any[] = [];
-          Object.keys(componentMapping).forEach((key) => {
-            if (policyDetails[key] && (Array.isArray(policyDetails[key]) ? policyDetails[key].length > 0 : true)) {
-              const TabContent = componentMapping[key];
-              if (TabContent == DQ_Contract) {
-                updatedTabs.push({
-                  key: titleMapping[key],
-                  title: titleMapping[key],
-                  content: (
-                    <TabContent item={policyDetails[key]} contractAdditional={policyDetails['contractAdditional']} groupCode={grpCode} />
-                  ),
-                });
-              } else if (TabContent == DQ_InsuredCovers) {
-                updatedTabs.push({
-                  key: titleMapping[key],
-                  title: titleMapping[key],
-                  content: (
-                    <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyNo={_policyNo} />
-                  ),
-                });
-              }else if (TabContent == DQ_InsuredRisks) {
-                updatedTabs.push({
-                  key: titleMapping[key],
-                  title: titleMapping[key],
-                  content: (
-                    <TabContent item={policyDetails[key]} coversURL={_policyInsCoversURI} policyDataURI={_policyDataURI} policyNo={_policyNo} />
-                  ),
-                });
-              } else {
-                updatedTabs.push({
-                  key: titleMapping[key],
-                  title: titleMapping[key],
-                  content: <TabContent item={policyDetails[key]} />,
-                });
-              }
+        Object.keys(componentMapping).forEach(key => {
+          if (
+            policyDetails[key] &&
+            (Array.isArray(policyDetails[key])
+              ? policyDetails[key].length > 0
+              : true)
+          ) {
+            const TabContent = componentMapping[key];
+            if (TabContent == DQ_Contract) {
+              updatedTabs.push({
+                key: titleMapping[key],
+                title: titleMapping[key],
+                content: (
+                  <TabContent
+                    item={policyDetails[key]}
+                    contractAdditional={policyDetails['contractAdditional']}
+                    groupCode={grpCode}
+                  />
+                ),
+              });
+            } else if (TabContent == DQ_InsuredCovers) {
+              updatedTabs.push({
+                key: titleMapping[key],
+                title: titleMapping[key],
+                content: (
+                  <TabContent
+                    item={policyDetails[key]}
+                    coversURL={_policyInsCoversURI}
+                    policyNo={_policyNo}
+                  />
+                ),
+              });
+            } else if (TabContent == DQ_InsuredRisks) {
+              updatedTabs.push({
+                key: titleMapping[key],
+                title: titleMapping[key],
+                content: (
+                  <TabContent
+                    item={policyDetails[key]}
+                    coversURL={_policyInsCoversURI}
+                    policyDataURI={_policyDataURI}
+                    policyNo={_policyNo}
+                  />
+                ),
+              });
+            } else {
+              updatedTabs.push({
+                key: titleMapping[key],
+                title: titleMapping[key],
+                content: <TabContent item={policyDetails[key]} />,
+              });
             }
-          });
-  
+          }
+        });
+
         setTabs(updatedTabs);
         setPolicyData(policyDetails);
       } catch (error) {
@@ -279,16 +312,20 @@ export default function PolicyDetails({navigation, route}: any) {
       }
     };
     initializePolicyDetails();
-  }, [route.params, _policyDataURI, _policyDetailsURI, _policyInsCoversURI, _policyNo, grpCode]);
+  }, [
+    route.params,
+    _policyDataURI,
+    _policyDetailsURI,
+    _policyInsCoversURI,
+    _policyNo,
+    grpCode,
+  ]);
 
   const handleOverlayClick = () => setClickedFAB(prev => !prev);
 
   return (
     <SafeAreaView style={styles.rootElement}>
-       <DQ_Alert
-        isVisible={isVisible}
-        hideAlert={hideAlert}
-        btnList={btnList}>
+      <DQ_Alert isVisible={isVisible} hideAlert={hideAlert} btnList={btnList}>
         <DQ_Paragraph
           content={errorMessage}
           textColor="black"
@@ -303,7 +340,7 @@ export default function PolicyDetails({navigation, route}: any) {
       />
       {clickedFAB && (
         <View style={styles.overlay} onTouchStart={handleOverlayClick} />
-      )}      
+      )}
       <View style={styles.fab}>
         {actions.predefinedActions.length > 0 && (
           <DQ_FAB
