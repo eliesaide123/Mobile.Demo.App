@@ -84,6 +84,27 @@ interface GetConnectDataResponseData {
   clientSpace: ClientSpaceLoginURL[];
 }
 
+export interface ActiveRequest{
+  requestSerno: number,
+  polAction: string,
+  requestStatus: string,
+  statusdate: string,
+  attachedFiles: string,
+  rejectionNote: string,
+  htmlFile: string,
+  requestNote: string,
+  createdOn: string,
+  sinception: string,
+  reqRef: string,
+  allowCancel: boolean
+}
+
+export interface GetRequestsRequestData{
+  policyNo: string,
+  productName: string,
+  activeRequests: ActiveRequest[]
+}
+
 //Generic send request
 export interface SendRequest<T> {
   request: T;
@@ -163,4 +184,16 @@ export interface GetDetailsBeneficiaryResponse {
     policyDetails: {beneficiaries: any[]};
     status: boolean;
   };
+}
+
+export interface GetRequestsResponse{
+  response: {
+    error_Code: number;
+    error_Description: string;
+    
+    status: boolean;
+    requestsData: {
+      policies: GetRequestsRequestData[]
+    }
+  }
 }

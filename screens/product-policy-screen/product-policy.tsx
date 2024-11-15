@@ -294,6 +294,7 @@ export default function ProductPolicy({navigation, route}: any) {
                 <DQ_GoButton
                   title="Pending Requests"
                   count={pendingRequests[0]?.nbrRequests}
+                  press={()=>{ pendingRequests[0]?.nbrRequests > 0 ? navigation.navigate('Requests') : {}}}
                 />
               )}
             </View>
