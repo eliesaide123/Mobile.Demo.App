@@ -26,7 +26,6 @@ export default function DQ_InsuredRisks({
         policyDataURI,
       );
       setItems(result || []); // Update this based on your response structure
-      console.log('COVERSSSSS', result);
       setCovers(result?.riskDetails?.dataItems || []); // Update this based on your response structure
     };
     Get_Covers();

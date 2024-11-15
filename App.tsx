@@ -12,6 +12,7 @@ import AgentSearch from './screens/Agent-Search-screen/Agent-Search-screen';
 import PolicyDetails from './screens/policy-details-screen/policy-details-screen';
 import AgentResult from './screens/Agent-Result-screen/agent-result-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ClaimsScreen from './screens/claims-screen/claims-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -141,6 +142,16 @@ export default function App() {
               },
             }}
           />   
+          <Stack.Screen
+            name="Claims"
+            component={ClaimsScreen}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+            }}
+          /> 
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
