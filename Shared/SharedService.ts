@@ -11,7 +11,7 @@ interface ApiResponse {
 const BASE_URL = 'http://dqapi-sna.dq.com.lb:88/api';
 
 const defaultHeaders = {
-  'accept': 'application/json',
+  'Accept': 'application/json',
   'Content-Type': 'application/json',
   'x-user-ims-lang': '0',
   'X-Requested-With': 'XMLHttpRequest',
@@ -40,7 +40,7 @@ const SharedService = {
     extraHeaders: object = {}
   ) {
     try {
-      const url = `${BASE_URL}${endpoint}`;      
+      const url = `${BASE_URL}${endpoint}`;
       const headers = { ...defaultHeaders, ...extraHeaders };
       const config: AxiosRequestConfig = {
         method,
@@ -49,15 +49,16 @@ const SharedService = {
         data,
       };
 
-      const response: AxiosResponse<T> = await axios(config);      
-      if (response && response.data?.response?.status == false) {        
+      const response: AxiosResponse<T> = await axios(config);
+      if (response && response.data?.response?.status == false) {
         SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
       }else if(response && response.data?.response?.status) {
         return response.data;
       }
 
       
-    } catch (error: any) {      
+    } catch (error: any) {
+      // Check if the error contains a response or just the message
       const errorDetails = error.response ? error.response.data.error.details : error.message;
       SharedService.showAlert(errorDetails);
 

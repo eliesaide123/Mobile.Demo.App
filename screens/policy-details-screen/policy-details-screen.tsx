@@ -74,8 +74,8 @@ export default function PolicyDetails({navigation, route}: any) {
 
   const {isVisible, showAlert, hideAlert, errorMessage} = useAlert();
 
-  const navigateToComponent = (navigateTo: any, params?: any) => {
-    return navigation.navigate(navigateTo, params || {});
+  const navigateToComponent = (navigateTo: any) => {
+    return navigation.navigate(navigateTo);
   };
   const {
     policyNo: _policyNo,
@@ -86,15 +86,30 @@ export default function PolicyDetails({navigation, route}: any) {
   } = route.params;
 
   const callPrintService = async (url: any, actionCode: any) => {
-    const result = await RequestPrint(
-      _shared.userId,
-      _shared.pin,
-      _shared.role,
-      _policyNo,
-      url,
-      actionCode,
-    );
     handleOverlayClick();
+    setBtnList([
+      {
+        title: 'Ok',
+        press: async() => {
+          await RequestPrint(
+            _shared.userId,
+            _shared.pin,
+            _shared.role,
+            _policyNo,
+            url,
+            actionCode,
+          );
+          hideAlert()
+        },
+      },
+      {
+        title: 'Cancel',
+        press: () => {
+          hideAlert();
+        },
+      },
+    ]);
+    showAlert('Are you sure you want to print the policy')
   };
 
   const callServiceWithURL = async (url: any) => {
@@ -120,7 +135,9 @@ export default function PolicyDetails({navigation, route}: any) {
           },
         },
       ]);
+      if (policyDetails && 'legalAddress' in policyDetails) {
       showAlert(policyDetails?.legalAddress[0].addressString);
+      }
     } else if (url.includes('beneficiary')) {
       handleOverlayClick();
       setBtnList([
@@ -131,7 +148,10 @@ export default function PolicyDetails({navigation, route}: any) {
           },
         },
       ]);
-      showAlert(policyDetails?.beneficiaries[0].textClause);
+      if (policyDetails && 'beneficiaries' in policyDetails) {
+        const textClause = policyDetails.beneficiaries[0]?.textClause;
+        showAlert(policyDetails?.beneficiaries[0].textClause);
+      }
     }
   };
 
@@ -193,8 +213,6 @@ export default function PolicyDetails({navigation, route}: any) {
         value: String(contractData[0].hasClaims || ''),
         title: 'Policy Claims',
         iconName: 'file-pen',
-        goTo: 'Claims',
-        params: {PolicyNo: _policyNo, OS_Only: _policyNo.lenght > 0},
       },
       {
         attr: 'hasDuePremiums',
