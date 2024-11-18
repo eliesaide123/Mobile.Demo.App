@@ -1,9 +1,3 @@
-interface MainResponse {
-  status: boolean;
-  error_Code: number;
-  error_Description: string;
-}
-
 interface MainResponseWithUIToken extends MainResponse {
   imS_UIToken: string;
 }
@@ -84,30 +78,63 @@ interface GetConnectDataResponseData {
   clientSpace: ClientSpaceLoginURL[];
 }
 
-export interface ActiveRequest{
-  requestSerno: number,
-  polAction: string,
-  requestStatus: string,
-  statusdate: string,
-  attachedFiles: string,
-  rejectionNote: string,
-  htmlFile: string,
-  requestNote: string,
-  createdOn: string,
-  sinception: string,
-  reqRef: string,
-  allowCancel: boolean
+export interface MainResponse {
+  status: boolean;
+  error_Code: number;
+  error_Description: string;
 }
 
-export interface GetRequestsRequestData{
-  policyNo: string,
-  productName: string,
-  activeRequests: ActiveRequest[]
+export interface SettleDetails {
+  unpaidRefer: string;
+  claimSerial: number;
+  osAmountFC: number;
+  osAmountLC: number;
+}
+
+export interface ClaimSettle {
+  requestReference: string;
+  policyNo: string;
+  imsClaimNo: string;
+  actionCode: string;
+  settleAction: string;
+  inception: string;
+  bank: string;
+  iban: string;
+  notes?: string;
+  settleDetails: SettleDetails[];
+}
+
+export interface ActiveRequest {
+  requestSerno: number;
+  polAction: string;
+  requestStatus: string;
+  statusdate: string;
+  attachedFiles: string;
+  rejectionNote: string;
+  htmlFile: string;
+  requestNote: string;
+  createdOn: string;
+  sinception: string;
+  reqRef: string;
+  allowCancel: boolean;
+}
+
+export interface GetRequestsRequestData {
+  policyNo: string;
+  productName: string;
+  activeRequests: ActiveRequest[];
 }
 
 //Generic send request
 export interface SendRequest<T> {
   request: T;
+}
+
+//Settle Claims Creds
+export interface SettleClaimsCredentials {
+  claimSettleData: {
+    claimSettle: ClaimSettle[]
+  };
 }
 
 //Login Credentials
@@ -186,15 +213,14 @@ export interface GetDetailsBeneficiaryResponse {
   };
 }
 
-export interface GetRequestsResponse{
+export interface GetRequestsResponse {
   response: {
     error_Code: number;
     error_Description: string;
-    
+
     status: boolean;
     requestsData: {
-      policies: GetRequestsRequestData[]
-    }
-  }
+      policies: GetRequestsRequestData[];
+    };
+  };
 }
-

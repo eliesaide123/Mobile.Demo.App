@@ -48,8 +48,9 @@ const SharedService = {
         headers,
         data,
       };
-
+      console.log("dataaaaaaaaa", JSON.stringify(data))
       const response: AxiosResponse<T> = await axios(config);
+      console.log(response.data)
       if (response && response.data?.response?.status == false) {
         SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
       }else if(response && response.data?.response?.status) {

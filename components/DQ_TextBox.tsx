@@ -27,7 +27,7 @@ export default function DQ_TextBox({
             placeholder={placeholder}
             placeholderTextColor="#888"
             value={value}
-            onChangeText={handleChangeText}
+            onChangeText={onChangeText}
             keyboardType={keyboardType}
             secureTextEntry={secureTextEntry}
           />

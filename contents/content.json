@@ -1,5 +1,10 @@
 {
   "Contents": {
+    "RegexExpression": {
+      "IBAN":{
+        "v": "^LB\\d{2}\\d{4}\\d{4}\\d{14}$"
+      }
+    },
     "LoginScreen": {
       "HeaderContainer": {
         "en": "WELCOME BACK",

@@ -1,17 +1,17 @@
-import { StyleSheet, View, FlatList } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {StyleSheet, View, FlatList} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
-import { GetClaims } from './service/claims-service';
+import {GetClaims} from './service/claims-service';
 import DQ_Button from '../../components/DQ_Button';
 import DQ_Loader from '../../components/DQ_Loader';
 
-export default function ClaimsScreen({ navigation, route }: any) {
-  const [outstandingClaims, setOutStandingClaims] = useState<any[]>([]);  // Changed to an array for multiple claims
+export default function ClaimsScreen({navigation, route}: any) {
+  const [outstandingClaims, setOutStandingClaims] = useState<any[]>([]); // Changed to an array for multiple claims
   const [labels, setLabels] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [policyNo, setPolicyNo] = useState<string>("");
+  const [policyNo, setPolicyNo] = useState<string>('');
 
   const exclusions = [
     'imsClaimNo',
@@ -29,42 +29,45 @@ export default function ClaimsScreen({ navigation, route }: any) {
     'settleDetails',
   ];
 
-useEffect(() => {
-  const { PolicyNo, OS_Only } = route.params;
-  const Get_Claims = async () => {
-    setPolicyNo(PolicyNo)
-    setIsLoading(true);
-    try {
-      const result: any = await GetClaims(PolicyNo, OS_Only);
-      
-      // Check if the response is valid
-      if (result?.response?.claimsData?.policies?.length > 0) {
-        const allLabels = Object.keys(result.response.claimsData.policies[0].outstandingClaims[0] || {});
-        const filteredLabels = allLabels.filter(key => !exclusions.includes(key));
+  useEffect(() => {
+    const {PolicyNo, OS_Only} = route.params;
+    const Get_Claims = async () => {
+      setPolicyNo(PolicyNo);
+      setIsLoading(true);
+      try {
+        const result: any = await GetClaims(PolicyNo, OS_Only);
 
-        setLabels(filteredLabels);
+        // Check if the response is valid
+        if (result?.response?.claimsData?.policies?.length > 0) {
+          const allLabels = Object.keys(
+            result.response.claimsData.policies[0].outstandingClaims[0] || {},
+          );
+          const filteredLabels = allLabels.filter(
+            key => !exclusions.includes(key),
+          );
 
-        // Safe extraction of policies
-        const policies = result.response.claimsData.policies;
-        setOutStandingClaims(policies);
-      } 
-    } catch (error) {      
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  Get_Claims();
-}, [route.params]);
+          setLabels(filteredLabels);
 
-  
-  const renderClaimItem = ({ item }: any) => {
+          // Safe extraction of policies
+          const policies = result.response.claimsData.policies;
+          setOutStandingClaims(policies);
+        }
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    Get_Claims();
+  }, [route.params]);
+
+  const renderClaimItem = ({item}: any) => {
     const outstandingClaim = item.outstandingClaims[0];
     const imsClaimRefLabel: any = labels.find(l => l === 'imsClaimRef');
     const settledAmount: any = labels.find(l => l === 'settledAmount');
     const occuredOn: any = labels.find(l => l === 'occuredOn');
     const claimStatus: any = labels.find(l => l === 'claimStatus');
-    const amountToBeSettled = item.currency + " " +outstandingClaim.r2S_Amount
+    const amountToBeSettled = item.currency + ' ' + outstandingClaim.r2S_Amount;
 
     return (
       <View style={styles.claimCard}>
@@ -81,10 +84,12 @@ useEffect(() => {
                 <DQ_Paragraph content={item.policyNo} textColor="black" />
                 <DQ_Paragraph content={item.productName} />
               </View>
-              {outstandingClaim.allowSettle && <View>
-                <DQ_Paragraph content={settledAmount} textColor="black" />
-                <DQ_Paragraph content={amountToBeSettled} /> 
-              </View>}
+              {outstandingClaim.allowSettle && (
+                <View>
+                  <DQ_Paragraph content={settledAmount} textColor="black" />
+                  <DQ_Paragraph content={amountToBeSettled} />
+                </View>
+              )}
             </View>
           </View>
           <View style={styles.rightSection}>
@@ -98,9 +103,24 @@ useEffect(() => {
             </View>
           </View>
         </View>
-        <View style={{ alignSelf: 'center' }}>
-          {outstandingClaim.allowSettle && <DQ_Button title="Payment Method" 
-          onPress={() => {navigation.navigate('ClaimsSettlement', {policyNo: policyNo ?? item.policyNo, imsClaimsNo: outstandingClaim.imsClaimRef, toBeSettledAmount: amountToBeSettled, action: "RqClmToSetlC", claimNo: imsClaimRefLabel, claimAmount: settledAmount})}} />}
+        <View style={{alignSelf: 'center'}}>
+          {outstandingClaim.allowSettle && (
+            <DQ_Button
+              title="Payment Method"
+              onPress={() => {
+                navigation.navigate('ClaimsSettlement', {
+                  policyNo: policyNo ?? item.policyNo,
+                  imsClaimsNo: outstandingClaim.imsClaimNo,
+                  imsClaimsRef: outstandingClaim.imsClaimRef,
+                  toBeSettledAmount: amountToBeSettled,
+                  claimNo: imsClaimRefLabel,
+                  claimAmount: settledAmount,
+                  notes: outstandingClaim.claimNotes,
+                  settleDetails: outstandingClaim.settleDetails
+                });
+              }}
+            />
+          )}
         </View>
       </View>
     );
@@ -108,13 +128,17 @@ useEffect(() => {
 
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <DQ_BaseHeader press={() => navigation.goBack()} variant="textCenter" textCenter="MY CLAIMS" />
+      <DQ_BaseHeader
+        press={() => navigation.goBack()}
+        variant="textCenter"
+        textCenter="MY CLAIMS"
+      />
       {isLoading ? (
         <DQ_Loader loading={isLoading} />
       ) : (
         <FlatList
           data={outstandingClaims}
-          keyExtractor={(item) => item.policyNo}
+          keyExtractor={item => item.policyNo}
           renderItem={renderClaimItem}
         />
       )}
@@ -132,7 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#f9f9f9',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
