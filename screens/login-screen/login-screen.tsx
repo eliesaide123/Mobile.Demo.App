@@ -77,7 +77,7 @@ export default function LoginScreen({navigation}: any) {
         checkRoleResult.user_Role.toUpperCase() === 'A'
       ) {
         navigation.navigate('AgentSearch');
-      } else if (checkRoleResult.user_Role){
+      } else if (checkRoleResult.user_Role) {
         navigation.navigate('ProductPolicy');
       }
     } catch (err: any) {
