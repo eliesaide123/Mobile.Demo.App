@@ -3,17 +3,15 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableWithoutFeedback,
-  Animated,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
 } from 'react-native';
 
-const DQ_GoButton = ({ title, count = 0, onPress }: any) => {
+const DQ_GoButton = ({ title, count = 0, press }: any) => {
   
   return (
     <View style={[styles.cardBorder]}>
-      <Pressable>
+      <TouchableOpacity onPress={press}>
         <View style={styles.InlineElements}>
           <Text style={[styles.textFormat]}>{title}</Text>
           <View style={styles.InlineElements}>
@@ -30,7 +28,7 @@ const DQ_GoButton = ({ title, count = 0, onPress }: any) => {
             </View>
           </View>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -227,6 +227,8 @@ export default function PolicyDetails({navigation, route}: any) {
         value: String(contractData[0].hasPendingRequests || ''),
         title: 'My Requests',
         iconName: 'clipboard-list',
+        goTo:'Requests',
+        params:{policyNo:_policyNo}
       },
       {
         attr: 'canPrintAlpSoa',
