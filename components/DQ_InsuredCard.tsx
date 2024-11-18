@@ -6,73 +6,88 @@ import {
   TouchableWithoutFeedback,
   Animated,
   StyleSheet,
+  ScrollView
 } from 'react-native';
 
-const DQ_InsuredCard = ({ title, count, children }: any) => {
+const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
   const [collapsed, setCollapsed] = useState(true);
   const [animation] = useState(new Animated.Value(0));
 
-  // Open the card by default if count == 1 and start the animation
+  const getDynamicFontSize = (text : any) => {
+    const length = String(text).length;
+    if (length <= 10) return 16;
+    if (length <= 20) return 14;
+    if (length <= 30) return 12;
+    return 10;
+  };
+
   useEffect(() => {
-    if (count === 1) {
-      setCollapsed(false); // Open the card automatically if there's only 1 item
+    if (count === 1 && !locked) {
+      setCollapsed(false);
       Animated.timing(animation, {
-        toValue: 1, // Trigger the expand animation (fade in content)
-        duration: 300, // Duration for the animation
-        useNativeDriver: false, // Use native driver for better performance
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
       }).start();
     }
-  }, [count]);
+  }, [count, locked]);
 
   const toggleCollapse = () => {
-    // Toggle the collapsed state to trigger reanimation
+    if (locked) return;
     setCollapsed(!collapsed);
-
-    // Animate the content visibility (opacity) and the chevron icon rotation
     Animated.timing(animation, {
-      toValue: collapsed ? 1 : 0, // Fade in/out effect
-      duration: 300, // Duration for expansion/collapse
-      useNativeDriver: false, // Use native driver
+      toValue: collapsed ? 1 : 0,
+      duration: 300,
+      useNativeDriver: false,
     }).start();
   };
 
-  // Interpolating the opacity of the content (children only)
   const opacityInterpolate = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 1], // Fade in and out effect for content
+    outputRange: [0, 1],
   });
 
-  // Rotating the chevron icon
   const rotateInterpolate = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '-180deg'], // Rotates icon for collapse/expand
+    outputRange: ['0deg', '-180deg'],
   });
 
-  // Static background color based on collapsed state
-  const backgroundColor = collapsed ? 'white' : '#0160ae';
-  const color = collapsed ? 'black' : 'white';
+  const backgroundColor = collapsed ? (locked ? '#0160ae' : 'white') : '#0160ae';
+  const color = collapsed ? (locked ? 'white' : 'black') : 'white';
+  const chevronColor = collapsed ? (locked ? '#0160ae' : 'black') : 'white';
 
   return (
-    <View style={[styles.cardBorder, { backgroundColor }]}>
-      <TouchableWithoutFeedback onPress={toggleCollapse}>
-        <View style={styles.InlineElements}>
-          <Text style={[styles.textFormat, { color }]}>{title}</Text>
+    <View style={{ flex: 1 }}>
+      <View style={[styles.cardBorder, { backgroundColor }]}>
+        <TouchableWithoutFeedback onPress={toggleCollapse}>
           <View style={styles.InlineElements}>
+            <Text
+              style={[
+                styles.textFormat,
+                { color, fontSize: locked ? 13 : getDynamicFontSize(title), textAlign: 'left' }
+              ]}
+            >
+              {title}
+            </Text>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-              <Icon name="chevron-down" size={14} color={color} iconStyle="solid" />
+              <Icon name="chevron-down" size={14} color={chevronColor} iconStyle="solid" />
             </Animated.View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-
+        </TouchableWithoutFeedback>
+      </View>
+      {/** Animated container for children */}
       <Animated.View
         style={{
-          opacity: opacityInterpolate, // Apply the opacity fade effect here
-          marginTop: 30,
-          width: '100%',
+          opacity: opacityInterpolate,
+          height: collapsed ? 0 : 'auto', // Show/hide content without changing card height
+          overflow: 'visible',
+          width:'100%',
+          marginTop:-20
         }}
       >
-        {children}
+        <ScrollView style={{overflow: 'visible',padding:20}}>
+          {children}
+        </ScrollView>
       </Animated.View>
     </View>
   );
@@ -84,14 +99,14 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,      
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 9,
     margin: 10,
     padding: 15,
-    height: 70, // Fixed height for the card to remain the same size    
+    minHeight: 80, // Fixed height for the card
   },
   InlineElements: {
     flexDirection: 'row',

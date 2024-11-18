@@ -1,14 +1,6 @@
+// components/DQ_Alert.tsx
 import Icon from '@react-native-vector-icons/fontawesome6';
-import {
-  Button,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  FlatList,
-} from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native';
 import DQ_Button from './DQ_Button';
 
 const logo = require('../assets/images/DataQuest_Logo.png');
@@ -25,18 +17,14 @@ export default function DQ_Alert({
         visible={isVisible}
         animationType="fade"
         transparent={true}
-        onRequestClose={() => hideAlert()}>
+        onRequestClose={hideAlert}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <View style={styles.alert}>
-              <TouchableOpacity onPress={() => hideAlert()}>
+              <TouchableOpacity onPress={hideAlert}>
                 <View style={styles.closeButton}>
-                  <Icon
-                    name="circle-xmark"
-                    size={18}
-                    color="#ffc02c"
-                    iconStyle="solid"
-                  />
+                  <Icon name="circle-xmark" size={18} color="#ffc02c" />
                 </View>
               </TouchableOpacity>
               <View style={styles.logoContainer}>
@@ -47,16 +35,12 @@ export default function DQ_Alert({
                 <View style={styles.alertButtonGroup}>
                   <FlatList
                     data={btnList}
-                    renderItem={({item}) => (
-                      <View style={{margin: 5}}>
-                        
-                        <DQ_Button
-                          title={item.title}
-                          onPress={item.press}
-                        />
+                    renderItem={({ item }) => (
+                      <View style={{ margin: 5 }}>
+                        <DQ_Button title={item.title} onPress={item.press} />
                       </View>
                     )}
-                    keyExtractor={item => item.title}
+                    keyExtractor={(item) => item.title}
                   />
                 </View>
               )}
@@ -76,11 +60,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    width: '80%', // Ensures it doesn't expand to the whole screen
+    width: '85%',
     maxWidth: 400,
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   alert: {
     width: '100%',
@@ -88,10 +73,7 @@ const styles = StyleSheet.create({
     maxHeight: 600,
     borderRadius: 8,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 9,

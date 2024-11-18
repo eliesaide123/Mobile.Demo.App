@@ -52,12 +52,12 @@ export default function PolicyList({navigation, route}: any) {
           {policyList && groupCode && (
             <FlatList
               data={policyList}
+              keyExtractor={(item: any) => item.policyNo.toString()}
               renderItem={({item}) => (
                 <DQ_PolicyCard
                   src={imageMapping[groupCode]}
                   item={item}
-                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role, userId, policyDetailsURI: item.policyDetailsURI, policyInsCoversURI: item.policyInsCoversURI})}}
-                  keyExtractor={(item: any) => item.policyNo.toString()}
+                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role, userId, policyDetailsURI: item.policyDetailsURI, policyInsCoversURI: item.policyInsCoversURI, policyDataURI: item.policyDataURI})}}                  
                 />
               )}
             />

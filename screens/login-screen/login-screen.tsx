@@ -1,6 +1,12 @@
-import React, {useState} from 'react';
-import {View, Image, StyleSheet, Alert, Pressable} from 'react-native';
-import DQ_Button from '../../components/DQ_Button';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+  Pressable,
+  Text,
+} from 'react-native';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
 import DQ_Link from '../../components/DQ_Link';
@@ -12,6 +18,9 @@ import {getLocalizedEntry} from '../../Shared/SharedFunctions';
 import DQ_Alert from '../../components/DQ_Alert';
 import {ProductPolicyService} from '../product-policy-screen/service/product-policy.service';
 import {useAlert} from '../../hooks/useAlert';
+import DQ_LoaderBtn from '../../components/DQ_LoaderBtn';
+import {LoginCredentials} from '../../Shared/Types';
+import SharedService from '../../Shared/SharedService';
 
 export default function LoginScreen({navigation}: any) {
   const logo = require('../../assets/images/DQ_LOGO.png');
@@ -31,34 +40,49 @@ export default function LoginScreen({navigation}: any) {
     'LoginScreen',
     'DQ_RegisterPhrase',
   ) as string[] | null;
-  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : ''; // Access the second element if it exists
+  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : '';
   const DQ_ProceedAsAGuest = getLocalizedEntry(
     'LoginScreen',
     'DQ_ProceedAsAGuest',
   );
 
-  const {isVisible, showAlert, hideAlert} = useAlert();
+  const {isVisible, showAlert, hideAlert, errorMessage} = useAlert();
 
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  let credentials: LoginCredentials;
+
+  // Set alert handler in useEffect
+  useEffect(() => {
+    SharedService.setAlertHandler(showAlert);
+  }, [showAlert]);
 
   const handleLogin = async () => {
-    const result = await login(userId, password);        
-    if (result.response.status) {
-      _shared.ui_token = result.response.imS_UIToken;
+    try {
+      setIsLoading(true); // Show loader
+      credentials = {
+        mA_UserID: userId,
+        cS_UserID: userId,
+        cS_Password: password,
+      };
+      const result = await login(credentials);
+
+      _shared.ui_token = result?.response.imS_UIToken || '';
       _shared.userId = userId;
       const checkRoleResult = await ProductPolicyService(userId);
-      if (checkRoleResult.user_Role && checkRoleResult.user_Role.toUpperCase() == 'A') {
+      if (
+        checkRoleResult.user_Role &&
+        checkRoleResult.user_Role.toUpperCase() === 'A'
+      ) {
         navigation.navigate('AgentSearch');
-      } else {
-        if (result.response.status) {
-          navigation.navigate('ProductPolicy');
-        } else {
-          showAlert();
-        }
+      } else if (checkRoleResult.user_Role){
+        navigation.navigate('ProductPolicy');
       }
-    } else {
-      showAlert();
+    } catch (err: any) {
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,7 +100,7 @@ export default function LoginScreen({navigation}: any) {
           },
         ]}>
         <DQ_Paragraph
-          content="Something went wrong! Try again"
+          content={errorMessage}
           textColor="black"
           textAlign="center"
           fontSize={14}
@@ -86,6 +110,7 @@ export default function LoginScreen({navigation}: any) {
       <View style={styles.headerText}>
         <Image source={logo} />
       </View>
+
       <View style={styles.container}>
         <View style={styles.subContainer}>
           <View style={styles.inlineSubContainer}>
@@ -102,6 +127,7 @@ export default function LoginScreen({navigation}: any) {
               textAlign="center"
             />
           </View>
+
           <View style={styles.inlineSubContainerItems}>
             <DQ_TextBox
               placeholder={WebUserIDPlaceHolder}
@@ -125,16 +151,21 @@ export default function LoginScreen({navigation}: any) {
               onPress={() => navigation.navigate('ForgotPassword')}
             />
           </View>
+
           <View style={styles.inlineSubContainerItemsButton}>
-            <DQ_Button title="Login" onPress={handleLogin} />
+            <DQ_LoaderBtn
+              title="Login"
+              onPress={handleLogin}
+              loading={isLoading}
+            />
           </View>
+
           <Pressable
             style={styles.inlineSubContainerFooter}
             onPress={() => navigation.navigate('Register')}>
-            <DQ_Paragraph
-              fontSize={12}
-              content={RegisterPhrase ? RegisterPhrase[0] : ''}
-            />
+            <Text style={{fontSize: 12}}>
+              {RegisterPhrase ? RegisterPhrase[0] : ''}
+            </Text>
             <DQ_Link
               textAlign="center"
               fontSize={12}
@@ -146,6 +177,7 @@ export default function LoginScreen({navigation}: any) {
           </Pressable>
         </View>
       </View>
+
       <View style={styles.footer}>
         <DQ_Link
           textAlign="center"

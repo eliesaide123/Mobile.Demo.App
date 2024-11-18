@@ -10,7 +10,7 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
 
   useEffect(() => {
     const Get_Covers = async () => {
-      console.log(policyNo);
+      console.log(JSON.stringify(item));
       const result = await GetAdvancedLifeCover(
         _shared.userId,
         policyNo,
@@ -27,19 +27,19 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
 
   const getDynamicFontSize = (text : any) => {
     const length = String(text).length;
-    if (length <= 10) return 16; // Short text, larger font
-    if (length <= 20) return 14; // Medium text, medium font
-    if (length <= 30) return 12; // Long text, smaller font
+    if (length <= 10) return 14; // Short text, larger font
+    if (length <= 20) return 12; // Medium text, medium font
+    if (length <= 30) return 10; // Long text, smaller font
     return 10; // Very long text, smallest font
   };
 
   return (
     <ScrollView style={styles.contractContainer}>
       <View>
-        {Array.isArray(item) && item.length > 0 ? (
+        {Array.isArray(item) && item.length > 0 && (
           item.map((obj, index) => (
             <DQ_InsuredCard
-              title={obj['insuredData'] || 'Insured Data'}
+              title={obj['insuredData'] || obj['riskType']  ||'Insured Data'}
               key={index}
               count={item.length}>
                 <View style={styles.additionalDataRow}>
@@ -62,24 +62,18 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
                     />
                   </View>
                 </View>
-                {Array.isArray(covers) && covers.length > 0 ? (
+                {Array.isArray(covers) && covers.length > 0 && (
                   covers.map((cover, coverIndex) => (
                     <View key={coverIndex}>
                       <View style={styles.contractRow}>
-                        <DQ_Paragraph content={cover["insuredCover"]} fontFamily='Nexa Bold' fontSize={getDynamicFontSize(cover["insuredCover"])} textColor="black" textWidth={150}/>
-                        <Text style={styles.value}>
-                        <DQ_Paragraph content={cover["insuredSI"]} fontFamily='Nexa Bold' fontSize={14} textColor="black" textWidth={150}/>
-                        </Text>
+                        <DQ_Paragraph content={cover["insuredCover"]} fontFamily='Nexa Bold' textAlign='left' fontSize={getDynamicFontSize(cover["insuredCover"])} textColor="black" textWidth={150}/>
+                        <DQ_Paragraph content={cover["insuredSI"]} fontFamily='Nexa Bold' textAlign='right' fontSize={14} textColor="black" textWidth={150}/>
                       </View>
                     </View>
                   ))
-                ) : (
-                  <Text>No data available</Text>
                 )}
             </DQ_InsuredCard>
           ))
-        ) : (
-          <Text>No data available</Text>
         )}
       </View>
     </ScrollView>
@@ -112,6 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 9,
+    paddingHorizontal: 20,
     borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
     backgroundColor: '#3cc8f0',
@@ -119,8 +114,10 @@ const styles = StyleSheet.create({
     padding: 15,
     gap:20,
     width:'128%',
+    height:50,
     marginHorizontal:-40,
     marginBottom:7,
+    marginTop:10  
   },
   header:{
     flex:0.4

@@ -1,17 +1,23 @@
-import { useCallback, useState } from "react";
+import { useState } from 'react';
 
-export function useAlert() {
-    const [isVisible, setVisible] = useState(false);
-  
-    // Function to show the alert
-    const showAlert = useCallback(() => {
-      setVisible(true);
-    }, []);
-  
-    // Function to hide the alert
-    const hideAlert = useCallback(() => {
-      setVisible(false);
-    }, []);
-  
-    return { isVisible, showAlert, hideAlert };
-  }
+export const useAlert = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const showAlert = (errorMsg: string) => {
+    setErrorMessage(errorMsg);
+    setIsVisible(true);
+  };
+
+  const hideAlert = () => {
+    setIsVisible(false);
+    setErrorMessage(''); // Reset error message after hiding
+  };
+
+  return {
+    isVisible,
+    errorMessage,
+    showAlert,
+    hideAlert,
+  };
+};

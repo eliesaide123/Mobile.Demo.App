@@ -1,13 +1,11 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect } from 'react';
+import React from 'react';
 import DQ_Paragraph from './DQ_Paragraph';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DQ_Contract({
   item,
-  setExcludedData,
   contractAdditional,
-  groupCode
+  groupCode,
 }: any) {
   const excludeKeys = [
     'firstInception',
@@ -20,66 +18,6 @@ export default function DQ_Contract({
     'hasClaims',
     'hasPendingRequests',
   ];
-
-    const actions = [
-      {
-        attr: "canRenewPolicy",
-        value: item.canRenewPolicy,
-        title: 'Renew',
-        iconName: 'plus'
-      },
-      {
-        attr: "canPrintPolicy",
-        value: item.canPrintPolicy,
-        title: 'Print Policy',
-        iconName: 'printer'
-      },
-      {
-        attr: "canPrintAlpSoa",
-        value: item.canPrintAlpSoa,
-        title: 'Print SOA',
-        iconName: 'file-text'
-      },
-      {
-        attr: "hasLegalAddress",
-        value: item.hasLegalAddress,
-        title: 'Legal Address',
-        iconName: 'map-marker'
-      },
-      {
-        attr: "hasBeneficiary",
-        value: item.hasBeneficiary,
-        title: 'Beneficiary',
-        iconName: 'user-plus'
-      },
-      {
-        attr: "hasDuePremiums",
-        value: item.hasDuePremiums,
-        title: 'Due Premiums',
-        iconName: 'dollar-sign'
-      },
-      {
-        attr: "hasClaims",
-        value: item.hasClaims,
-        title: 'Claims',
-        iconName: 'file-invoice'
-      },
-      {
-        attr: "hasPendingRequests",
-        value: item.hasPendingRequests,
-        title: 'Pending Requests',
-        iconName: 'hourglass-half'
-      }
-    ];
-
-    useEffect(()=>{
-      const setActions = async()=>{
-        await AsyncStorage.setItem('contractActions', JSON.stringify(actions))
-      }
-      setActions();
-    }, [actions])
-  
-
   return (
     <ScrollView
       style={styles.contractContainer}
@@ -141,7 +79,7 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
-    padding:5
+    padding:5,
   },
   additionalDataRow: {
     flexDirection: 'row',
@@ -151,7 +89,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
     backgroundColor:"#3cc8f0",
-    padding:5
+    padding:5,
   },
   label: {
     fontWeight: 'bold',

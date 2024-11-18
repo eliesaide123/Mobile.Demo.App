@@ -1,10 +1,10 @@
 import React from 'react';
 import { TextInput, StyleSheet, View, Text } from 'react-native';
-
-export default function DQ_TextBox({ 
-    placeholder = 'Enter text', 
-    value, 
-    onChangeText, 
+ 
+export default function DQ_TextBox({
+    placeholder = 'Enter text',
+    value,
+    onChangeText,
     keyboardType = 'default',
     secureTextEntry = false,
     backgroundColor = 'white',
@@ -13,9 +13,9 @@ export default function DQ_TextBox({
     hintText = undefined,
     fontFamily = 'Nexa Regular',
 } : any) {
-
+ 
   const fF = fontFamily.toString();
-
+ 
   function handleChangeText(e: string) {
     onChangeText(e);
   }
@@ -36,7 +36,7 @@ export default function DQ_TextBox({
       </View>
     );
 }
-
+ 
 const styles = StyleSheet.create({
     mainContainer:{
         marginVertical:8,
