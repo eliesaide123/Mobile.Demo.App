@@ -1,41 +1,70 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosHeaders } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-
-const api: AxiosInstance = axios.create({
-    baseURL: 'http://dqapi-sna.dq.com.lb:88/api/',
-    headers: {
-        'Content-Type': 'application/json',
-        'accept': 'application/json',
-        'x-user-ims-lang': '0'
-    }
-});
-
-async function request<T>(config: AxiosRequestConfig) {
-    try {
-        const response: AxiosResponse<T> = await api.request<T>(config);
-        return { success: true, data: response.data };
-    } catch (error: any) {
-        console.error(`API error:`, error);
-        return { success: false, error: error.response ? error.response.data : error.message };
-    }
+interface ApiResponse {
+  response?: {
+    error_Description?: string;
+    details?: string;
+    status:boolean
+  };
 }
 
+const BASE_URL = 'http://dqapi-sna.dq.com.lb:88/api';
+
+const defaultHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+  'x-user-ims-lang': '0',
+  'X-Requested-With': 'XMLHttpRequest',
+};
+
+let setAlert: any = () => {}; // Placeholder for alert setter function
+
 const SharedService = {
-    get: function <T>(url: string) {
-        return request<T>({ method: 'GET', url});
-    },
+  // Set the alert handler function (so we can trigger alerts globally)
+  setAlertHandler: (handler: any) => {
+    setAlert = handler;
+  },
 
-    post: function <T>(url: string, data?: any) {
-        return request<T>({ method: 'POST', url, data: JSON.stringify(data)});
-    },
+  // Show an alert with a message
+  showAlert: (message: string) => {
+    if (setAlert) {
+      setAlert(message);
+    }
+  },
 
-    put: function <T>(url: string, data?: any) {
-        return request<T>({ method: 'PUT', url, data: JSON.stringify(data) });
-    },
+  // Generic API call method
+  async callApi<T extends ApiResponse>(
+    endpoint: string,
+    method: 'GET' | 'POST' = 'GET',
+    data: any = null,
+    extraHeaders: object = {}
+  ) {
+    try {
+      const url = `${BASE_URL}${endpoint}`;
+      const headers = { ...defaultHeaders, ...extraHeaders };
+      const config: AxiosRequestConfig = {
+        method,
+        url,
+        headers,
+        data,
+      };
 
-    delete: function <T>(url: string) {
-        return request<T>({ method: 'DELETE', url });
-    },
+      const response: AxiosResponse<T> = await axios(config);
+      if (response && response.data?.response?.status == false) {
+        SharedService.showAlert(response.data?.response?.error_Description || "An error occurred.");
+      }else if(response && response.data?.response?.status) {
+        return response.data;
+      }
+
+      
+    } catch (error: any) {
+      // Check if the error contains a response or just the message
+      const errorDetails = error.response ? error.response.data.error.details : error.message;
+      SharedService.showAlert(errorDetails);
+
+      throw new Error(errorDetails);
+    }
+  },
 };
 
 export default SharedService;
