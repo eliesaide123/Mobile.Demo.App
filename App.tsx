@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ClaimsScreen from './screens/claims-screen/claims-screen';
 import RequestsScreen from './screens/requests-screen/requests-screen';
 import ViewRequestScreen from './screens/view-request-screen.tsx/view-request-screen';
+import ClaimSettlement from './screens/claim-settlement-screen/claim-settlement-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -148,6 +149,16 @@ export default function App() {
           <Stack.Screen
             name="Claims"
             component={ClaimsScreen}
+            options={{
+              headerShown: false,
+              headerStyle: {
+                backgroundColor: '#f4511e',
+              },
+            }}
+          />
+          <Stack.Screen
+            name="ClaimsSettlement"
+            component={ClaimSettlement}
             options={{
               headerShown: false,
               headerStyle: {

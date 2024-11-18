@@ -19,7 +19,8 @@ export default function DQ_BaseHeader({
   roleNumber = 1,
   variant = 'logoCenter',  // 'logoCenter' for structure 1, 'textCenter' for structure 2
   textCenter,
-  userId
+  userId,
+  ...props
 }: any) {
   return (
     <View style={styles.header}>
@@ -47,7 +48,7 @@ export default function DQ_BaseHeader({
         // Structure 2: Text in the center, mini logo on the right
         <>
           <View style={styles.textcenterContent}>
-            <DQ_Paragraph content={textCenter} textAlign="center" textColor="white" fontSize={18} fontFamily='Nexa Bold' capitalized/>
+            <DQ_Paragraph content={textCenter} textAlign="center" textColor="white" fontSize={18} fontFamily='Nexa Bold' {...props}/>
           </View>
           <View style={styles.rightIcon}>
             <Image source={miniLogo} style={styles.miniLogo} resizeMode="contain" />

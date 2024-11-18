@@ -1,17 +1,17 @@
-import {StyleSheet, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { StyleSheet, View, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
-import {GetClaims} from './service/claims-service';
+import { GetClaims } from './service/claims-service';
 import DQ_Button from '../../components/DQ_Button';
+import DQ_Loader from '../../components/DQ_Loader';
 
-export default function ClaimsScreen({navigation, route}: any) {
-  const [outstandingClaims, setOutStandingClaims] = useState<any>({});
+export default function ClaimsScreen({ navigation, route }: any) {
+  const [outstandingClaims, setOutStandingClaims] = useState<any[]>([]);  // Changed to an array for multiple claims
   const [labels, setLabels] = useState<string[]>([]);
-  const [policyNo, setPolicyNo] = useState<string>('');
-  const [productName, setProductName] = useState<string>('');
-  const [allowSettle, setAllowSettle] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [policyNo, setPolicyNo] = useState<string>("");
 
   const exclusions = [
     'imsClaimNo',
@@ -29,73 +29,95 @@ export default function ClaimsScreen({navigation, route}: any) {
     'settleDetails',
   ];
 
-  useEffect(() => {
-    const {PolicyNo, OS_Only} = route.params;
-    const Get_Claims = async () => {
+useEffect(() => {
+  const { PolicyNo, OS_Only } = route.params;
+  const Get_Claims = async () => {
+    setPolicyNo(PolicyNo)
+    setIsLoading(true);
+    try {
       const result: any = await GetClaims(PolicyNo, OS_Only);
-      if ('response' in result) {
-        const allLabels = Object.keys(
-          result.response?.claimsData?.policies[0]?.outstandingClaims[0],
-        );
-        const filteredLabels = allLabels.filter(
-          key => !exclusions.includes(key),
-        );
+      
+      // Check if the response is valid
+      if (result?.response?.claimsData?.policies?.length > 0) {
+        const allLabels = Object.keys(result.response.claimsData.policies[0].outstandingClaims[0] || {});
+        const filteredLabels = allLabels.filter(key => !exclusions.includes(key));
 
         setLabels(filteredLabels);
-        setOutStandingClaims(
-          result.response?.claimsData?.policies[0]?.outstandingClaims[0],
-        );
-        setPolicyNo(result.response?.claimsData?.policies[0]?.policyNo);
-        setProductName(result.response?.claimsData?.policies[0]?.productName);
-        setAllowSettle(result.response?.claimsData?.policies[0]?.outstandingClaims[0].allowSettle)
-      }
-    };
-    Get_Claims();
-  }, [route.params]);
 
-  const imsClaimRefLabel: any = labels.find(l => l === 'imsClaimRef');
-  const settledAmount: any = labels.find(l => l === 'settledAmount');
-  const occuredOn: any = labels.find(l => l === 'occuredOn');
-  const claimStatus: any = labels.find(l => l === 'claimStatus');
+        // Safe extraction of policies
+        const policies = result.response.claimsData.policies;
+        setOutStandingClaims(policies);
+      } 
+    } catch (error) {      
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  Get_Claims();
+}, [route.params]);
 
-  return (
-    <SafeAreaView style={styles.mainContainer}>
-      <DQ_BaseHeader press={() => navigation.goBack()} variant="textCenter" />
+  
+  const renderClaimItem = ({ item }: any) => {
+    const outstandingClaim = item.outstandingClaims[0];
+    const imsClaimRefLabel: any = labels.find(l => l === 'imsClaimRef');
+    const settledAmount: any = labels.find(l => l === 'settledAmount');
+    const occuredOn: any = labels.find(l => l === 'occuredOn');
+    const claimStatus: any = labels.find(l => l === 'claimStatus');
+    const amountToBeSettled = item.currency + " " +outstandingClaim.r2S_Amount
+
+    return (
       <View style={styles.claimCard}>
         <View style={styles.claimsContainer}>
           <View style={styles.leftSection}>
             <View style={styles.claimItem}>
               <View>
-                {imsClaimRefLabel && ( <DQ_Paragraph content={imsClaimRefLabel} textColor="black" /> )}
-                <DQ_Paragraph content={outstandingClaims.imsClaimRef} />
+                {imsClaimRefLabel && (
+                  <DQ_Paragraph content={imsClaimRefLabel} textColor="black" />
+                )}
+                <DQ_Paragraph content={outstandingClaim.imsClaimRef} />
               </View>
               <View>
-                <DQ_Paragraph content={policyNo} textColor="black" />
-                <DQ_Paragraph content={productName} />
+                <DQ_Paragraph content={item.policyNo} textColor="black" />
+                <DQ_Paragraph content={item.productName} />
               </View>
-              <View>
+              {outstandingClaim.allowSettle && <View>
                 <DQ_Paragraph content={settledAmount} textColor="black" />
-                <DQ_Paragraph content={outstandingClaims.settledAmount} />
-              </View>
+                <DQ_Paragraph content={amountToBeSettled} /> 
+              </View>}
             </View>
           </View>
-
-          {/* Static right-side content */}
           <View style={styles.rightSection}>
             <View>
               <DQ_Paragraph content={occuredOn} textColor="black" />
-              <DQ_Paragraph content={outstandingClaims.occuredOn} />
+              <DQ_Paragraph content={outstandingClaim.occuredOn} />
             </View>
             <View>
               <DQ_Paragraph content={claimStatus} textColor="black" />
-              <DQ_Paragraph content={outstandingClaims.claimStatus} />
+              <DQ_Paragraph content={outstandingClaim.claimStatus} />
             </View>
           </View>
         </View>
-        <View style={{alignSelf: 'center'}}>
-          {allowSettle && <DQ_Button title="Payment Method" />}
+        <View style={{ alignSelf: 'center' }}>
+          {outstandingClaim.allowSettle && <DQ_Button title="Payment Method" 
+          onPress={() => {navigation.navigate('ClaimsSettlement', {policyNo: policyNo ?? item.policyNo, imsClaimsNo: outstandingClaim.imsClaimRef, toBeSettledAmount: amountToBeSettled, action: "RqClmToSetlC", claimNo: imsClaimRefLabel, claimAmount: settledAmount})}} />}
         </View>
       </View>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.mainContainer}>
+      <DQ_BaseHeader press={() => navigation.goBack()} variant="textCenter" textCenter="MY CLAIMS" />
+      {isLoading ? (
+        <DQ_Loader loading={isLoading} />
+      ) : (
+        <FlatList
+          data={outstandingClaims}
+          keyExtractor={(item) => item.policyNo}
+          renderItem={renderClaimItem}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -109,9 +131,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: '#f9f9f9',
-    // iOS shadow properties
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,

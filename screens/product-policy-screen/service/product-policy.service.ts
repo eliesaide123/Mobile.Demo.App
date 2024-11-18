@@ -21,7 +21,7 @@ export async function ProductPolicyService(userId: string, pin?: string) {
             headers: headers
         });
 
-        console.log("Response Data: ", response.data.response);
+        console.log("Response Data: ", response.data.response.responseData.osClaims);
         return response.data.response;
     } catch (error: any) {
     }

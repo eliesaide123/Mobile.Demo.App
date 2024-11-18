@@ -214,7 +214,7 @@ export default function PolicyDetails({navigation, route}: any) {
         title: 'Policy Claims',
         iconName: 'file-pen',
         goTo:'Claims',
-        params:{PolicyNo:_policyNo, OS_Only:_policyNo.length > 0}
+        params:{PolicyNo:_policyNo, OS_Only:_policyNo.length <= 0}
       },
       {
         attr: 'hasDuePremiums',

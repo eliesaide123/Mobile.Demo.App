@@ -161,6 +161,33 @@ export default function ProductPolicy({navigation, route}: any) {
     setOpenCard(prevOpenCard => (prevOpenCard === cardId ? null : cardId));
   };
 
+  const getOustandingClaims=(claims : any)=>{
+    return claims.reduce((acc : any, item : any)=>{
+      return acc += item.nbrOSClaims
+    }, 0)
+  }
+
+  const getReadyToSettleCount=(claims : any)=>{
+    return claims.reduce((acc : any, item : any)=>{
+      return acc += item.nbrReadyToSettle
+    }, 0)
+  }
+
+  const getReadyToSettlePrice=(claims : any)=>{
+    return claims.reduce((acc : any, item : any)=>{
+      return acc += item.r2SAmount
+    }, 0)
+  }
+
+  const getReadyToSettleCurrency = (claims: any) => {
+    const validCurrencies = claims
+      .map((item: any) => item.currency)
+      .filter((currency: string) => currency !== "");
+    const uniqueCurrencies = [...new Set(validCurrencies)];
+  
+    return uniqueCurrencies.length === 1 ? uniqueCurrencies[0] : "";
+  };
+
   return (
     <SafeAreaView>
       {!isLoading && (
@@ -192,13 +219,15 @@ export default function ProductPolicy({navigation, route}: any) {
               {osPremiums && (
                 <DQ_Card
                   title="My Outstanding Premiums"
-                  count={osPremiums[0]?.nbrPremiums}
+                  count={osPremiums.length}
                   isOpen={openCard === 'osPremiums'}
                   onPress={() => handleCardPress('osPremiums')}>
                   <DQ_InnerCard_Grid buttonText="Pay Online" buttonWidth={120}>
-                    <View style={styles.InlineElements}>
+                    {osPremiums.map((premium:any)=>{
+                      return (
+                        <View style={styles.InlineElements}>
                       <DQ_Paragraph
-                        content={osPremiums[0]?.nbrPremiums}
+                        content={premium?.nbrPremiums}
                         textColor="black"
                         fontSize={14}
                       />
@@ -208,35 +237,38 @@ export default function ProductPolicy({navigation, route}: any) {
                         textColor="black"
                       />
                       <DQ_Paragraph
-                        content={osPremiums[0]?.fresh ? 'Fresh' : ''}
+                        content={premium?.fresh ? 'Fresh' : ''}
                         textColor="black"
                         fontSize={14}
                       />
                       <DQ_Paragraph
                         content={
-                          osPremiums[0]?.osAmount +
+                          premium?.osAmount +
                           ' ' +
-                          osPremiums[0]?.currency
+                          premium?.currency
                         }
                         textColor="#7dadd6"
                         fontSize={14}
                       />
                     </View>
+                      )
+                    })}
                   </DQ_InnerCard_Grid>
                 </DQ_Card>
               )}
               {osClaims && (
                 <DQ_Card
                   title="My Claims"
-                  count={osClaims[0]?.nbrOSClaims}
+                  count={osClaims.length}
                   isOpen={openCard === 'osClaims'}
                   onPress={() => handleCardPress('osClaims')}>
                   <DQ_InnerCard_Grid
                     buttonText="Check My Claims"
+                    onPress={()=>{navigation.navigate('Claims',{policyNo:null, OS_Only:true})}}
                     buttonWidth={160}>
                     <View style={styles.TwoInlineElements}>
                       <DQ_Paragraph
-                        content={osClaims[0]?.nbrOSClaims}
+                        content={getOustandingClaims(osClaims)}
                         textColor="black"
                         fontSize={14}
                       />
@@ -258,7 +290,7 @@ export default function ProductPolicy({navigation, route}: any) {
                     </View>
                     <View style={styles.InlineElements}>
                       <DQ_Paragraph
-                        content={osClaims[0]?.nbrReadyToSettle}
+                        content={getReadyToSettleCount(osClaims)}
                         fontSize={14}
                       />
                       <View style={{width: 70}}>
@@ -275,7 +307,7 @@ export default function ProductPolicy({navigation, route}: any) {
                       />
                       <DQ_Paragraph
                         content={
-                          osClaims[0]?.r2SAmount + ' ' + osClaims[0]?.currency
+                          getReadyToSettlePrice(osClaims) + ' ' + getReadyToSettleCurrency(osClaims)
                         }
                         textColor="#7dadd6"
                         fontSize={14}

@@ -8,7 +8,7 @@ import _shared from '../../common';
 
 export async function GetClaims(PolicyNo: string, OS_Only: boolean) {
   try {
-    const queryParams = `?PolicyNo=${PolicyNo}&OS_Only=${OS_Only}`;
+    const queryParams = `?${PolicyNo ? `PolicyNo=${PolicyNo}&`: ''}OS_Only=${OS_Only}`;
 
     console.log("queryParams: ", queryParams)
     const response = await SharedService.callApi(
