@@ -27,6 +27,7 @@ export default function App() {
     // Check AsyncStorage for the key that determines if walkthrough is completed
     const checkWalkthroughStatus = async () => {
       try {
+		  // test
         const walkthroughStatus = await AsyncStorage.getItem(
           'walkthroughCompleted',
         );
