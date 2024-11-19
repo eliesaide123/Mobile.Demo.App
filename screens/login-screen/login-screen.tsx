@@ -21,26 +21,12 @@ import {useAlert} from '../../hooks/useAlert';
 import DQ_LoaderBtn from '../../components/DQ_LoaderBtn';
 import {LoginCredentials} from '../../Shared/Types';
 import SharedService from '../../Shared/SharedService';
+import {Get_CMS_Entry} from '../../Shared/CMSSharedFunction';
+import {GetEntry} from '../../Shared/settings';
 
 export default function LoginScreen({navigation}: any) {
   const logo = require('../../assets/images/DQ_LOGO.png');
-  const HeaderContainerText = getLocalizedEntry(
-    'LoginScreen',
-    'HeaderContainer',
-  );
-  const HeaderSubContainerText = getLocalizedEntry(
-    'LoginScreen',
-    'HeaderContainerSubText',
-  );
-  const WebUserIDPlaceHolder = getLocalizedEntry(
-    'LoginScreen',
-    'DQ_TextBoxUserID',
-  );
-  const RegisterPhrase = getLocalizedEntry(
-    'LoginScreen',
-    'DQ_RegisterPhrase',
-  ) as string[] | null;
-  const RegisterNowPhrase = RegisterPhrase ? RegisterPhrase[1] : '';
+
   const DQ_ProceedAsAGuest = getLocalizedEntry(
     'LoginScreen',
     'DQ_ProceedAsAGuest',
@@ -115,13 +101,13 @@ export default function LoginScreen({navigation}: any) {
         <View style={styles.subContainer}>
           <View style={styles.inlineSubContainer}>
             <DQ_Paragraph
-              content={HeaderContainerText}
+              content={Get_CMS_Entry('login_welcome_str', '', GetEntry().language)}
               fontSize={18}
               textColor="#555"
               textAlign="center"
             />
             <DQ_Paragraph
-              content={HeaderSubContainerText}
+              content={Get_CMS_Entry('login_to_your_acc', '', GetEntry().language)}
               fontSize={18}
               textColor="grey"
               textAlign="center"
@@ -130,13 +116,13 @@ export default function LoginScreen({navigation}: any) {
 
           <View style={styles.inlineSubContainerItems}>
             <DQ_TextBox
-              placeholder={WebUserIDPlaceHolder}
+              placeholder={Get_CMS_Entry('web_user_id', '', GetEntry().language)}
               borderColor="grey"
               value={userId}
               onChangeText={setUserId}
             />
             <DQ_EyeComponentTextBox
-              placeholder="Enter Password"
+              placeholder={Get_CMS_Entry('pass_str', '', GetEntry().language)}
               borderColor="grey"
               value={password}
               onChangeText={setPassword}
@@ -144,7 +130,11 @@ export default function LoginScreen({navigation}: any) {
             <DQ_Link
               textAlign="right"
               fontSize={12}
-              content="Forgot Password?"
+              content={Get_CMS_Entry(
+                'forgot_pass_question_str',
+                '',
+                GetEntry().language,
+              )}
               textColor="#7aabd2"
               underline={true}
               goTo="ForgotPassword"
@@ -163,13 +153,16 @@ export default function LoginScreen({navigation}: any) {
           <Pressable
             style={styles.inlineSubContainerFooter}
             onPress={() => navigation.navigate('Register')}>
-            <Text style={{fontSize: 12}}>
-              {RegisterPhrase ? RegisterPhrase[0] : ''}
-            </Text>
+            <DQ_Paragraph
+              fontSize={12}
+              textColor="black"
+              fontFamily='Nexa Light'
+              content={Get_CMS_Entry('dont_have_acc', '', GetEntry().language)}
+            />
             <DQ_Link
               textAlign="center"
               fontSize={12}
-              content={RegisterNowPhrase}
+              content={Get_CMS_Entry('register_now_str', '', GetEntry().language)}
               textColor="#7aabd2"
               underline={true}
               goTo="Register"
@@ -181,7 +174,7 @@ export default function LoginScreen({navigation}: any) {
       <View style={styles.footer}>
         <DQ_Link
           textAlign="center"
-          content={DQ_ProceedAsAGuest}
+          content={Get_CMS_Entry('guest_mode_str', '', GetEntry().language)}
           textColor="white"
           underline={true}
           goTo="Guest"

@@ -4,7 +4,7 @@ import DQ_InsuredCard from './DQ_InsuredCard';
 import DQ_Paragraph from './DQ_Paragraph';
 import {GetAdvancedLifeCover} from '../screens/policy-details-screen/service/get-advanced-life-cover-service';
 import _shared from '../screens/common';
-import {GetLangauge} from '../Shared/settings';
+import {GetEntry} from '../Shared/settings';
 import {Get_CMS_Entry} from '../Shared/CMSSharedFunction';
 
 export default function DQ_InsuredCovers({
@@ -57,7 +57,7 @@ export default function DQ_InsuredCovers({
                     content={Get_CMS_Entry(
                       'cover_desc_deduct_str',
                       suffix,
-                      GetLangauge(),
+                      GetEntry().language,
                     )}
                     textColor="white"
                     fontFamily="Nexa Bold"
@@ -68,7 +68,7 @@ export default function DQ_InsuredCovers({
                 <View style={styles.header}>
                   <DQ_Paragraph
                     content={
-                      Get_CMS_Entry('sum_insured_str', suffix, GetLangauge()) +
+                      Get_CMS_Entry('sum_insured_str', suffix, GetEntry().language) +
                       ' ' +
                       currency
                     }

@@ -2,7 +2,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import DQ_Paragraph from './DQ_Paragraph';
 import { Get_CMS_Entry } from '../Shared/CMSSharedFunction'
-import { GetLangauge } from '../Shared/settings';
+import { GetEntry } from '../Shared/settings';
 
 export default function DQ_Contract({
   item,
@@ -32,7 +32,7 @@ export default function DQ_Contract({
               !excludeKeys.includes(key) &&
               value !== null && (
                 <View key={key} style={styles.contractRow}>
-                  <Text style={styles.label}>{Get_CMS_Entry(key, suffix, GetLangauge())}</Text>
+                  <Text style={styles.label}>{Get_CMS_Entry(key, suffix, GetEntry().language)}</Text>
                   <Text style={styles.value}>{String(value)}</Text>
                 </View>
               ),
@@ -47,14 +47,14 @@ export default function DQ_Contract({
               if(key.toLowerCase() == 'plan' || (groupCode.toLowerCase() == 'travel' && index == 0)){
                 return(
                   <View key={key} style={styles.additionalDataRow}>
-                  <DQ_Paragraph content={key.toLowerCase() == 'plan' ? value + " " + Get_CMS_Entry(key, suffix, GetLangauge()) : "Additional Data" } textColor='white'/>
+                  <DQ_Paragraph content={key.toLowerCase() == 'plan' ? value + " " + Get_CMS_Entry(key, suffix, GetEntry().language) : "Additional Data" } textColor='white'/>
                 </View>
                 )
               }
               return (
                 !excludeKeys.includes(key) &&
               value !== null && ( <View key={key} style={styles.contractRow}>
-                  <Text style={styles.label}>{Get_CMS_Entry(key, suffix, GetLangauge())}</Text>
+                  <Text style={styles.label}>{Get_CMS_Entry(key, suffix, GetEntry().language)}</Text>
                   <Text style={styles.value}>{String(value)}</Text>
                 </View>)
               );

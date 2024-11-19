@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Get_CMS_Entry } from '../Shared/CMSSharedFunction';
-import { GetLangauge } from '../Shared/settings';
+import { GetEntry } from '../Shared/settings';
 
 export default function DQ_Vehicle({item, suffix}: any) {
   const excludeKeys = ['vehicleNo', 'vehicleData'];
@@ -13,7 +13,7 @@ export default function DQ_Vehicle({item, suffix}: any) {
           Object.entries(item[0]).map(([key, value]) => (
             !excludeKeys.includes(key) && value !== null && (
               <View key={key} style={styles.contractRow}>
-                <Text style={styles.label}>{Get_CMS_Entry(key, suffix, GetLangauge())}</Text>
+                <Text style={styles.label}>{Get_CMS_Entry(key, suffix, GetEntry().language)}</Text>
                 <Text style={styles.value}>{String(value)}</Text>
               </View>
             )

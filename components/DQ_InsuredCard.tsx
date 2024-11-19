@@ -74,12 +74,11 @@ const DQ_InsuredCard = ({ title, count, children, locked = false }: any) => {
             </Animated.View>
           </View>
         </TouchableWithoutFeedback>
-      </View>
-      {/** Animated container for children */}
+      </View>      
       <Animated.View
         style={{
           opacity: opacityInterpolate,
-          height: collapsed ? 0 : 'auto', // Show/hide content without changing card height
+          height: collapsed ? 0 : 'auto',
           overflow: 'visible',
           width:'100%',
           marginTop:-20
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
     elevation: 9,
     margin: 10,
     padding: 15,
-    minHeight: 80, // Fixed height for the card
+    minHeight: 80,
   },
   InlineElements: {
     flexDirection: 'row',

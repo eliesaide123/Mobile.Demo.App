@@ -5,7 +5,7 @@ import DQ_Paragraph from './DQ_Paragraph';
 import _shared from '../screens/common';
 import {GetGenRisk} from '../screens/policy-details-screen/service/get-genrisk-service';
 import {Get_CMS_Entry} from '../Shared/CMSSharedFunction';
-import {GetLangauge} from '../Shared/settings';
+import {GetEntry} from '../Shared/settings';
 
 export default function DQ_InsuredRisks({
   item,
@@ -78,7 +78,7 @@ export default function DQ_InsuredRisks({
                         content={Get_CMS_Entry(
                           'item_insured_str',
                           suffix,
-                          GetLangauge(),
+                          GetEntry().language,
                         )}
                         textColor="white"
                         fontFamily="Nexa Bold"
@@ -91,7 +91,7 @@ export default function DQ_InsuredRisks({
                         content={`${Get_CMS_Entry(
                           'sum_insured_str',
                           suffix,
-                          GetLangauge(),
+                          GetEntry().language,
                         )} USDF`}
                         textColor="white"
                         fontFamily="Nexa Bold"
