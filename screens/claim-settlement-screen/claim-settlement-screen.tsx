@@ -10,7 +10,10 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
-import {GetClaimsSettle, SettleClaim} from './service/get-settle-options-service';
+import {
+  GetClaimsSettle,
+  SettleClaim,
+} from './service/get-settle-options-service';
 import DQ_Dropdown from '../../components/DQ_Dropdown';
 import Icon from '@react-native-vector-icons/fontawesome6';
 import DQ_TextBox from '../../components/DQ_TextBox';
@@ -21,6 +24,7 @@ import DQ_Alert from '../../components/DQ_Alert';
 import {useAlert} from '../../hooks/useAlert';
 import DatePicker from 'react-native-modern-datepicker';
 import {ClaimSettle, SettleDetails} from '../../Shared/Types';
+import DQ_Loader from '../../components/DQ_Loader';
 
 const regexExpression =
   getLocalizedEntry('RegexExpression', 'IBAN') || '^\\w{15,34}$';
@@ -56,8 +60,9 @@ export default function ClaimSettlement({navigation, route}: any) {
   const [banks, setBanks] = useState<any[]>([]);
   const [selectedBank, setSelectedBank] = useState<any>(null);
   const [iban, setIban] = useState<string>('');
-  const [openDatePicker, setOpenDatePicker] = useState(false); // To control the modal visibility
-  const [date, setDate] = useState<string>(''); // Store the selected date
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [date, setDate] = useState<string>('');
+  const [loading, isLoading] = useState<boolean>(false);
 
   const {isVisible, showAlert, hideAlert, errorMessage} = useAlert();
 
@@ -84,36 +89,44 @@ export default function ClaimSettlement({navigation, route}: any) {
     setSettleDetails(_settleDetails);
 
     const Get_Settle_options = async () => {
-      const result: any = await GetClaimsSettle(
-        _policyNo,
-        _imsClaimsNo,
-        'RqClmToSetlC',
-      );
-      const inception =
-        result.response.claimSettleOptionsData.claimSettleOptions[0].inception;
-      setInception(inception);
+      try {
+        isLoading(true);
+        const result: any = await GetClaimsSettle(
+          _policyNo,
+          _imsClaimsNo,
+          'RqClmToSetlC',
+        );
+        const inception =
+          result.response.claimSettleOptionsData.claimSettleOptions[0]
+            .inception;
+        setInception(inception);
 
-      const disclaimer =
-        result.response.claimSettleOptionsData.claimSettleOptions[0].disclaimer;
-      setDisclaimer(disclaimer);
+        const disclaimer =
+          result.response.claimSettleOptionsData.claimSettleOptions[0]
+            .disclaimer;
+        setDisclaimer(disclaimer);
 
-      const _setEditInception =
-        result.response.claimSettleOptionsData.claimSettleOptions[0]
-          .editInception;
-      setEditInception(_setEditInception);
+        const _setEditInception =
+          result.response.claimSettleOptionsData.claimSettleOptions[0]
+            .editInception;
+        setEditInception(_setEditInception);
 
-      const inceptionKey = Object.keys(
-        result.response.claimSettleOptionsData.claimSettleOptions[0],
-      ).find(key => key === 'inception');
-      setInceptionLabel(inceptionKey ?? '');
+        const inceptionKey = Object.keys(
+          result.response.claimSettleOptionsData.claimSettleOptions[0],
+        ).find(key => key === 'inception');
+        setInceptionLabel(inceptionKey ?? '');
 
-      const actionsData =
-        result.response.claimSettleOptionsData.claimSettleOptions[0].actions;
-      setActions(actionsData);
+        const actionsData =
+          result.response.claimSettleOptionsData.claimSettleOptions[0].actions;
+        setActions(actionsData);
 
-      const banksData =
-        result.response.claimSettleOptionsData.claimSettleOptions[0].banks;
-      setBanks(banksData);
+        const banksData =
+          result.response.claimSettleOptionsData.claimSettleOptions[0].banks;
+        setBanks(banksData);
+      } catch (error: any) {
+      } finally {
+        isLoading(false);
+      }
     };
 
     Get_Settle_options();
@@ -137,15 +150,22 @@ export default function ClaimSettlement({navigation, route}: any) {
     settleDetails: settleDetails,
   };
 
-  const handleSettlementConfirmation= async()=>{
-    const result = await SettleClaim(claimSettle)
-    if(result?.status){
-        hideAlert()
+  const handleSettlementConfirmation = async () => {
+    try {
+      isLoading(true);
+      const result = await SettleClaim(claimSettle);
+      if (result?.status) {
+        hideAlert();
+      }
+    } catch (error: any) {
+    } finally {
+      isLoading(false);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+      {loading && <DQ_Loader loading={loading} />}
       <KeyboardAwareScrollView>
         <DQ_BaseHeader
           press={() => navigation.goBack()}
@@ -251,9 +271,7 @@ export default function ClaimSettlement({navigation, route}: any) {
                         if (isValidIban(trimmedText)) {
                           setIban(trimmedText); // Set the value if valid
                         } else {
-                          showAlert(
-                            'Invalid IBAN, please check the entered details.',
-                          );
+                          console.log('incorrect');
                         }
                       }}
                       placeholder="IBAN"
@@ -296,7 +314,11 @@ export default function ClaimSettlement({navigation, route}: any) {
             {
               title: 'Confirm Settlement',
               press: () => {
-                handleSettlementConfirmation()
+                handleSettlementConfirmation();
+                setTimeout(() => {
+                    hideAlert()
+                }, 1000);
+                {loading && <DQ_Loader loading={loading} />}
               },
             },
             {

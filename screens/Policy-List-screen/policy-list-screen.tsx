@@ -30,8 +30,13 @@ export default function PolicyList({navigation, route}: any) {
   useEffect(() => {
     const {groupCode: _groupCode} = route.params;
     const Get_Policy = async () => {
-      const result = await PolicyListService(_shared.pin, _shared.role, _groupCode, _shared.userId);    
-      const policies = result.responseData.policyList;      
+      const result = await PolicyListService(
+        _shared.pin,
+        _shared.role,
+        _groupCode,
+        _shared.userId,
+      );
+      const policies = result.responseData.policyList;
       setPolicyList(policies);
       setGroupCode(_groupCode.toLowerCase());
       setPin(pin);
@@ -43,7 +48,11 @@ export default function PolicyList({navigation, route}: any) {
   }, []);
   return (
     <View style={styles.rootElement}>
-      <DQ_BaseHeader press={()=> navigation.goBack()} variant="textCenter" textCenter={groupCode}/>
+      <DQ_BaseHeader
+        press={() => navigation.goBack()}
+        variant="textCenter"
+        textCenter={groupCode}
+      />
       <View style={styles.topView}>
         <View style={styles.iconView}>
           {groupCode && <DQ_PolicyIcon src={imageMapping[groupCode]} />}
@@ -57,7 +66,20 @@ export default function PolicyList({navigation, route}: any) {
                 <DQ_PolicyCard
                   src={imageMapping[groupCode]}
                   item={item}
-                  press={()=>{navigation.navigate('PolicyDetails',{policyNo: item.policyNo, groupCode, pin, role, userId, policyDetailsURI: item.policyDetailsURI, policyInsCoversURI: item.policyInsCoversURI, policyDataURI: item.policyDataURI})}}                  
+                  press={() => {
+                    navigation.navigate('PolicyDetails', {
+                      policyNo: item.policyNo,
+                      groupCode,
+                      pin,
+                      role,
+                      userId,
+                      policyDetailsURI: item.policyDetailsURI,
+                      policyInsCoversURI: item.policyInsCoversURI,
+                      policyDataURI: item.policyDataURI,
+                      suffix:item.suffix,
+                      currency: item.currency
+                    });
+                  }}
                 />
               )}
             />
@@ -69,19 +91,19 @@ export default function PolicyList({navigation, route}: any) {
 }
 
 const styles = StyleSheet.create({
-    rootElement:{
-        flex:1,
-    },
+  rootElement: {
+    flex: 1,
+  },
   topView: {
     flex: 1,
   },
   iconView: {
     flex: 0.2,
-    marginTop:25,
+    marginTop: 25,
   },
   marginList: {
     flex: 0.6,
-    marginHorizontal:10,
-    marginTop:-20,
+    marginHorizontal: 10,
+    marginTop: -20,
   },
 });

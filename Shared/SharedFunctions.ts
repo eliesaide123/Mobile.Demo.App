@@ -17,7 +17,7 @@ interface JSONFile {
   Contents: Contents;
 }
 
-const typedJSON: JSONFile = JSON_FILE as JSONFile;
+const typedJSON: JSONFile = JSON_FILE as unknown as JSONFile;
 
 let currentLanguage: "en" | "ar" = "en"; // Can be switched between "en" and "ar"
 

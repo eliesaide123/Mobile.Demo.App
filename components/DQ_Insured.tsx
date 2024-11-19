@@ -1,8 +1,10 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import DQ_InsuredCard from './DQ_InsuredCard';
+import { Get_CMS_Entry } from '../Shared/CMSSharedFunction';
+import { GetLangauge } from '../Shared/settings';
 
-export default function DQ_Insured({ item }: any) {
+export default function DQ_Insured({ item, suffix }: any) {
   const excludeKeys = ['riskNo', 'insuredData'];
 
   const isAllCoversNull = (covers: Record<string, any>) => {
@@ -28,7 +30,7 @@ export default function DQ_Insured({ item }: any) {
                     !excludeKeys.includes(key) && value !== null && (
                       
                         <View key={key} style={styles.contractRow}>
-                        <Text style={styles.label}>{key}</Text>
+                        <Text style={styles.label}>{Get_CMS_Entry(key, suffix, GetLangauge())}</Text>
                         <Text style={styles.value}>{String(value)}</Text>
                       </View>
                     )

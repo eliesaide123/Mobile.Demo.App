@@ -61,70 +61,85 @@ export default function ClaimsScreen({navigation, route}: any) {
     Get_Claims();
   }, [route.params]);
 
-  const renderClaimItem = ({item}: any) => {
-    const outstandingClaim = item.outstandingClaims[0];
-    const imsClaimRefLabel: any = labels.find(l => l === 'imsClaimRef');
-    const settledAmount: any = labels.find(l => l === 'settledAmount');
-    const occuredOn: any = labels.find(l => l === 'occuredOn');
-    const claimStatus: any = labels.find(l => l === 'claimStatus');
-    const amountToBeSettled = item.currency + ' ' + outstandingClaim.r2S_Amount;
-
+  const renderClaimItem = ({ item }: any) => {
+    // Labels and data extraction
+    const outstandingClaims = item?.outstandingClaims ?? [];
+    const imsClaimRefLabel: any = labels.find((l) => l === 'imsClaimRef');
+    const settledAmount: any = labels.find((l) => l === 'settledAmount');
+    const occuredOn: any = labels.find((l) => l === 'occuredOn');
+    const claimStatus: any = labels.find((l) => l === 'claimStatus');
+  
     return (
-      <View style={styles.claimCard}>
-        <View style={styles.claimsContainer}>
-          <View style={styles.leftSection}>
-            <View style={styles.claimItem}>
-              <View>
-                {imsClaimRefLabel && (
-                  <DQ_Paragraph content={imsClaimRefLabel} textColor="black" />
-                )}
-                <DQ_Paragraph content={outstandingClaim.imsClaimRef} />
-              </View>
-              <View>
-                <DQ_Paragraph content={item.policyNo} textColor="black" />
-                <DQ_Paragraph content={item.productName} />
-              </View>
-              {outstandingClaim.allowSettle && (
-                <View>
-                  <DQ_Paragraph content={settledAmount} textColor="black" />
-                  <DQ_Paragraph content={amountToBeSettled} />
+      <FlatList
+        data={outstandingClaims}
+        keyExtractor={(claim) => claim.policyNo || Math.random().toString()}
+        renderItem={({ item: claim }) => {
+          const amountToBeSettled = `${item.currency} ${claim.r2S_Amount}`;
+          return (
+            <View style={styles.claimCard}>
+              <View style={styles.claimsContainer}>
+                {/* Left Section */}
+                <View style={styles.leftSection}>
+                  <View style={styles.claimItem}>
+                    <View>
+                      {imsClaimRefLabel && (
+                        <DQ_Paragraph content={imsClaimRefLabel} textColor="black" />
+                      )}
+                      <DQ_Paragraph content={claim.imsClaimRef} />
+                    </View>
+                    <View>
+                      <DQ_Paragraph content={item.policyNo} textColor="black" />
+                      <DQ_Paragraph content={item.productName} />
+                    </View>
+                    {claim.allowSettle && (
+                      <View>
+                        <DQ_Paragraph content={settledAmount} textColor="black" />
+                        <DQ_Paragraph content={amountToBeSettled} />
+                      </View>
+                    )}
+                  </View>
                 </View>
-              )}
+  
+                {/* Right Section */}
+                <View style={styles.rightSection}>
+                  <View>
+                    <DQ_Paragraph content={occuredOn} textColor="black" />
+                    <DQ_Paragraph content={claim.occuredOn} />
+                  </View>
+                  <View>
+                    <DQ_Paragraph content={claimStatus} textColor="black" />
+                    <DQ_Paragraph content={claim.claimStatus} />
+                  </View>
+                </View>
+              </View>
+  
+              {/* Payment Button */}
+              <View style={{ alignSelf: 'center' }}>
+                {claim.allowSettle && (
+                  <DQ_Button
+                    title="Payment Method"
+                    onPress={() => {
+                      navigation.navigate('ClaimsSettlement', {
+                        policyNo: item.policyNo,
+                        imsClaimsNo: claim.imsClaimNo,
+                        imsClaimsRef: claim.imsClaimRef,
+                        toBeSettledAmount: amountToBeSettled,
+                        claimNo: imsClaimRefLabel,
+                        claimAmount: settledAmount,
+                        notes: claim.claimNotes,
+                        settleDetails: claim.settleDetails,
+                      });
+                    }}
+                  />
+                )}
+              </View>
             </View>
-          </View>
-          <View style={styles.rightSection}>
-            <View>
-              <DQ_Paragraph content={occuredOn} textColor="black" />
-              <DQ_Paragraph content={outstandingClaim.occuredOn} />
-            </View>
-            <View>
-              <DQ_Paragraph content={claimStatus} textColor="black" />
-              <DQ_Paragraph content={outstandingClaim.claimStatus} />
-            </View>
-          </View>
-        </View>
-        <View style={{alignSelf: 'center'}}>
-          {outstandingClaim.allowSettle && (
-            <DQ_Button
-              title="Payment Method"
-              onPress={() => {
-                navigation.navigate('ClaimsSettlement', {
-                  policyNo: policyNo ?? item.policyNo,
-                  imsClaimsNo: outstandingClaim.imsClaimNo,
-                  imsClaimsRef: outstandingClaim.imsClaimRef,
-                  toBeSettledAmount: amountToBeSettled,
-                  claimNo: imsClaimRefLabel,
-                  claimAmount: settledAmount,
-                  notes: outstandingClaim.claimNotes,
-                  settleDetails: outstandingClaim.settleDetails
-                });
-              }}
-            />
-          )}
-        </View>
-      </View>
+          );
+        }}
+      />
     );
   };
+  
 
   return (
     <SafeAreaView style={styles.mainContainer}>

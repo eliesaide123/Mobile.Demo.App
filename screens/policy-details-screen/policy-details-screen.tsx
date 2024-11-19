@@ -74,7 +74,7 @@ export default function PolicyDetails({navigation, route}: any) {
 
   const {isVisible, showAlert, hideAlert, errorMessage} = useAlert();
 
-  const navigateToComponent = (navigateTo: any, params?:any) => {
+  const navigateToComponent = (navigateTo: any, params?: any) => {
     return navigation.navigate(navigateTo, params || {});
   };
   const {
@@ -83,6 +83,8 @@ export default function PolicyDetails({navigation, route}: any) {
     policyDetailsURI: _policyDetailsURI,
     policyInsCoversURI: _policyInsCoversURI,
     policyDataURI: _policyDataURI,
+    suffix: _suffix,
+    currency:_currency
   } = route.params;
 
   const callPrintService = async (url: any, actionCode: any) => {
@@ -90,7 +92,7 @@ export default function PolicyDetails({navigation, route}: any) {
     setBtnList([
       {
         title: 'Ok',
-        press: async() => {
+        press: async () => {
           await RequestPrint(
             _shared.userId,
             _shared.pin,
@@ -99,7 +101,7 @@ export default function PolicyDetails({navigation, route}: any) {
             url,
             actionCode,
           );
-          hideAlert()
+          hideAlert();
         },
       },
       {
@@ -109,7 +111,7 @@ export default function PolicyDetails({navigation, route}: any) {
         },
       },
     ]);
-    showAlert('Are you sure you want to print the policy')
+    showAlert('Are you sure you want to print the policy');
   };
 
   const callServiceWithURL = async (url: any) => {
@@ -136,7 +138,7 @@ export default function PolicyDetails({navigation, route}: any) {
         },
       ]);
       if (policyDetails && 'legalAddress' in policyDetails) {
-      showAlert(policyDetails?.legalAddress[0].addressString);
+        showAlert(policyDetails?.legalAddress[0].addressString);
       }
     } else if (url.includes('beneficiary')) {
       handleOverlayClick();
@@ -213,8 +215,8 @@ export default function PolicyDetails({navigation, route}: any) {
         value: String(contractData[0].hasClaims || ''),
         title: 'Policy Claims',
         iconName: 'file-pen',
-        goTo:'Claims',
-        params:{PolicyNo:_policyNo, OS_Only:_policyNo.length <= 0}
+        goTo: 'Claims',
+        params: {PolicyNo: _policyNo, OS_Only: _policyNo.length <= 0},
       },
       {
         attr: 'hasDuePremiums',
@@ -227,8 +229,8 @@ export default function PolicyDetails({navigation, route}: any) {
         value: String(contractData[0].hasPendingRequests || ''),
         title: 'My Requests',
         iconName: 'clipboard-list',
-        goTo:'Requests',
-        params:{policyNo:_policyNo}
+        goTo: 'Requests',
+        params: {policyNo: _policyNo},
       },
       {
         attr: 'canPrintAlpSoa',
@@ -289,6 +291,7 @@ export default function PolicyDetails({navigation, route}: any) {
                     item={policyDetails[key]}
                     contractAdditional={policyDetails['contractAdditional']}
                     groupCode={grpCode}
+                    suffix={_suffix}
                   />
                 ),
               });
@@ -301,6 +304,8 @@ export default function PolicyDetails({navigation, route}: any) {
                     item={policyDetails[key]}
                     coversURL={_policyInsCoversURI}
                     policyNo={_policyNo}
+                    suffix={_suffix}
+                    currency={_currency}
                   />
                 ),
               });
@@ -314,6 +319,8 @@ export default function PolicyDetails({navigation, route}: any) {
                     coversURL={_policyInsCoversURI}
                     policyDataURI={_policyDataURI}
                     policyNo={_policyNo}
+                    suffix={_suffix}
+                    currency={_currency}
                   />
                 ),
               });
@@ -321,7 +328,9 @@ export default function PolicyDetails({navigation, route}: any) {
               updatedTabs.push({
                 key: titleMapping[key],
                 title: titleMapping[key],
-                content: <TabContent item={policyDetails[key]} />,
+                content: (
+                  <TabContent item={policyDetails[key]} suffix={_suffix} />
+                ),
               });
             }
           }
@@ -361,6 +370,7 @@ export default function PolicyDetails({navigation, route}: any) {
         variant="textCenter"
         textCenter={groupCode}
         press={() => navigation.goBack()}
+        capitalized
       />
       {clickedFAB && (
         <View style={styles.overlay} onTouchStart={handleOverlayClick} />

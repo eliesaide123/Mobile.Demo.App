@@ -4,8 +4,16 @@ import DQ_InsuredCard from './DQ_InsuredCard';
 import DQ_Paragraph from './DQ_Paragraph';
 import {GetAdvancedLifeCover} from '../screens/policy-details-screen/service/get-advanced-life-cover-service';
 import _shared from '../screens/common';
+import {GetLangauge} from '../Shared/settings';
+import {Get_CMS_Entry} from '../Shared/CMSSharedFunction';
 
-export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
+export default function DQ_InsuredCovers({
+  item,
+  coversURL,
+  policyNo,
+  suffix,
+  currency,
+}: any) {
   const [covers, setCovers] = useState([]);
 
   useEffect(() => {
@@ -25,7 +33,7 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
     Get_Covers();
   }, [coversURL, policyNo, item]);
 
-  const getDynamicFontSize = (text : any) => {
+  const getDynamicFontSize = (text: any) => {
     const length = String(text).length;
     if (length <= 10) return 14; // Short text, larger font
     if (length <= 20) return 12; // Medium text, medium font
@@ -36,45 +44,67 @@ export default function DQ_InsuredCovers({item, coversURL, policyNo}: any) {
   return (
     <ScrollView style={styles.contractContainer}>
       <View>
-        {Array.isArray(item) && item.length > 0 && (
+        {Array.isArray(item) &&
+          item.length > 0 &&
           item.map((obj, index) => (
             <DQ_InsuredCard
-              title={obj['insuredData'] || obj['riskType']  ||'Insured Data'}
+              title={obj['insuredData'] || obj['riskType'] || 'Insured Data'}
               key={index}
               count={item.length}>
-                <View style={styles.additionalDataRow}>
-                  <View style={styles.header}>
-                    <DQ_Paragraph
-                      content={`Covers Description & Deductible`}
-                      textColor="white"
-                      fontFamily="Nexa Bold"
-                      fontSize={13}
-                      textAlign='center'
-                    />
-                  </View>
-                  <View style={styles.header}>
-                    <DQ_Paragraph
-                      content={`Sum Insured / USDF`}
-                      textColor="white"
-                      fontFamily="Nexa Bold"
-                      fontSize={13}
-                      textAlign='center'
-                    />
-                  </View>
+              <View style={styles.additionalDataRow}>
+                <View style={styles.header}>
+                  <DQ_Paragraph
+                    content={Get_CMS_Entry(
+                      'cover_desc_deduct_str',
+                      suffix,
+                      GetLangauge(),
+                    )}
+                    textColor="white"
+                    fontFamily="Nexa Bold"
+                    fontSize={13}
+                    textAlign="center"
+                  />
                 </View>
-                {Array.isArray(covers) && covers.length > 0 && (
-                  covers.map((cover, coverIndex) => (
-                    <View key={coverIndex}>
-                      <View style={styles.contractRow}>
-                        <DQ_Paragraph content={cover["insuredCover"]} fontFamily='Nexa Bold' textAlign='left' fontSize={getDynamicFontSize(cover["insuredCover"])} textColor="black" textWidth={150}/>
-                        <DQ_Paragraph content={cover["insuredSI"]} fontFamily='Nexa Bold' textAlign='right' fontSize={14} textColor="black" textWidth={150}/>
-                      </View>
+                <View style={styles.header}>
+                  <DQ_Paragraph
+                    content={
+                      Get_CMS_Entry('sum_insured_str', suffix, GetLangauge()) +
+                      ' ' +
+                      currency
+                    }
+                    textColor="white"
+                    fontFamily="Nexa Bold"
+                    fontSize={13}
+                    textAlign="center"
+                  />
+                </View>
+              </View>
+              {Array.isArray(covers) &&
+                covers.length > 0 &&
+                covers.map((cover, coverIndex) => (
+                  <View key={coverIndex}>
+                    <View style={styles.contractRow}>
+                      <DQ_Paragraph
+                        content={cover['insuredCover']}
+                        fontFamily="Nexa Bold"
+                        textAlign="left"
+                        fontSize={getDynamicFontSize(cover['insuredCover'])}
+                        textColor="black"
+                        textWidth={150}
+                      />
+                      <DQ_Paragraph
+                        content={cover['insuredSI']}
+                        fontFamily="Nexa Bold"
+                        textAlign="right"
+                        fontSize={14}
+                        textColor="black"
+                        textWidth={150}
+                      />
                     </View>
-                  ))
-                )}
+                  </View>
+                ))}
             </DQ_InsuredCard>
-          ))
-        )}
+          ))}
       </View>
     </ScrollView>
   );
@@ -92,16 +122,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 9,
-    width:'114%',
-    marginHorizontal:-20,
-    backgroundColor:'#dcdcdc',
-    marginBottom:5,
-    padding:10,
-    borderRadius:5,
+    width: '114%',
+    marginHorizontal: -20,
+    backgroundColor: '#dcdcdc',
+    marginBottom: 5,
+    padding: 10,
+    borderRadius: 5,
   },
   additionalDataRow: {
-    position:'relative',
-    top:0,
+    position: 'relative',
+    top: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -112,18 +142,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#3cc8f0',
     flexWrap: 'wrap',
     padding: 15,
-    gap:20,
-    width:'128%',
-    height:50,
-    marginHorizontal:-40,
-    marginBottom:7,
-    marginTop:10  
+    gap: 20,
+    width: '128%',
+    height: 50,
+    marginHorizontal: -40,
+    marginBottom: 7,
+    marginTop: 10,
   },
-  header:{
-    flex:0.4
+  header: {
+    flex: 0.4,
   },
   label: {
-    width:50
+    width: 50,
   },
   value: {
     flex: 1,

@@ -4,12 +4,16 @@ import DQ_InsuredCard from './DQ_InsuredCard';
 import DQ_Paragraph from './DQ_Paragraph';
 import _shared from '../screens/common';
 import {GetGenRisk} from '../screens/policy-details-screen/service/get-genrisk-service';
+import {Get_CMS_Entry} from '../Shared/CMSSharedFunction';
+import {GetLangauge} from '../Shared/settings';
 
 export default function DQ_InsuredRisks({
   item,
   policyNo,
   coversURL,
   policyDataURI,
+  currency,
+  suffix,
 }: any) {
   const [items, setItems] = useState([]);
   const [covers, setCovers] = useState([]);
@@ -68,69 +72,76 @@ export default function DQ_InsuredRisks({
                 locked={locked} // Apply locked attribute here
               >
                 <>
-                <View style={styles.additionalDataRow}>
-                  <View style={styles.header}>
-                    <DQ_Paragraph
-                      content={`Item Insured`}
-                      textColor="white"
-                      fontFamily="Nexa Bold"
-                      fontSize={13}
-                      textAlign="center"
-                    />
+                  <View style={styles.additionalDataRow}>
+                    <View style={styles.header}>
+                      <DQ_Paragraph
+                        content={Get_CMS_Entry(
+                          'item_insured_str',
+                          suffix,
+                          GetLangauge(),
+                        )}
+                        textColor="white"
+                        fontFamily="Nexa Bold"
+                        fontSize={13}
+                        textAlign="center"
+                      />
+                    </View>
+                    <View style={styles.header}>
+                      <DQ_Paragraph
+                        content={`${Get_CMS_Entry(
+                          'sum_insured_str',
+                          suffix,
+                          GetLangauge(),
+                        )} USDF`}
+                        textColor="white"
+                        fontFamily="Nexa Bold"
+                        fontSize={13}
+                        textAlign="center"
+                      />
+                    </View>
                   </View>
-                  <View style={styles.header}>
-                    <DQ_Paragraph
-                      content={`Sum Insured / USDF`}
-                      textColor="white"
-                      fontFamily="Nexa Bold"
-                      fontSize={13}
-                      textAlign="center"
-                    />
-                  </View>
-                </View>
-                <ScrollView style={{overflow: 'visible', padding: 20}}>
-                {Array.isArray(covers) &&
-                  covers.length > 0 &&
-                  covers.map((itm: any, itIndex) => (
-                    <View key={itIndex} style={styles.propertyRow}>
-                      <View style={styles.contractRow}>
-                        <DQ_Paragraph
-                          content={itm['itemDesc']}
-                          fontFamily="Nexa Bold"
-                          fontSize={14}
-                          textColor="black"
-                          textAlign="left"
-                          textWidth={150}
-                        />
-                        <DQ_Paragraph
-                          content={itm['itemSI']}
-                          fontFamily="Nexa Light"
-                          fontSize={14}
-                          textColor="black"
-                          textAlign="right"
-                          textWidth={150}
-                        />
-                      </View>
-
-                      
-                        {itm.itemCovers.map((i: any) => (
-                          <View
-                            key={i.itemCoverName}
-                            style={styles.description}>
+                  <ScrollView style={{overflow: 'visible', padding: 20}}>
+                    {Array.isArray(covers) &&
+                      covers.length > 0 &&
+                      covers.map((itm: any, itIndex) => (
+                        <View key={itIndex} style={styles.propertyRow}>
+                          <View style={styles.contractRow}>
                             <DQ_Paragraph
-                              content={i.itemCoverName}
+                              content={itm['itemDesc']}
+                              fontFamily="Nexa Bold"
+                              fontSize={14}
+                              textColor="black"
+                              textAlign="left"
+                              textWidth={150}
+                            />
+                            <DQ_Paragraph
+                              content={itm['itemSI']}
                               fontFamily="Nexa Light"
-                              fontSize={getDynamicFontSize(
-                                i.itemCoverName + 'extratextextra',
-                              )}
-                              textColor="#727272"
+                              fontSize={14}
+                              textColor="black"
+                              textAlign="right"
+                              textWidth={150}
                             />
                           </View>
-                        ))}
-                    </View>
-                  ))}
+
+                          {itm.itemCovers.map((i: any) => (
+                            <View
+                              key={i.itemCoverName}
+                              style={styles.description}>
+                              <DQ_Paragraph
+                                content={i.itemCoverName}
+                                fontFamily="Nexa Light"
+                                fontSize={getDynamicFontSize(
+                                  i.itemCoverName + 'extratextextra',
+                                )}
+                                textColor="#727272"
+                              />
+                            </View>
+                          ))}
+                        </View>
+                      ))}
                   </ScrollView>
-                  </>
+                </>
               </DQ_InsuredCard>
             );
           })}

@@ -161,6 +161,12 @@ export default function ProductPolicy({navigation, route}: any) {
     setOpenCard(prevOpenCard => (prevOpenCard === cardId ? null : cardId));
   };
 
+  const getOustandingPremiums=(premiums : any)=>{
+    return premiums.reduce((acc : any, item : any)=>{
+      return acc += item.nbrPremiums
+    }, 0)
+  }
+
   const getOustandingClaims=(claims : any)=>{
     return claims.reduce((acc : any, item : any)=>{
       return acc += item.nbrOSClaims
@@ -219,7 +225,7 @@ export default function ProductPolicy({navigation, route}: any) {
               {osPremiums && (
                 <DQ_Card
                   title="My Outstanding Premiums"
-                  count={osPremiums.length}
+                  count={getOustandingPremiums(osPremiums)}
                   isOpen={openCard === 'osPremiums'}
                   onPress={() => handleCardPress('osPremiums')}>
                   <DQ_InnerCard_Grid buttonText="Pay Online" buttonWidth={120}>
@@ -259,7 +265,7 @@ export default function ProductPolicy({navigation, route}: any) {
               {osClaims && (
                 <DQ_Card
                   title="My Claims"
-                  count={osClaims.length}
+                  count={getOustandingClaims(osClaims) + getReadyToSettleCount(osClaims)}
                   isOpen={openCard === 'osClaims'}
                   onPress={() => handleCardPress('osClaims')}>
                   <DQ_InnerCard_Grid

@@ -2,7 +2,8 @@ let _shared = {
     ui_token : '',
     pin:'',
     role:'',
-    userId:''
+    userId:'',
+    language:'en'
 }
 
 export default _shared;
