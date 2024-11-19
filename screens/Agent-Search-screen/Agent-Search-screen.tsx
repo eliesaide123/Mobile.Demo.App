@@ -1,32 +1,38 @@
 /* eslint-disable no-trailing-spaces */
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import DQ_BaseHeader from '../../components/DQ_BaseHeader';
 import DQ_TabView from '../../components/DQ_TabView';
 import DQ_TextBox from '../../components/DQ_TextBox';
 import DQ_Button from '../../components/DQ_Button';
-import { getLocalizedEntry } from '../../Shared/SharedFunctions';
 import DQ_Paragraph from '../../components/DQ_Paragraph';
-import { fetchRoleAndPin, getAgentSearchOptions, PerformSearch } from './Service/Agent-Search-Service';
-import { Dropdown } from 'react-native-element-dropdown';
+import {
+  fetchRoleAndPin,
+  getAgentSearchOptions,
+  PerformSearch,
+} from './Service/Agent-Search-Service';
+import {Dropdown} from 'react-native-element-dropdown';
 import _shared from '../common';
 import DQ_Alert from '../../components/DQ_Alert';
-import { useAlert } from '../../hooks/useAlert';
+import {useAlert} from '../../hooks/useAlert';
+import {Get_CMS_Entry} from '../../Shared/CMSSharedFunction';
+import {GetEntry} from '../../Shared/settings';
 
-
-const AgentSearchScreen = ({ navigation, route }: any) => {
-  const [genders, setGenders] = useState<{ entityCode: string; entityDesc: string }[]>([]);
-  const [genderMapping, setGenderMapping] = useState<{ [key: string]: string }>({});
-  const [selectedGender, setSelectedGender] = useState('');  // Example default value
+const AgentSearchScreen = ({navigation, route}: any) => {
+  const [genders, setGenders] = useState<
+    {entityCode: string; entityDesc: string}[]
+  >([]);
+  const [genderMapping, setGenderMapping] = useState<{[key: string]: string}>(
+    {},
+  );
+  const [selectedGender, setSelectedGender] = useState(''); // Example default value
   const [firstName, setFirstName] = useState<string>('');
   const [fatherName, setFatherName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [policyNumber, setPolicyNumber] = useState<string>('');  // Static value for policy number
+  const [policyNumber, setPolicyNumber] = useState<string>(''); // Static value for policy number
   const [pin, setPin] = useState<string>('');
   const [_agentPinRole, setAgentPinRole] = useState<any>();
-  const [errorMsg, setErrorMsg] = useState<string>(
-    "No Data Found!"
-  );
+  const [errorMsg, setErrorMsg] = useState<string>('No Data Found!');
   const {isVisible, showAlert, hideAlert} = useAlert();
   const [loading, setLoading] = useState(false);
 
@@ -42,22 +48,24 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
     },
     searchByPin: {
       pin: pin || null,
-    }
+    },
   };
 
-  useEffect(() => {    
+  useEffect(() => {
     const fetchGenders = async () => {
       const id = _shared.userId;
       const agentRolePin = await fetchRoleAndPin(id);
       setAgentPinRole(agentRolePin);
       const options = await getAgentSearchOptions(id);
       setGenders(options);
-
-      // Create dynamic genderMapping based on fetched options
-      const mapping = options.reduce((acc: { [key: string]: string }, gender : any) => {
-        acc[gender.entityCode] = gender.entityDesc;
-        return acc;
-      }, {});
+      
+      const mapping = options.reduce(
+        (acc: {[key: string]: string}, gender: any) => {
+          acc[gender.entityCode] = gender.entityDesc;
+          return acc;
+        },
+        {},
+      );
       setGenderMapping(mapping);
     };
 
@@ -69,9 +77,9 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
     let params;
 
     if (searchType === 'PIN') {
-      params = { SearchType: 'PIN', ByPin: searchParams.searchByPin.pin };
+      params = {SearchType: 'PIN', ByPin: searchParams.searchByPin.pin};
     } else if (searchType === 'P') {
-      params = { SearchType: 'P', ByPolicyNo: searchParams.searchByPN.policyNo };
+      params = {SearchType: 'P', ByPolicyNo: searchParams.searchByPN.policyNo};
     } else if (searchType === 'PH') {
       params = {
         SearchType: 'PH',
@@ -82,35 +90,33 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
       };
     }
 
-    const result = await PerformSearch(_shared.userId, _agentPinRole.role, _agentPinRole.pin, params);
-    if(result.length > 0){
+    const result = await PerformSearch(
+      _shared.userId,
+      _agentPinRole.role,
+      _agentPinRole.pin,
+      params,
+    );
+    if (result.length > 0) {
       navigation.navigate('AgentResult', {params});
-    }else{
-      setErrorMsg("No Data Found!")
-      showAlert()
+    } else {
+      setErrorMsg('No Data Found!');
+      showAlert();
     }
     setLoading(false);
   };
-
-  const FirstNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FirstName');
-  const FatherNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'FathesName');
-  const LastNamePlaceHolder = getLocalizedEntry('AgentSearchScreen', 'LastName');
-  const PolicyNumberPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'PolicyNumber');
-  const HintTextPolicyNumberPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'HintTextPolicyNumber');
-  const PinPlaceHolder = getLocalizedEntry('AgentSearchScreen', 'Pin');
 
   const tabs = [
     {
       key: 'first',
       title: 'Name',
       content: (
-        <ScrollView style={{ width: '100%', flex: 1 }}>
+        <ScrollView style={{width: '100%', flex: 1}}>
           <View style={styles.TextBox}>
             <Dropdown
               style={styles.dropdown}
               placeholderStyle={styles.placeholderStyle}
               selectedTextStyle={styles.selectedTextStyle}
-              data={genders.map((gender) => ({
+              data={genders.map(gender => ({
                 label: gender.entityDesc,
                 value: gender.entityCode,
               }))}
@@ -118,25 +124,39 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
               valueField="value"
               placeholder="Select Gender"
               value={selectedGender}
-              onChange={(item) => {
+              onChange={item => {
                 setSelectedGender(item.value);
               }}
             />
             <DQ_TextBox
-           
-              placeholder={FirstNamePlaceHolder}
-            borderColor="#bbbec3"
-         
+              placeholder={Get_CMS_Entry(
+                'first_name_str',
+                '',
+                GetEntry().language,
+              )}
+              borderColor="#bbbec3"
               value={firstName}
-              onChangeText={setFirstName} />
+              onChangeText={setFirstName}
+            />
             <DQ_TextBox
-            placeholder={FatherNamePlaceHolder}
-            borderColor="#bbbec3"
-          value={fatherName} onChangeText={setFatherName} />
-            <DQ_TextBox placeholder={LastNamePlaceHolder} borderColor="#bbbec3" value={lastName} onChangeText={setLastName} />
+              placeholder={Get_CMS_Entry('father_name_str', '', GetEntry().language)}
+              borderColor="#bbbec3"
+              value={fatherName}
+              onChangeText={setFatherName}
+            />
+            <DQ_TextBox
+              placeholder={Get_CMS_Entry('last_name_str', '', GetEntry().language)}
+              borderColor="#bbbec3"
+              value={lastName}
+              onChangeText={setLastName}
+            />
           </View>
           <View style={styles.SearchButton}>
-            <DQ_Button title="Search" onPress={() => PerformSearchService('PH')} loading={loading}/>
+            <DQ_Button
+              title={Get_CMS_Entry('search_str', '', GetEntry().language)}
+              onPress={() => PerformSearchService('PH')}
+              loading={loading}
+            />
           </View>
         </ScrollView>
       ),
@@ -145,18 +165,22 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
       key: 'second',
       title: 'Policy Number',
       content: (
-        <ScrollView style={{ width: '100%', flex: 1 }}>
+        <ScrollView style={{width: '100%', flex: 1}}>
           <View style={styles.TextBox}>
             <DQ_TextBox
-            borderColor="#bbbec3"
-              placeholder={PolicyNumberPlaceHolder}
-              hintText={HintTextPolicyNumberPlaceHolder}
+              borderColor="#bbbec3"
+              placeholder={Get_CMS_Entry('policy_number_str', '', GetEntry().language)}
+              hintText={Get_CMS_Entry('example_policy_number_agent', '', GetEntry().language)}
               value={policyNumber}
               onChangeText={setPolicyNumber}
             />
           </View>
           <View style={styles.SearchButton}>
-            <DQ_Button title="Search" onPress={() => PerformSearchService('P')} loading={loading} />
+            <DQ_Button
+              title={Get_CMS_Entry('search_str', '', GetEntry().language)}
+              onPress={() => PerformSearchService('P')}
+              loading={loading}
+            />
           </View>
         </ScrollView>
       ),
@@ -165,12 +189,20 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
       key: 'third',
       title: 'PIN',
       content: (
-        <ScrollView style={{ width: '100%', flex: 1 }}>
+        <ScrollView style={{width: '100%', flex: 1}}>
           <View style={styles.TextBox}>
-            <DQ_TextBox placeholder={PinPlaceHolder} value={pin} onChangeText={setPin} />
+            <DQ_TextBox
+              placeholder={Get_CMS_Entry('pin_str', '', GetEntry().language)}
+              value={pin}
+              onChangeText={setPin}
+            />
           </View>
           <View style={styles.SearchButton}>
-            <DQ_Button title="Search"  onPress={() => PerformSearchService('PIN')}  loading={loading}/>
+            <DQ_Button
+              title={Get_CMS_Entry('search_str', '', GetEntry().language)}
+              onPress={() => PerformSearchService('PIN')}
+              loading={loading}
+            />
           </View>
         </ScrollView>
       ),
@@ -197,7 +229,10 @@ const AgentSearchScreen = ({ navigation, route }: any) => {
           fontSize={14}
         />
       </DQ_Alert>
-      <DQ_BaseHeader navigation={navigation} press={()=>navigation.goBack()} />
+      <DQ_BaseHeader
+        navigation={navigation}
+        press={() => navigation.goBack()}
+      />
 
       <View style={styles.mainTitle}>
         <DQ_Paragraph
